@@ -12,21 +12,21 @@ from .robustness import (
 
 
 DEFAULT_PARAMS = {
-    'alpha': 0.15,
-    'beta': 0.15,
-    'sigma': 0.03,
+    'alpha': 0.20,
+    'beta': 0.10,
+    'sigma': 0.05,
     'alpha_L': 0.4,
     'alpha_G': 0.6,
-    'lambda_L': 0.2,
-    'lambda_G': 0.1,
+    'lambda_L': 0.15,
+    'lambda_G': 0.08,
     'w1': 0.3,
     'w2': 0.4,
     'w3': 0.3,
-    'k_max': 5,
+    'k_max': 15,
     'dt': 0.05,
     'max_steps': 200,
-    'min_steps': 20,
-    'convergence_threshold': 0.001,
+    'min_steps': 30,
+    'convergence_threshold': 0.0005,
     'gradient_sample_ratio': 0.1,
     'gradient_epsilon': 1e-5,
     'seed': 42,
@@ -138,6 +138,7 @@ def evolve_step(A, params, rng=None):
     dt = params['dt']
     k_max = params['k_max']
 
+    # 每步只计算一次梯度并共享给演化与自组织阶段，避免重复计算
     grad_R = _compute_cached_gradient(A, params, rng)
 
     k1 = _evolution_rhs(A, grad_R, params, rng)
@@ -147,12 +148,10 @@ def evolve_step(A, params, rng=None):
     A_evo = A + (dt / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
     A_evo = _symmetrize_and_clip(A_evo)
 
-    grad_R2 = _compute_cached_gradient(A_evo, params, rng)
-
-    s1 = _self_org_rhs(A_evo, grad_R2, params)
-    s2 = _self_org_rhs(_symmetrize_and_clip(A_evo + 0.5 * dt * s1), grad_R2, params)
-    s3 = _self_org_rhs(_symmetrize_and_clip(A_evo + 0.5 * dt * s2), grad_R2, params)
-    s4 = _self_org_rhs(_symmetrize_and_clip(A_evo + dt * s3), grad_R2, params)
+    s1 = _self_org_rhs(A_evo, grad_R, params)
+    s2 = _self_org_rhs(_symmetrize_and_clip(A_evo + 0.5 * dt * s1), grad_R, params)
+    s3 = _self_org_rhs(_symmetrize_and_clip(A_evo + 0.5 * dt * s2), grad_R, params)
+    s4 = _self_org_rhs(_symmetrize_and_clip(A_evo + dt * s3), grad_R, params)
     A_step = A_evo + (dt / 6.0) * (s1 + 2 * s2 + 2 * s3 + s4)
 
     A_next = _apply_constraints(A_step, k_max)

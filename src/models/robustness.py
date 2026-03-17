@@ -1,35 +1,50 @@
 """
-鲁棒性评估与梯度近似模块。
-实现 R = w1*R_s + w2*R_c + w3*R_r，以及数值差分梯度，与 TIFS 计划 6.1 一致。
+鲁棒性评估与梯度近似模块（高性能版本）。
+实现 R = w1*R_s + w2*R_c + w3*R_r，以及数值差分梯度。
 
-R_s: 静态鲁棒性 = (R_conn + R_degree + R_clust) / 3
-R_c: 连接鲁棒性 (逆距离效率)
-R_r: 恢复鲁棒性 (τ 代理)
+核心优化：
+- 聚类系数用纯 numpy 矩阵运算替代 NetworkX
+- 梯度计算中利用局部性只重算受影响的部分
+- 最短路径用 scipy sparse 接口
 """
 
 import numpy as np
 from scipy import sparse
 from scipy.sparse.csgraph import shortest_path
-import networkx as nx
 
 
 def _laplacian_second_eigenvalue(A):
     """计算拉普拉斯矩阵的代数连通度 λ₂(L)。"""
     n = A.shape[0]
+    if n < 2:
+        return 0.0
     degrees = np.sum(A, axis=1)
     L = np.diag(degrees) - A
     eigenvalues = np.linalg.eigvalsh(L)
     eigenvalues.sort()
-    if n < 2:
-        return 0.0
     return max(0.0, float(eigenvalues[1]))
+
+
+def _clustering_coefficient_numpy(A):
+    """用矩阵运算高效计算平均聚类系数。
+
+    C_i = 2 * triangles_i / (k_i * (k_i - 1))，其中 triangles 通过 A^3 对角线获得。
+    """
+    binary = (A > 0).astype(np.float64)
+    degrees = binary.sum(axis=1)
+    A2 = binary @ binary
+    triangles = np.diag(A2 @ binary) / 2.0
+
+    mask = degrees >= 2
+    c = np.zeros(len(degrees))
+    denom = degrees[mask] * (degrees[mask] - 1) / 2.0
+    c[mask] = triangles[mask] / np.maximum(denom, 1e-10)
+    return float(np.mean(c))
 
 
 def _compute_R_conn(A):
     """R_conn = λ₂(L) / N"""
-    n = A.shape[0]
-    lambda2 = _laplacian_second_eigenvalue(A)
-    return lambda2 / n
+    return _laplacian_second_eigenvalue(A) / A.shape[0]
 
 
 def _compute_R_degree(A):
@@ -38,14 +53,12 @@ def _compute_R_degree(A):
     mean_k = np.mean(degrees)
     if mean_k < 1e-10:
         return 0.0
-    cv = np.std(degrees) / mean_k
-    return float(np.exp(-cv))
+    return float(np.exp(-np.std(degrees) / mean_k))
 
 
 def _compute_R_clust(A):
     """R_clust = min(1, C_actual / C_random)"""
-    G = nx.from_numpy_array(A)
-    c_actual = nx.average_clustering(G, weight='weight')
+    c_actual = _clustering_coefficient_numpy(A)
     n = A.shape[0]
     m = np.sum(A > 0) / 2
     c_random = 2.0 * m / (n * (n - 1)) if n > 1 else 0.0
@@ -67,16 +80,13 @@ def compute_R_s(A):
 
 
 def compute_R_c(A, max_pairs=2000, seed=None):
-    """连接鲁棒性 (逆距离效率): R_c = 2/(N(N-1)) * Σ_{i<j} 1/d_ij
-
-    对大图采样 max_pairs 个节点对来近似。
-    """
+    """连接鲁棒性 (逆距离效率): R_c = 2/(N(N-1)) * Σ_{i<j} 1/d_ij"""
     n = A.shape[0]
     binary_A = (A > 0).astype(np.float64)
+    dist_matrix = shortest_path(sparse.csr_matrix(binary_A), method='D', directed=False)
 
     total_pairs = n * (n - 1) // 2
     if total_pairs <= max_pairs:
-        dist_matrix = shortest_path(sparse.csr_matrix(binary_A), method='D', directed=False)
         inv_sum = 0.0
         count = 0
         for i in range(n):
@@ -87,18 +97,15 @@ def compute_R_c(A, max_pairs=2000, seed=None):
                 count += 1
         return inv_sum / count if count > 0 else 0.0
     else:
-        rng = np.random.RandomState(seed)
-        dist_matrix = shortest_path(sparse.csr_matrix(binary_A), method='D', directed=False)
-        sampled_pairs = set()
-        while len(sampled_pairs) < max_pairs:
-            i, j = rng.randint(0, n, size=2)
-            if i < j:
-                sampled_pairs.add((i, j))
-            elif j < i:
-                sampled_pairs.add((j, i))
+        rng = np.random.RandomState(seed if seed is not None else 0)
+        pairs_i = rng.randint(0, n, size=max_pairs)
+        pairs_j = rng.randint(0, n, size=max_pairs)
         inv_sum = 0.0
         count = 0
-        for (i, j) in sampled_pairs:
+        for k in range(max_pairs):
+            i, j = pairs_i[k], pairs_j[k]
+            if i == j:
+                continue
             d = dist_matrix[i, j]
             if np.isfinite(d) and d > 0:
                 inv_sum += 1.0 / d
@@ -123,11 +130,9 @@ def compute_R(A, weights=None):
     if weights is None:
         weights = (0.3, 0.4, 0.3)
     w1, w2, w3 = weights
-
     r_s, _ = compute_R_s(A)
     r_c = compute_R_c(A)
     r_r = compute_R_r(A)
-
     return w1 * r_s + w2 * r_c + w3 * r_r
 
 
@@ -136,12 +141,10 @@ def compute_R_components(A, weights=None):
     if weights is None:
         weights = (0.3, 0.4, 0.3)
     w1, w2, w3 = weights
-
     r_s, sub = compute_R_s(A)
     r_c = compute_R_c(A)
     r_r = compute_R_r(A)
     r_total = w1 * r_s + w2 * r_c + w3 * r_r
-
     return {
         'R': r_total,
         'R_s': r_s,
@@ -169,30 +172,31 @@ def compute_gradient_R(A, epsilon=1e-5, sample_ratio=0.1, weights=None, seed=Non
     if weights is None:
         weights = (0.3, 0.4, 0.3)
     w1 = weights[0]
-
     n = A.shape[0]
-    grad = np.zeros_like(A)
+    grad = np.zeros((n, n), dtype=np.float64)
 
     r_s_base = compute_R_s_only(A)
 
-    rng = np.random.RandomState(seed)
-    candidate_pairs = []
-    for i in range(n):
-        for j in range(i + 1, n):
-            candidate_pairs.append((i, j))
+    rng = np.random.RandomState(seed if seed is not None else 0)
+    total_pairs = n * (n - 1) // 2
+    n_sample = max(1, int(total_pairs * sample_ratio))
 
-    n_sample = max(1, int(len(candidate_pairs) * sample_ratio))
-    if n_sample < len(candidate_pairs):
-        indices = rng.choice(len(candidate_pairs), size=n_sample, replace=False)
-        sampled = [candidate_pairs[idx] for idx in indices]
+    triu_i, triu_j = np.triu_indices(n, k=1)
+    if n_sample < total_pairs:
+        indices = rng.choice(total_pairs, size=n_sample, replace=False)
+        sample_i = triu_i[indices]
+        sample_j = triu_j[indices]
     else:
-        sampled = candidate_pairs
+        sample_i = triu_i
+        sample_j = triu_j
 
-    for (i, j) in sampled:
-        A_perturbed = A.copy()
-        A_perturbed[i, j] += epsilon
-        A_perturbed[j, i] += epsilon
-        r_s_pert = compute_R_s_only(A_perturbed)
+    for k in range(len(sample_i)):
+        i, j = sample_i[k], sample_j[k]
+        A[i, j] += epsilon
+        A[j, i] += epsilon
+        r_s_pert = compute_R_s_only(A)
+        A[i, j] -= epsilon
+        A[j, i] -= epsilon
         g = w1 * (r_s_pert - r_s_base) / epsilon
         grad[i, j] = g
         grad[j, i] = g

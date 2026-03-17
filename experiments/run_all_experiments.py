@@ -46,6 +46,7 @@ os.makedirs(FIGURES_DIR, exist_ok=True)
 N_NODES = 100
 WEIGHTS = (0.3, 0.4, 0.3)
 N_REPEATS = 5
+GRADIENT_SAMPLE_RATIO = 0.10
 
 
 def compute_graph_stats(A):
@@ -200,9 +201,9 @@ def experiment_412_optimization(results_collector):
         stats_before = compute_graph_stats(A0)
 
         params = DEFAULT_PARAMS.copy()
-        params['max_steps'] = 100
-        params['min_steps'] = 15
-        params['gradient_sample_ratio'] = 0.15
+        params['max_steps'] = 150
+        params['min_steps'] = 30
+        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
 
         A_star, history = run_optimization(A0, params, verbose=True)
         stats_after = compute_graph_stats(A_star)
@@ -244,9 +245,9 @@ def experiment_42_parameter_sensitivity(results_collector):
     for run_i in range(N_REPEATS):
         params = DEFAULT_PARAMS.copy()
         params['seed'] = 42 + run_i
-        params['max_steps'] = 60
-        params['min_steps'] = 10
-        params['gradient_sample_ratio'] = 0.15
+        params['max_steps'] = 100
+        params['min_steps'] = 30
+        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
 
         A_star, history = run_optimization(A0, params, verbose=False)
         comps_star = compute_R_components(A_star, WEIGHTS)
@@ -293,7 +294,7 @@ def experiment_42_parameter_sensitivity(results_collector):
 
         params['max_steps'] = 40
         params['min_steps'] = 8
-        params['gradient_sample_ratio'] = 0.15
+        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
         params['seed'] = 200 + pi
 
         try:
@@ -334,7 +335,7 @@ def experiment_413_attack_scenarios(results_collector):
     params = DEFAULT_PARAMS.copy()
     params['max_steps'] = 80
     params['min_steps'] = 15
-    params['gradient_sample_ratio'] = 0.15
+    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
     A_star, _ = run_optimization(A0, params, verbose=False)
 
     attack_configs = [
@@ -391,9 +392,9 @@ def experiment_43_comparison(results_collector):
 
     print("\n--- Our method ---")
     params = DEFAULT_PARAMS.copy()
-    params['max_steps'] = 100
-    params['min_steps'] = 15
-    params['gradient_sample_ratio'] = 0.15
+    params['max_steps'] = 200
+    params['min_steps'] = 40
+    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
     t0 = time.time()
     A_ours, history_ours = run_optimization(A0, params, verbose=False)
     t_ours = time.time() - t0
@@ -488,7 +489,7 @@ def experiment_scalability(results_collector):
         params = DEFAULT_PARAMS.copy()
         params['max_steps'] = 30
         params['min_steps'] = 8
-        params['gradient_sample_ratio'] = 0.15
+        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
 
         comps_orig = compute_R_components(A0, WEIGHTS)
         t0 = time.time()
@@ -797,7 +798,7 @@ def main():
     params = DEFAULT_PARAMS.copy()
     params['max_steps'] = 80
     params['min_steps'] = 15
-    params['gradient_sample_ratio'] = 0.15
+    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
     A_star_ba, _ = run_optimization(A0_ba, params, verbose=False)
     plot_degree_distribution(
         A0_ba, A_star_ba, 'BA(m=3)',
