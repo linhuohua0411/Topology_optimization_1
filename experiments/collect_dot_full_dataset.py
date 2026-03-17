@@ -68,8 +68,8 @@ def get_system_peers(ssh, container_name):
     return None
 
 
-def collect_snapshot(ssh, containers, idx):
-    """采集一个拓扑快照。"""
+def collect_snapshot(ssh_unused, containers, idx):
+    """采集一个拓扑快照（每批次重新建立 SSH 连接避免通道耗尽）。"""
     timestamp = datetime.now(timezone.utc).isoformat()
 
     peer_id_to_idx = {}
@@ -77,37 +77,52 @@ def collect_snapshot(ssh, containers, idx):
     peer_counts = {}
     failed = []
 
-    for nid in sorted(containers.keys()):
-        cname = containers[nid]['name']
-        cmd = (f"docker exec {cname} curl -sf -m 10 -X POST http://localhost:9933 "
-               f"-H 'Content-Type: application/json' "
-               f"""-d '{{"jsonrpc":"2.0","method":"system_localPeerId","params":[],"id":1}}' 2>/dev/null""")
+    node_ids_list = sorted(containers.keys())
+    BATCH = 20
+
+    for batch_start in range(0, len(node_ids_list), BATCH):
+        batch = node_ids_list[batch_start:batch_start + BATCH]
+        ssh = get_ssh_client()
         try:
-            _, stdout, _ = ssh.exec_command(cmd, timeout=10)
-            output = stdout.read().decode().strip()
-            if output:
-                data = json.loads(output)
-                local_id = data.get('result', '')
-                if local_id:
-                    peer_id_to_idx[local_id] = nid
-        except Exception:
-            pass
+            for nid in batch:
+                cname = containers[nid]['name']
+                cmd = (f"docker exec {cname} curl -sf -m 10 -X POST http://localhost:9933 "
+                       f"-H 'Content-Type: application/json' "
+                       f"""-d '{{"jsonrpc":"2.0","method":"system_localPeerId","params":[],"id":1}}' 2>/dev/null""")
+                try:
+                    _, stdout, _ = ssh.exec_command(cmd, timeout=15)
+                    output = stdout.read().decode().strip()
+                    if output:
+                        data = json.loads(output)
+                        local_id = data.get('result', '')
+                        if local_id:
+                            peer_id_to_idx[local_id] = nid
+                except Exception:
+                    pass
+        finally:
+            ssh.close()
 
-    for nid in sorted(containers.keys()):
-        cname = containers[nid]['name']
-        peers = get_system_peers(ssh, cname)
-        if peers is None:
-            failed.append(nid)
-            peer_counts[nid] = 0
-            continue
+    for batch_start in range(0, len(node_ids_list), BATCH):
+        batch = node_ids_list[batch_start:batch_start + BATCH]
+        ssh = get_ssh_client()
+        try:
+            for nid in batch:
+                cname = containers[nid]['name']
+                peers = get_system_peers(ssh, cname)
+                if peers is None:
+                    failed.append(nid)
+                    peer_counts[nid] = 0
+                    continue
 
-        peer_counts[nid] = len(peers)
-        for p in peers:
-            peer_id = p.get('peerId', '')
-            if peer_id in peer_id_to_idx:
-                peer_nid = peer_id_to_idx[peer_id]
-                edge = (min(nid, peer_nid), max(nid, peer_nid))
-                all_edges.add(edge)
+                peer_counts[nid] = len(peers)
+                for p in peers:
+                    peer_id = p.get('peerId', '')
+                    if peer_id in peer_id_to_idx:
+                        peer_nid = peer_id_to_idx[peer_id]
+                        edge = (min(nid, peer_nid), max(nid, peer_nid))
+                        all_edges.add(edge)
+        finally:
+            ssh.close()
 
     n = len(containers)
     node_ids = sorted(containers.keys())
