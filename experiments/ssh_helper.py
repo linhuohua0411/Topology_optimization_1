@@ -1,13 +1,18 @@
-"""SSH 辅助模块：连接远程服务器并执行命令。"""
+"""SSH 辅助模块：连接远程服务器并执行命令。
 
+凭证通过环境变量传入:
+  ETH_SERVER_HOST, ETH_SERVER_PORT, ETH_SERVER_USER, ETH_SERVER_PASS
+"""
+
+import os
 import paramiko
 import time
 
 
-SERVER_HOST = '161.97.133.14'
-SERVER_PORT = 22
-SERVER_USER = 'ht1220'
-SERVER_PASS = '592087469hW'
+SERVER_HOST = os.environ.get('ETH_SERVER_HOST', '161.97.133.14')
+SERVER_PORT = int(os.environ.get('ETH_SERVER_PORT', '22'))
+SERVER_USER = os.environ.get('ETH_SERVER_USER', 'ht1220')
+SERVER_PASS = os.environ.get('ETH_SERVER_PASS', '')
 
 
 def get_ssh_client():
