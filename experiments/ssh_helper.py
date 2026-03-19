@@ -9,9 +9,9 @@ import paramiko
 import time
 
 
-SERVER_HOST = os.environ.get('ETH_SERVER_HOST', '161.97.133.14')
+SERVER_HOST = os.environ.get('ETH_SERVER_HOST', '111.230.44.107')
 SERVER_PORT = int(os.environ.get('ETH_SERVER_PORT', '22'))
-SERVER_USER = os.environ.get('ETH_SERVER_USER', 'ht1220')
+SERVER_USER = os.environ.get('ETH_SERVER_USER', 'ubuntu')
 SERVER_PASS = os.environ.get('ETH_SERVER_PASS', '')
 
 
