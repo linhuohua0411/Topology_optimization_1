@@ -159,10 +159,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--snapshots', type=int, default=40)
     parser.add_argument('--interval', type=int, default=300)
+    parser.add_argument('--start-from', type=int, default=0, help='Resume from snapshot index')
     args = parser.parse_args()
 
     N = args.snapshots
     interval = args.interval
+    start_from = args.start_from
 
     print(f"{'='*70}")
     print(f"TIFS Full Dataset: Ethereum + Polkadot Dual-Network Collection")
@@ -182,40 +184,54 @@ def main():
     eth_matrices, dot_matrices = [], []
     eth_snaps, dot_snaps = [], []
 
-    for i in range(N):
-        t0 = time.time()
-        print(f"\n--- Snapshot {i+1}/{N} ---")
+    if start_from > 0:
+        print(f"Resuming from snapshot {start_from}")
 
-        A_eth, s_eth = collect_eth_snapshot(eth_containers, i)
-        eth_matrices.append(A_eth)
-        eth_snaps.append(s_eth)
-        deg_eth = np.sum(A_eth > 0, axis=1)
+    for i in range(start_from, N):
+        for retry in range(3):
+            try:
+                t0 = time.time()
+                print(f"\n--- Snapshot {i+1}/{N} (attempt {retry+1}) ---")
 
-        A_dot, s_dot = collect_dot_snapshot(dot_containers, i)
-        dot_matrices.append(A_dot)
-        dot_snaps.append(s_dot)
-        deg_dot = np.sum(A_dot > 0, axis=1)
+                A_eth, s_eth = collect_eth_snapshot(eth_containers, i)
+                eth_matrices.append(A_eth)
+                eth_snaps.append(s_eth)
+                deg_eth = np.sum(A_eth > 0, axis=1)
 
-        if i > 0:
-            eth_diff = int(np.sum(np.abs(A_eth - eth_matrices[i-1])) / 2)
-            dot_diff = int(np.sum(np.abs(A_dot - dot_matrices[i-1])) / 2)
-        else:
-            eth_diff = dot_diff = 0
-        s_eth['edge_diff'] = eth_diff
-        s_dot['edge_diff'] = dot_diff
+                A_dot, s_dot = collect_dot_snapshot(dot_containers, i)
+                dot_matrices.append(A_dot)
+                dot_snaps.append(s_dot)
+                deg_dot = np.sum(A_dot > 0, axis=1)
 
-        elapsed = time.time() - t0
-        ts = s_eth['timestamp'][11:19]
-        print(f"  ETH: edges={s_eth['n_edges']:5d} deg={np.mean(deg_eth):5.1f}±{np.std(deg_eth):4.1f} Δ={eth_diff:3d} fail={len(s_eth['failed_nodes'])}")
-        print(f"  DOT: edges={s_dot['n_edges']:5d} deg={np.mean(deg_dot):5.1f}±{np.std(deg_dot):4.1f} Δ={dot_diff:3d} fail={len(s_dot['failed_nodes'])}")
-        print(f"  [{ts}] {elapsed:.1f}s")
+                if i > 0:
+                    eth_diff = int(np.sum(np.abs(A_eth - eth_matrices[-1] if len(eth_matrices) < 2 else eth_matrices[-2])) / 2)
+                    dot_diff = int(np.sum(np.abs(A_dot - dot_matrices[-1] if len(dot_matrices) < 2 else dot_matrices[-2])) / 2)
+                else:
+                    eth_diff = dot_diff = 0
+                s_eth['edge_diff'] = eth_diff
+                s_dot['edge_diff'] = dot_diff
 
-        with open(os.path.join(ETH_DIR, f'snapshot_{i:04d}.json'), 'w') as f:
-            json.dump(s_eth, f, indent=2, default=str)
-        with open(os.path.join(DOT_DIR, f'snapshot_{i:04d}.json'), 'w') as f:
-            json.dump(s_dot, f, indent=2, default=str)
+                elapsed = time.time() - t0
+                ts = s_eth['timestamp'][11:19]
+                print(f"  ETH: edges={s_eth['n_edges']:5d} deg={np.mean(deg_eth):5.1f}±{np.std(deg_eth):4.1f} Δ={eth_diff:3d} fail={len(s_eth['failed_nodes'])}")
+                print(f"  DOT: edges={s_dot['n_edges']:5d} deg={np.mean(deg_dot):5.1f}±{np.std(deg_dot):4.1f} Δ={dot_diff:3d} fail={len(s_dot['failed_nodes'])}")
+                print(f"  [{ts}] {elapsed:.1f}s")
+
+                with open(os.path.join(ETH_DIR, f'snapshot_{i:04d}.json'), 'w') as f:
+                    json.dump(s_eth, f, indent=2, default=str)
+                with open(os.path.join(DOT_DIR, f'snapshot_{i:04d}.json'), 'w') as f:
+                    json.dump(s_dot, f, indent=2, default=str)
+                break
+            except Exception as e:
+                print(f"  [WARN] Snapshot {i+1} attempt {retry+1} failed: {e}")
+                if retry < 2:
+                    print(f"  Retrying in 30s...")
+                    time.sleep(30)
+                else:
+                    print(f"  [ERROR] Snapshot {i+1} failed after 3 attempts, skipping")
 
         if i < N - 1:
+            elapsed = time.time() - t0
             wait = max(0, interval - elapsed)
             if wait > 0:
                 time.sleep(wait)
