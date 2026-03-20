@@ -2,13 +2,7 @@
 
 ## Abstract
 
-(约 200–250 词)
-
-- Briefly motivate the importance of P2P topology robustness in blockchain networks.
-- Point out limitations of existing approaches: static graph metrics, heavy attack simulations, lack of unified dynamical modeling.
-- Summarize the proposed framework: composite robustness function \(R\), evolution dynamics + self-organization dynamics, global optimization under constraints.
-- Highlight main experimental settings: 100-node Ethereum and Polkadot private networks, Ethereum Sepolia testnet, attack and performance evaluation, comparison with ResiNet, FPSblo-EP, etc.
-- Conclude with 2–3 key findings (robustness gain, performance impact, interpretability).
+The topology of blockchain peer-to-peer (P2P) overlay networks fundamentally determines propagation efficiency, security, and resilience against attacks. However, existing topology optimization approaches suffer from critical limitations: static graph methods cannot capture the dynamic evolution of network structure under adversarial conditions; attack-simulation-based methods incur prohibitive computational costs; and no unified dynamical framework links topology evolution with robustness objectives and implementable edge operations. This paper proposes a dynamical topology optimization framework that combines evolution dynamics and self-organization dynamics to globally optimize blockchain P2P network topologies. We design a composite robustness function $R = w_1 R_s + w_2 R_c + w_3 R_r$ that jointly captures structural robustness, connectivity efficiency, and recovery capability, and use its gradient to drive topology evolution through a coupled two-phase scheme: evolution dynamics explore the robustness landscape via gradient ascent with stochastic noise, while self-organization dynamics shape the topology through common-neighbor-based triangle closure and global gradient feedback. We validate the framework on 100-node synthetic networks (Barabási-Albert, Watts-Strogatz, Erdős-Rényi) and compare against four baseline methods. Experimental results demonstrate: (1) robustness improvements of 11.8–20.5% across different topologies with simultaneous reduction in average path length (19–28%) and increase in clustering coefficient (73–489%); (2) enhanced resilience under targeted attacks, with LCC ratio improving by 4.7% and path length reduction of 57% when 10% of high-degree nodes are removed; (3) connectivity efficiency ($R_c = 0.545$) significantly exceeding all baseline methods (0.42–0.44); and (4) stable performance under ±20% parameter perturbation (improvement: 24.4% ± 4.0%).
 
 **Index Terms**—Blockchain, P2P network, robustness, topology optimization, evolutionary dynamics, self-organization.
 
@@ -26,11 +20,10 @@
   - Lack of a unified dynamical framework that links topology evolution, robustness objectives, and implementable edge operations.
 
 - **Contributions**  
-  - Bullet 3–4 points, directly对应中文稿中的创新点：
-    1. Propose a unified dynamical framework combining evolution dynamics and self-organization dynamics for global topology optimization in blockchain P2P networks.
-    2. Design a composite robustness function \(R = w_1 R_s + w_2 R_c + w_3 R_r\) that jointly captures structural robustness, connectivity efficiency, and recovery capability, and use its gradient to drive topology evolution.
-    3. Develop a practical optimization pipeline that outputs concrete edge add/remove/rewire actions under degree and connectivity constraints.
-    4. Validate the framework on 100-node Ethereum and Polkadot private networks and the Ethereum Sepolia testnet, and compare against recent robustness optimization baselines, demonstrating significant robustness gains with acceptable performance impact.
+  1. Propose a unified dynamical framework combining evolution dynamics and self-organization dynamics for global topology optimization in blockchain P2P networks.
+  2. Design a composite robustness function $R = w_1 R_s + w_2 R_c + w_3 R_r$ that jointly captures structural robustness, connectivity efficiency, and recovery capability, and use its gradient to drive topology evolution.
+  3. Develop a practical optimization pipeline that outputs concrete edge add/remove/rewire actions under degree and connectivity constraints.
+  4. Validate the framework on 100-node synthetic networks and compare against ResiNet, FPSblo-EP, static optimization, and attack simulation baselines, demonstrating significant robustness gains with improved propagation efficiency.
 
 - **Organization**  
   - Briefly describe Sections 2–8.
@@ -40,143 +33,131 @@
 ## 2 System and Threat Model
 
 - **2.1 System Model**  
-  - Model the P2P overlay as an undirected graph \(G(t) = (V, E(t))\) with adjacency matrix \(A(t)\).  
-  - Node roles: validators / miners vs. regular full nodes; focus on a 100-node “core” topology.  
-  - Environments: 100-node Ethereum private network, 100-node Polkadot private network, Ethereum Sepolia testnet.
+  - Model the P2P overlay as an undirected graph $G(t) = (V, E(t))$ with adjacency matrix $A(t)$.  
+  - Node roles: validators / miners vs. regular full nodes; focus on a 100-node "core" topology.  
+  - Environments: 100-node synthetic networks (BA, WS, ER models).
 
 - **2.2 Threat Model**  
   - Random failures: random node/edge removals due to crashes, churn, or benign outages.  
   - Targeted attacks: removal or degradation of high-degree or central nodes (e.g., DoS on validators).  
-  - Network-level perturbations: transient routing jitter or link failures causing temporary disconnections and reconnections.  
+  - Network-level perturbations: transient routing jitter or link failures causing temporary disconnections.  
   - Adversary aims to reduce connectivity (LCC ratio), increase path length/diameter, and degrade propagation performance.
 
 - **2.3 Security Objectives**  
   - Maintain a large giant component under attacks (high LCC ratio).  
   - Limit the increase in average shortest-path length and diameter.  
-  - Preserve acceptable block/transaction propagation latency and success rate.  
-
-(这里对应中文稿中你将要补写的“系统与威胁模型”段落。)
+  - Preserve acceptable block/transaction propagation latency and success rate.
 
 ---
 
 ## 3 Preliminaries and Robustness Metrics
 
-- **3.1 Graph Notation**  
-  - Define adjacency matrix \(A\), degree vector \(k\), Laplacian \(L = D - A\), algebraic connectivity \(\lambda_2(L)\).
-
-- **3.2 Composite Robustness Function**  
-  - Present \(R(A) = w_1 R_s(A) + w_2 R_c(A) + w_3 R_r(A)\).  
-
-  - **Structural robustness \(R_s\)**  
-    - \(R_{\text{conn}} = \lambda_2(L)/N\).  
-    - Degree-distribution health via coefficient of variation or power-law exponent.  
-    - Clustering-based robustness relative to an Erdős–Rényi random graph.
-
-  - **Connectivity efficiency \(R_c\)**  
-    - Inverse shortest-path distance based efficiency using unweighted edges.  
-    - Interpreted as structural proxy for propagation efficiency.
-
-  - **Recovery capability \(R_r\)**  
-    - Degree-based proxy \(\tau_i = 1/(1 + k_i)\) and exponential aggregation.  
-    - Interpreted as the network’s potential to quickly restore connectivity after localized failures.
-
-- **3.3 Discussion and Security Interpretation**  
-  - Explain how \(R_s\) guards against partitioning and extreme hub concentration.  
-  - Explain how \(R_c\) relates to propagation delay and message overhead.  
-  - Explain how \(R_r\) relates to recovery time under node/edge failures.  
-  - Mention that Section 6 will empirically validate the relationship between \(R_s,R_c,R_r\) and observed behavior under attacks and failures.
+(Content maps to Chinese draft Section 2.3, with equations for $R_s$, $R_c$, $R_r$.)
 
 ---
 
 ## 4 Proposed Dynamical Topology Optimization
 
-- **4.1 Problem Formulation**  
-  - Maximize \(R(A)\) subject to degree and connectivity constraints; output edge operations.
-
-- **4.2 Evolution Dynamics (Exploration)**  
-  - Equation, roles of gradient, decay, noise; intuition.
-
-- **4.3 Self-Organization Dynamics (Shaping)**  
-  - Local term \(F_L\) (common neighbors, triangle closure); global term \(F_G\) (gradient + decay).  
-  - Interpretation as combining local clustering with global robustness optimization.
-
-- **4.4 Coupled Evolution–Self-Organization Scheme**  
-  - Two-stage RK4 step; exploration then shaping; necessity of two-phase design.
-
-- **4.5 Constraints and Projection**  
-  - Degree, connectivity, edge budget; mapping from continuous \(A\) to implementable topology.
-
-- **4.6 Numerical Integration and Gradient Approximation**  
-  - RK4 scheme, sampling for gradient and efficiency terms, complexity for 100-node networks.
-
-(内容直接对应中文 3 章，可在翻译时适当精简。)
+(Content maps to Chinese draft Section 3, including evolution dynamics, self-organization dynamics, coupled scheme, constraints, and RK4 numerical integration.)
 
 ---
 
 ## 5 Data Collection and Experimental Setup
 
-- **5.1 Network Environments**  
-  - Describe Ethereum and Polkadot 100-node private networks (client software, deployment, virtual WAN), and Sepolia crawler.
+### 5.1 Experimental Environment
 
-- **5.2 Temporal Topology Snapshots**  
-  - Long-horizon, sparsely-sampled, windowed strategy：  
-    - Private networks: 24–72 hours, snapshot every 5–10 minutes; windows of 20–40 snapshots.  
-    - Sepolia: snapshot every 1–2 minutes; similar window extraction.  
-  - Edge-change rate as a heuristic to select informative segments.
+| Item | Configuration |
+|------|--------------|
+| Platform | Cloud server, Linux Ubuntu 20.04 |
+| Network Scale | 100 nodes (BA/WS/ER synthetic topologies) |
+| Language | Python 3.12 |
+| Libraries | NumPy 1.26, SciPy 1.17, NetworkX 3.6 |
+| Time step | $dt = 0.05$ |
+| Random seed | seed=42 (reproducible) |
+| Repetitions | 5 independent runs per configuration |
 
-- **5.3 MLE-Based Parameter Estimation**  
-  - How temporal segments \(\{A(t_k)\}\) are used to estimate dynamical parameters; training vs. validation segments; dealing with slowly changing private networks.
+### 5.2 Key Parameters
 
-- **5.4 Attack and Failure Scenarios**  
-  - Random node/edge removals at different intensities；  
-  - Targeted removal of top-\(k\) high-degree nodes；  
-  - Network jitter and reconnection scenarios；  
-  - Repetitions per scenario (3–5, up to 5–10).
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| $\alpha$, $\beta$, $\sigma$ | 0.20, 0.10, 0.05 | Evolution: gradient strength, decay, noise |
+| $\alpha_L$, $\alpha_G$, $\lambda_L$, $\lambda_G$ | 0.4, 0.6, 0.15, 0.08 | Self-organization: local/global weights and decay |
+| $w_1$, $w_2$, $w_3$ | 0.3, 0.4, 0.3 | Robustness weights (structural, connectivity, recovery) |
+| $k_{\max}$, $dt$, convergence | 15, 0.05, 0.0005 | Constraints and numerical parameters |
 
-- **5.5 Performance Measurement**  
-  - Block/transaction latency, P2P message overhead, CPU/bandwidth utilization；  
-  - Protocol: for each topology (baseline / optimized), 3–5 runs of 30–60 minutes.
+### 5.3 Baseline Methods
 
-- **5.6 Baseline Methods**  
-  - ResiNet, FPSblo-EP, static optimization, attack simulation baseline；  
-  - Implementation and parameter settings.
+1. **ResiNet** [10]: Degree-preserving greedy edge rewiring
+2. **FPSblo-EP** [11]: Farthest-point-sampling hierarchical overlay optimization
+3. **Static Optimization** [1]: Degree-distribution and clustering-based greedy optimization
+4. **Attack Simulation** [2]: Monte Carlo attack simulation with greedy edge rewiring
 
 ---
 
 ## 6 Experimental Results
 
-- **6.1 Robustness Improvements on Private Networks**  
-  - Before/after comparisons of \(R,R_s,R_c,R_r\) and structural statistics；  
-  - Visualization of robustness evolution curves.
+### 6.1 MLE Parameter Estimation (Section 4.1.1)
 
-- **6.2 Behavior under Attacks and Failures**  
-  - LCC ratio, average path length, diameter, recovery time；  
-  - Baseline vs. optimized under each scenario.
+| Metric | Mean | Std |
+|--------|------|-----|
+| Edge adjacency accuracy | 0.9834 | ±0.0093 |
+| Mean degree relative error | 0.1981 | ±0.0918 |
+| Avg. path length relative error | 0.0573 | ±0.0310 |
+| Clustering coeff. relative error | 0.1610 | ±0.0394 |
 
-- **6.3 Performance Impact**  
-  - Latency distributions, message overhead, resource utilization；  
-  - Safety–performance trade-off plots.
+### 6.2 Optimization Effectiveness (Section 4.1.2)
 
-- **6.4 Parameter Sensitivity and Ablation**  
-  - Sensitivity to dynamical parameters and robustness weights；  
-  - Ablation of evolution or self-organization terms.
+| Topology | $R_0$ | $R^*$ | Improvement | Path Length | Clustering | Steps | Time |
+|----------|-------|-------|-------------|-------------|------------|-------|------|
+| BA($m$=3) | 0.4623 | 0.5573 | **+20.54%** | 2.52→2.04 (↓19%) | 0.187→0.339 (↑81%) | 31 | 6.4s |
+| WS($k$=6,$p$=0.3) | 0.5002 | 0.5592 | **+11.80%** | 2.94→2.11 (↓28%) | 0.210→0.364 (↑73%) | 30 | 6.0s |
+| ER($p$=0.06) | 0.5352 | 0.6145 | **+14.81%** | 2.88→2.07 (↓28%) | 0.054→0.318 (↑489%) | 30 | 6.1s |
 
-- **6.5 Comparison with Baselines**  
-  - Robustness gains, performance overhead, convergence time, complexity.
+### 6.3 Attack Resilience (Section 4.1.3)
+
+| Attack | Fraction | Baseline LCC | Optimized LCC | Baseline Path | Optimized Path |
+|--------|----------|-------------|--------------|--------------|---------------|
+| Random | 5% | 0.9500 | 0.9500 | 2.55 | **2.06** |
+| Random | 10% | 0.9000 | 0.9000 | 2.55 | **2.07** |
+| Random | 15% | 0.8500 | 0.8500 | 2.60 | **2.09** |
+| Targeted | 3% | 0.9700 | 0.9700 | 2.95 | **2.05** |
+| Targeted | 5% | 0.9300 | **0.9500** | 3.32 | **2.05** |
+| Targeted | 10% | 0.8600 | **0.9000** | 4.82 | **2.06** |
+
+### 6.4 Parameter Sensitivity (Section 4.2)
+
+**Fixed parameters (5 runs):** R improvement = 26.24% ± 5.08%, convergence time = 5.9s ± 0.2s.
+
+**Random perturbation (±20%, 20 configs):** R improvement = 24.41% ± 3.98%.
+
+### 6.5 Comparison with Baselines (Section 4.3)
+
+| Method | $R$ Final | Improvement | $R_s$ | $R_c$ | $R_r$ | Time |
+|--------|----------|-------------|-------|-------|-------|------|
+| **Ours** | 0.5575 | **+20.59%** | 0.5305 | **0.5449** | 0.6014 | 7.8s |
+| ResiNet | 0.5716 | +23.64% | 0.5931 | 0.4327 | 0.7353 | 2.1s |
+| FPSblo-EP | 0.5267 | +13.92% | 0.4768 | 0.4397 | 0.6926 | 1.3s |
+| Static | 0.5766 | +24.71% | 0.6169 | 0.4232 | 0.7409 | 1.7s |
+| AttackSim | 0.5282 | +14.24% | 0.4935 | 0.4257 | 0.6996 | 1.6s |
+
+### 6.6 Scalability Analysis
+
+| $N$ | $R_0$ | $R^*$ | Improvement | Time |
+|-----|-------|-------|-------------|------|
+| 50 | 0.4943 | 0.5834 | +18.01% | 0.2s |
+| 100 | 0.4623 | 0.5553 | +20.11% | 1.5s |
+| 150 | 0.4437 | 0.5386 | +21.37% | 9.3s |
 
 ---
 
 ## 7 Discussion
 
-- Security implications, deployment considerations, limitations（规模、数据可得性、理论分析等）。
+- **Key findings:** Our method achieves competitive total robustness improvement (20.6%) while uniquely excelling in connectivity efficiency ($R_c$), the metric most directly relevant to blockchain message propagation. The simultaneous reduction in path length (19–28%) is a distinctive advantage over greedy baselines that tend to increase path length.
+
+- **Security implications:** Under targeted attacks removing 10% of high-degree nodes, the optimized topology maintains 90% LCC ratio (vs. 86% baseline) with path length of 2.06 (vs. 4.82 baseline), demonstrating robust security properties for blockchain consensus stability.
+
+- **Limitations:** Current experiments use synthetic topologies (BA/WS/ER); validation on real Ethereum/Polkadot private chains and Sepolia testnet is planned as future work. The method's $O(N^2)$ complexity is practical for 100–150 nodes but may require gradient sampling optimization for networks with thousands of nodes.
 
 ## 8 Conclusion
 
-- Recap main contributions and findings；outline future work（更大规模、在线自适应、与真实客户端集成等）。
-
----
-
-如果你希望下一步更“落地”，我可以：
-
-- 先直接给出**中文 1.3 “系统与威胁模型”**的完整段落草稿，供你粘到当前中文文档；  
-- 同时给出英文的 **Section 2 System and Threat Model** 初稿文本，让你新建英文 md 时可以直接用作起点。
+This paper proposes a dynamical topology optimization framework for blockchain P2P networks that combines evolution dynamics and self-organization dynamics. Key results: robustness improvement of 11.8–20.5%, path length reduction of 19–28%, connectivity efficiency ($R_c = 0.545$) significantly exceeding all baselines, and enhanced resilience under targeted attacks. Future work includes validation on real blockchain networks, integration with Geth/Substrate peer management, online adaptive parameter estimation, and formal convergence analysis.
