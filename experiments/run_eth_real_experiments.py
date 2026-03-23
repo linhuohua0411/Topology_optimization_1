@@ -43,12 +43,34 @@ N_REPEATS = 5
 
 
 def load_real_topology():
-    """加载真实以太坊私有链拓扑。"""
-    data = np.load(os.path.join(DATA_DIR, 'adjacency_matrices.npz'), allow_pickle=True)
+    """加载真实以太坊私有链拓扑（优先 JSON 快照，回退 NPZ）。"""
+    snapshot_files = sorted([
+        f for f in os.listdir(DATA_DIR)
+        if f.startswith('snapshot_') and f.endswith('.json')
+    ])
+    if snapshot_files:
+        matrices = []
+        for sf in snapshot_files:
+            with open(os.path.join(DATA_DIR, sf), 'r', encoding='utf-8') as f:
+                snap = json.load(f)
+            n = int(snap['n_nodes'])
+            A = np.zeros((n, n), dtype=np.float64)
+            for edge in snap['edges']:
+                i, j = int(edge[0]), int(edge[1])
+                if 0 <= i < n and 0 <= j < n:
+                    A[i, j] = 1.0
+                    A[j, i] = 1.0
+            matrices.append(A)
+        node_ids = np.arange(matrices[0].shape[0])
+        print(f"Loaded {len(matrices)} snapshots from JSON, {matrices[0].shape[0]} nodes")
+        return matrices, node_ids, 'json_snapshots'
+
+    npz_path = os.path.join(DATA_DIR, 'adjacency_matrices.npz')
+    data = np.load(npz_path, allow_pickle=True)
     matrices = data['matrices']
     node_ids = data['node_ids']
-    print(f"Loaded {len(matrices)} snapshots, {matrices[0].shape[0]} nodes")
-    return matrices, node_ids
+    print(f"Loaded {len(matrices)} snapshots from NPZ, {matrices[0].shape[0]} nodes")
+    return matrices, node_ids, 'npz'
 
 
 def compute_graph_stats(A):
@@ -65,16 +87,22 @@ def compute_graph_stats(A):
         'clustering_coeff': float(nx.average_clustering(G)),
         'lambda2': float(_laplacian_second_eigenvalue(A)),
         'is_connected': nx.is_connected(G),
+        'global_efficiency': float(nx.global_efficiency(G)),
     }
     if nx.is_connected(G):
         stats['avg_path_length'] = float(nx.average_shortest_path_length(G))
+        stats['avg_path_length_lcc'] = stats['avg_path_length']
         stats['diameter'] = nx.diameter(G)
+        stats['n_components'] = 1
+        stats['lcc_ratio'] = 1.0
     else:
         lcc = max(nx.connected_components(G), key=len)
         G_lcc = G.subgraph(lcc).copy()
-        stats['avg_path_length'] = float(nx.average_shortest_path_length(G_lcc))
+        stats['avg_path_length'] = float('inf')
+        stats['avg_path_length_lcc'] = float(nx.average_shortest_path_length(G_lcc))
         stats['diameter'] = nx.diameter(G_lcc)
         stats['lcc_ratio'] = len(lcc) / A.shape[0]
+        stats['n_components'] = nx.number_connected_components(G)
     comps = compute_R_components(A, WEIGHTS)
     stats.update(comps)
     return stats
@@ -99,7 +127,13 @@ def attack_graph(A, attack_type='random', fraction=0.1, seed=42):
     remaining = len(G)
 
     if remaining == 0:
-        return {'lcc_ratio': 0.0, 'avg_path_length': float('inf'), 'n_components': 0}
+        return {
+            'lcc_ratio': 0.0,
+            'lcc_size': 0,
+            'avg_path_length': float('inf'),
+            'n_components': 0,
+            'global_efficiency': 0.0,
+        }
 
     components = list(nx.connected_components(G))
     lcc_size = max(len(c) for c in components)
@@ -109,8 +143,10 @@ def attack_graph(A, attack_type='random', fraction=0.1, seed=42):
 
     return {
         'lcc_ratio': lcc_ratio,
+        'lcc_size': lcc_size,
         'avg_path_length': avg_path,
         'n_components': len(components),
+        'global_efficiency': float(nx.global_efficiency(G)),
     }
 
 
@@ -119,11 +155,17 @@ def main():
     print("TIFS Real Ethereum Private Chain Experiments")
     print("="*70)
 
-    matrices, node_ids = load_real_topology()
+    matrices, node_ids, source_type = load_real_topology()
     A0 = matrices[0]
     n = A0.shape[0]
 
     results = {}
+    results['data_source'] = {
+        'type': source_type,
+        'path': DATA_DIR,
+        'n_snapshots': len(matrices),
+        'n_nodes': int(n),
+    }
 
     # === 1. Baseline topology analysis ===
     print("\n" + "="*60)
@@ -186,6 +228,21 @@ def main():
     print("4. Attack Scenarios on Real Topology")
     print("="*60)
 
+    results['attack_pre_state'] = {
+        'baseline': {
+            'is_connected': bool(stats0['is_connected']),
+            'lcc_ratio': float(stats0.get('lcc_ratio', 1.0)),
+            'n_components': int(stats0.get('n_components', 1)),
+            'global_efficiency': float(stats0.get('global_efficiency', 0.0)),
+        },
+        'optimized': {
+            'is_connected': bool(stats_star['is_connected']),
+            'lcc_ratio': float(stats_star.get('lcc_ratio', 1.0)),
+            'n_components': int(stats_star.get('n_components', 1)),
+            'global_efficiency': float(stats_star.get('global_efficiency', 0.0)),
+        },
+    }
+
     attack_configs = [
         ('random', 0.05), ('random', 0.10), ('random', 0.15),
         ('targeted', 0.03), ('targeted', 0.05), ('targeted', 0.10),
@@ -205,6 +262,12 @@ def main():
             'optimized_lcc_std': float(np.std([s['lcc_ratio'] for s in opt_scores])),
             'baseline_path_mean': float(np.mean([s['avg_path_length'] for s in base_scores])),
             'optimized_path_mean': float(np.mean([s['avg_path_length'] for s in opt_scores])),
+            'baseline_components_mean': float(np.mean([s['n_components'] for s in base_scores])),
+            'optimized_components_mean': float(np.mean([s['n_components'] for s in opt_scores])),
+            'baseline_lcc_size_mean': float(np.mean([s['lcc_size'] for s in base_scores])),
+            'optimized_lcc_size_mean': float(np.mean([s['lcc_size'] for s in opt_scores])),
+            'baseline_efficiency_mean': float(np.mean([s['global_efficiency'] for s in base_scores])),
+            'optimized_efficiency_mean': float(np.mean([s['global_efficiency'] for s in opt_scores])),
         }
         attack_results.append(r)
         lcc_change = (r['optimized_lcc_mean'] - r['baseline_lcc_mean']) / max(r['baseline_lcc_mean'], 1e-6) * 100
@@ -368,7 +431,9 @@ def main():
 
     with open(os.path.join(RESULTS_DIR, 'eth_real_results.json'), 'w') as f:
         json.dump(make_serializable(results), f, indent=2, ensure_ascii=False)
-    print("\n  Results saved to: eth_real_results.json")
+    out_json = os.path.join(RESULTS_DIR, 'eth_real_results.json')
+    print(f"\n  Results saved to: {out_json}")
+    print(f"  Result file exists: {os.path.exists(out_json)}")
 
     # Print summary
     print("\n" + "="*70)

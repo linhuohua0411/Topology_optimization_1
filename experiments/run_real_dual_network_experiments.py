@@ -62,16 +62,22 @@ def graph_stats(A):
         'clustering': float(nx.average_clustering(G)),
         'lambda2': float(_laplacian_second_eigenvalue(A)),
         'connected': nx.is_connected(G),
+        'global_efficiency': float(nx.global_efficiency(G)),
     }
     if nx.is_connected(G):
         s['avg_path'] = float(nx.average_shortest_path_length(G))
+        s['avg_path_lcc'] = s['avg_path']
         s['diameter'] = nx.diameter(G)
+        s['n_components'] = 1
+        s['lcc_ratio'] = 1.0
     else:
         lcc = max(nx.connected_components(G), key=len)
         Gl = G.subgraph(lcc).copy()
-        s['avg_path'] = float(nx.average_shortest_path_length(Gl))
+        s['avg_path'] = float('inf')
+        s['avg_path_lcc'] = float(nx.average_shortest_path_length(Gl))
         s['diameter'] = nx.diameter(Gl)
         s['lcc_ratio'] = len(lcc) / A.shape[0]
+        s['n_components'] = nx.number_connected_components(G)
     comps = compute_R_components(A, WEIGHTS)
     s.update(comps)
     return s
@@ -88,14 +94,22 @@ def attack(A, atype, frac, seed=42):
         rm = np.argsort(-np.sum(A > 0, axis=1))[:nr].tolist()
     G.remove_nodes_from(rm)
     if len(G) == 0:
-        return {'lcc_ratio': 0, 'avg_path': float('inf')}
+        return {
+            'lcc_ratio': 0.0,
+            'lcc_size': 0,
+            'avg_path': float('inf'),
+            'n_components': 0,
+            'global_efficiency': 0.0,
+        }
     comps = list(nx.connected_components(G))
     lcc = max(comps, key=len)
     Gl = G.subgraph(lcc).copy()
     return {
         'lcc_ratio': len(lcc) / n,
+        'lcc_size': len(lcc),
         'avg_path': float(nx.average_shortest_path_length(Gl)) if len(Gl) > 1 else 0,
         'n_components': len(comps),
+        'global_efficiency': float(nx.global_efficiency(G)),
     }
 
 
@@ -108,10 +122,16 @@ def run_single_network_experiments(net_name, data_dir, results):
     matrices, metas = load_snapshots(data_dir)
     if not matrices:
         print(f"  No data found in {data_dir}")
-        return
+        return None, None, None
     A0 = matrices[0]
     n = A0.shape[0]
     print(f"  Loaded {len(matrices)} snapshots, {n} nodes")
+    results[f'{net_name}_data_source'] = {
+        'type': 'json_snapshots',
+        'path': data_dir,
+        'n_snapshots': len(matrices),
+        'n_nodes': int(n),
+    }
 
     # 1. Baseline topology profile
     print(f"\n--- 1. Topology Profile ---")
@@ -144,6 +164,20 @@ def run_single_network_experiments(net_name, data_dir, results):
 
     # 4. Attack scenarios
     print(f"\n--- 4. Attack Scenarios ---")
+    results[f'{net_name}_attack_pre_state'] = {
+        'baseline': {
+            'is_connected': bool(s0['connected']),
+            'lcc_ratio': float(s0.get('lcc_ratio', 1.0)),
+            'n_components': int(s0.get('n_components', 1)),
+            'global_efficiency': float(s0.get('global_efficiency', 0.0)),
+        },
+        'optimized': {
+            'is_connected': bool(s_star['connected']),
+            'lcc_ratio': float(s_star.get('lcc_ratio', 1.0)),
+            'n_components': int(s_star.get('n_components', 1)),
+            'global_efficiency': float(s_star.get('global_efficiency', 0.0)),
+        },
+    }
     attacks = [('random', 0.05), ('random', 0.10), ('random', 0.15),
                ('targeted', 0.03), ('targeted', 0.05), ('targeted', 0.10)]
     atk_res = []
@@ -156,6 +190,12 @@ def run_single_network_experiments(net_name, data_dir, results):
             'opt_lcc': float(np.mean([x['lcc_ratio'] for x in o])),
             'base_path': float(np.mean([x['avg_path'] for x in b])),
             'opt_path': float(np.mean([x['avg_path'] for x in o])),
+            'base_components': float(np.mean([x['n_components'] for x in b])),
+            'opt_components': float(np.mean([x['n_components'] for x in o])),
+            'base_lcc_size': float(np.mean([x['lcc_size'] for x in b])),
+            'opt_lcc_size': float(np.mean([x['lcc_size'] for x in o])),
+            'base_efficiency': float(np.mean([x['global_efficiency'] for x in b])),
+            'opt_efficiency': float(np.mean([x['global_efficiency'] for x in o])),
         }
         lcc_d = (r['opt_lcc'] - r['base_lcc']) / max(r['base_lcc'], 1e-6) * 100
         print(f"  {at} {fr*100:.0f}%: LCC {r['base_lcc']:.4f}→{r['opt_lcc']:.4f}({lcc_d:+.1f}%) Path {r['base_path']:.2f}→{r['opt_path']:.2f}")
@@ -338,7 +378,10 @@ def main():
     A0_eth, As_eth, h_eth = run_single_network_experiments('eth', eth_dir, results)
     A0_dot, As_dot, h_dot = run_single_network_experiments('dot', dot_dir, results)
 
-    generate_dual_figures(results, A0_eth, As_eth, h_eth, A0_dot, As_dot, h_dot)
+    if all(x is not None for x in [A0_eth, As_eth, h_eth, A0_dot, As_dot, h_dot]):
+        generate_dual_figures(results, A0_eth, As_eth, h_eth, A0_dot, As_dot, h_dot)
+    else:
+        print("Skip dual figures: missing ETH or DOT snapshots.")
 
     # Save results
     def ser(o):
@@ -348,7 +391,8 @@ def main():
         if isinstance(o, dict): return {k: ser(v) for k, v in o.items()}
         if isinstance(o, (list, tuple)): return [ser(v) for v in o]
         return o
-    with open(os.path.join(RESULTS_DIR, 'dual_network_results.json'), 'w') as f:
+    out_json = os.path.join(RESULTS_DIR, 'dual_network_results.json')
+    with open(out_json, 'w') as f:
         json.dump(ser(results), f, indent=2, ensure_ascii=False)
 
     # Print summary tables
@@ -378,7 +422,8 @@ def main():
             print(f"  Stability: {sm:.2f}% ± {ss:.2f}%")
 
     print(f"\nAll figures saved to: {FIGURES_DIR}")
-    print(f"Results saved to: {RESULTS_DIR}/dual_network_results.json")
+    print(f"Results saved to: {out_json}")
+    print(f"Result file exists: {os.path.exists(out_json)}")
 
 
 if __name__ == '__main__':

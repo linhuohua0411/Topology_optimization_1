@@ -90,7 +90,13 @@ def attack_graph(A, attack_type='random', fraction=0.1, seed=42):
     remaining = len(G)
 
     if remaining == 0:
-        return {'lcc_ratio': 0.0, 'avg_path_length': float('inf'), 'n_components': 0}
+        return {
+            'lcc_ratio': 0.0,
+            'lcc_size': 0,
+            'avg_path_length': float('inf'),
+            'n_components': 0,
+            'global_efficiency': 0.0,
+        }
 
     components = list(nx.connected_components(G))
     lcc_size = max(len(c) for c in components)
@@ -101,9 +107,82 @@ def attack_graph(A, attack_type='random', fraction=0.1, seed=42):
 
     return {
         'lcc_ratio': lcc_ratio,
+        'lcc_size': lcc_size,
         'avg_path_length': avg_path,
         'n_components': len(components),
         'remaining_nodes': remaining,
+        'global_efficiency': float(nx.global_efficiency(G)),
+    }
+
+
+def _predict_next_adjacency(A_cur, params, dt=1.0):
+    """Use estimated dynamics for one prediction step."""
+    alpha = params['alpha']
+    beta = params['beta']
+    alpha_L = params['alpha_L']
+    alpha_G = params['alpha_G']
+    lambda_L = params['lambda_L']
+    lambda_G = params['lambda_G']
+
+    degrees = np.sum(A_cur, axis=1)
+    common = A_cur @ A_cur.T
+    max_deg = np.maximum.outer(degrees, degrees)
+    max_deg = np.maximum(max_deg, 1.0)
+    F_L = common / (max_deg + 1e-8) - lambda_L * A_cur
+    F_G = -lambda_G * A_cur
+    dA = alpha * (-beta * A_cur) + alpha_L * F_L + alpha_G * F_G
+    dA = (dA + dA.T) / 2.0
+    np.fill_diagonal(dA, 0.0)
+    A_next = A_cur + dt * dA
+    A_next = np.clip(A_next, 0.0, 1.0)
+    A_next = (A_next + A_next.T) / 2.0
+    np.fill_diagonal(A_next, 0.0)
+    return A_next
+
+
+def _collect_prediction_metrics(A_pred, A_true, thresholds):
+    """Collect binary and continuous prediction errors."""
+    n = A_true.shape[0]
+    n_total = n * (n - 1) // 2
+
+    edge_acc = {}
+    for th in thresholds:
+        binary_pred = (A_pred > th).astype(float)
+        binary_true = (A_true > th).astype(float)
+        correct = 0
+        for i in range(n):
+            for j in range(i + 1, n):
+                if binary_pred[i, j] == binary_true[i, j]:
+                    correct += 1
+        edge_acc[f'{th:.1f}'] = correct / n_total
+
+    degree_pred = np.mean(np.sum(A_pred > 0.5, axis=1))
+    degree_true = np.mean(np.sum(A_true > 0.5, axis=1))
+    degree_rel_err = abs(degree_pred - degree_true) / max(degree_true, 1e-6)
+
+    G_pred = nx.from_numpy_array((A_pred > 0.5).astype(int))
+    G_true = nx.from_numpy_array((A_true > 0.5).astype(int))
+    if nx.is_connected(G_pred) and nx.is_connected(G_true):
+        p_pred = nx.average_shortest_path_length(G_pred)
+        p_true = nx.average_shortest_path_length(G_true)
+        path_rel_err = abs(p_pred - p_true) / max(p_true, 1e-6)
+    else:
+        path_rel_err = 0.5
+
+    c_pred = nx.average_clustering(G_pred)
+    c_true = nx.average_clustering(G_true)
+    cluster_rel_err = abs(c_pred - c_true) / max(c_true, 1e-6)
+
+    fro_err = float(np.linalg.norm(A_pred - A_true, ord='fro'))
+    mse_err = float(np.mean((A_pred - A_true) ** 2))
+
+    return {
+        'edge_acc': edge_acc,
+        'degree_rel_err': degree_rel_err,
+        'path_rel_err': path_rel_err,
+        'cluster_rel_err': cluster_rel_err,
+        'fro_error': fro_err,
+        'mse_error': mse_err,
     }
 
 
@@ -122,61 +201,62 @@ def experiment_411_mle(results_collector):
     print(f"MLE Loss: {loss:.6f}")
     print(f"Estimated params: {estimated_params}")
 
-    A_pred = snapshots[0].copy()
-    edge_acc_list = []
-    degree_err_list = []
-    path_err_list = []
-    cluster_err_list = []
+    thresholds = [0.3, 0.5, 0.7]
+    horizon = min(len(snapshots), 11)
+    dt_pred = 1.0
 
-    for t in range(1, min(len(snapshots), 11)):
+    one_step_metrics = []
+    multi_step_metrics = []
+    A_multi = snapshots[0].copy()
+
+    for t in range(1, horizon):
         A_true = snapshots[t]
-        binary_pred = (A_pred > 0.5).astype(float)
-        binary_true = (A_true > 0.5).astype(float)
-        n_total = N_NODES * (N_NODES - 1) // 2
-        correct = 0
-        for i in range(N_NODES):
-            for j in range(i + 1, N_NODES):
-                if binary_pred[i, j] == binary_true[i, j]:
-                    correct += 1
-        edge_acc = correct / n_total
-        edge_acc_list.append(edge_acc)
 
-        deg_pred = np.mean(np.sum(A_pred > 0, axis=1))
-        deg_true = np.mean(np.sum(A_true > 0, axis=1))
-        degree_err_list.append(abs(deg_pred - deg_true) / max(deg_true, 1e-6))
+        A_prev_true = snapshots[t - 1]
+        A_one = _predict_next_adjacency(A_prev_true, estimated_params, dt=dt_pred)
+        one_step_metrics.append(_collect_prediction_metrics(A_one, A_true, thresholds))
 
-        G_pred = nx.from_numpy_array((A_pred > 0).astype(int))
-        G_true = nx.from_numpy_array((A_true > 0).astype(int))
-        if nx.is_connected(G_pred) and nx.is_connected(G_true):
-            p_pred = nx.average_shortest_path_length(G_pred)
-            p_true = nx.average_shortest_path_length(G_true)
-            path_err_list.append(abs(p_pred - p_true) / max(p_true, 1e-6))
-        else:
-            path_err_list.append(0.5)
+        A_multi = _predict_next_adjacency(A_multi, estimated_params, dt=dt_pred)
+        multi_step_metrics.append(_collect_prediction_metrics(A_multi, A_true, thresholds))
 
-        c_pred = nx.average_clustering(G_pred)
-        c_true = nx.average_clustering(G_true)
-        cluster_err_list.append(abs(c_pred - c_true) / max(c_true, 1e-6))
+    def _mean_std(arr):
+        return float(np.mean(arr)), float(np.std(arr))
+
+    def _aggregate(tag, metrics):
+        out = {
+            'tag': tag,
+            'horizon': horizon - 1,
+            'dt_pred': dt_pred,
+        }
+        for th in thresholds:
+            key = f'edge_accuracy_mean@{th:.1f}'
+            val, std = _mean_std([m['edge_acc'][f'{th:.1f}'] for m in metrics])
+            out[key] = val
+            out[f'edge_accuracy_std@{th:.1f}'] = std
+        out['degree_rel_error_mean'], out['degree_rel_error_std'] = _mean_std([m['degree_rel_err'] for m in metrics])
+        out['path_rel_error_mean'], out['path_rel_error_std'] = _mean_std([m['path_rel_err'] for m in metrics])
+        out['cluster_rel_error_mean'], out['cluster_rel_error_std'] = _mean_std([m['cluster_rel_err'] for m in metrics])
+        out['fro_error_mean'], out['fro_error_std'] = _mean_std([m['fro_error'] for m in metrics])
+        out['mse_error_mean'], out['mse_error_std'] = _mean_std([m['mse_error'] for m in metrics])
+        return out
 
     mle_results = {
-        'edge_accuracy_mean': float(np.mean(edge_acc_list)),
-        'edge_accuracy_std': float(np.std(edge_acc_list)),
-        'degree_rel_error_mean': float(np.mean(degree_err_list)),
-        'degree_rel_error_std': float(np.std(degree_err_list)),
-        'path_rel_error_mean': float(np.mean(path_err_list)),
-        'path_rel_error_std': float(np.std(path_err_list)),
-        'cluster_rel_error_mean': float(np.mean(cluster_err_list)),
-        'cluster_rel_error_std': float(np.std(cluster_err_list)),
+        'one_step': _aggregate('one_step', one_step_metrics),
+        'multi_step': _aggregate('multi_step', multi_step_metrics),
         'estimated_params': estimated_params,
         'mle_loss': loss,
     }
     results_collector['mle'] = mle_results
 
     print(f"\nMLE Results:")
-    print(f"  Edge accuracy: {mle_results['edge_accuracy_mean']:.4f} ± {mle_results['edge_accuracy_std']:.4f}")
-    print(f"  Degree rel error: {mle_results['degree_rel_error_mean']:.4f} ± {mle_results['degree_rel_error_std']:.4f}")
-    print(f"  Path rel error: {mle_results['path_rel_error_mean']:.4f} ± {mle_results['path_rel_error_std']:.4f}")
-    print(f"  Cluster rel error: {mle_results['cluster_rel_error_mean']:.4f} ± {mle_results['cluster_rel_error_std']:.4f}")
+    print("  [One-step]")
+    print(f"    Edge acc@0.5: {mle_results['one_step']['edge_accuracy_mean@0.5']:.4f} ± {mle_results['one_step']['edge_accuracy_std@0.5']:.4f}")
+    print(f"    Degree rel error: {mle_results['one_step']['degree_rel_error_mean']:.4f} ± {mle_results['one_step']['degree_rel_error_std']:.4f}")
+    print(f"    Path rel error: {mle_results['one_step']['path_rel_error_mean']:.4f} ± {mle_results['one_step']['path_rel_error_std']:.4f}")
+    print("  [Multi-step]")
+    print(f"    Edge acc@0.5: {mle_results['multi_step']['edge_accuracy_mean@0.5']:.4f} ± {mle_results['multi_step']['edge_accuracy_std@0.5']:.4f}")
+    print(f"    Degree rel error: {mle_results['multi_step']['degree_rel_error_mean']:.4f} ± {mle_results['multi_step']['degree_rel_error_std']:.4f}")
+    print(f"    Path rel error: {mle_results['multi_step']['path_rel_error_mean']:.4f} ± {mle_results['multi_step']['path_rel_error_std']:.4f}")
 
     return mle_results
 
@@ -337,6 +417,22 @@ def experiment_413_attack_scenarios(results_collector):
     params['min_steps'] = 15
     params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
     A_star, _ = run_optimization(A0, params, verbose=False)
+    stats_base = compute_graph_stats(A0)
+    stats_opt = compute_graph_stats(A_star)
+    results_collector['attack_pre_state'] = {
+        'baseline': {
+            'is_connected': bool(stats_base['is_connected']),
+            'lcc_ratio': float(stats_base.get('lcc_ratio', 1.0)),
+            'n_components': int(stats_base.get('n_components', 1)),
+            'global_efficiency': float(stats_base.get('global_efficiency', 0.0)),
+        },
+        'optimized': {
+            'is_connected': bool(stats_opt['is_connected']),
+            'lcc_ratio': float(stats_opt.get('lcc_ratio', 1.0)),
+            'n_components': int(stats_opt.get('n_components', 1)),
+            'global_efficiency': float(stats_opt.get('global_efficiency', 0.0)),
+        },
+    }
 
     attack_configs = [
         ('random', 0.05),
@@ -367,6 +463,12 @@ def experiment_413_attack_scenarios(results_collector):
             'optimized_lcc_std': float(np.std([s['lcc_ratio'] for s in optimized_scores])),
             'baseline_path_mean': float(np.mean([s['avg_path_length'] for s in baseline_scores])),
             'optimized_path_mean': float(np.mean([s['avg_path_length'] for s in optimized_scores])),
+            'baseline_components_mean': float(np.mean([s['n_components'] for s in baseline_scores])),
+            'optimized_components_mean': float(np.mean([s['n_components'] for s in optimized_scores])),
+            'baseline_lcc_size_mean': float(np.mean([s['lcc_size'] for s in baseline_scores])),
+            'optimized_lcc_size_mean': float(np.mean([s['lcc_size'] for s in optimized_scores])),
+            'baseline_efficiency_mean': float(np.mean([s['global_efficiency'] for s in baseline_scores])),
+            'optimized_efficiency_mean': float(np.mean([s['global_efficiency'] for s in optimized_scores])),
         }
         attack_results.append(result)
 
@@ -888,10 +990,14 @@ def main():
 
     print("\n--- MLE Parameter Estimation ---")
     mle = results['mle']
-    print(f"  Edge accuracy: {mle['edge_accuracy_mean']:.4f} ± {mle['edge_accuracy_std']:.4f}")
-    print(f"  Degree error: {mle['degree_rel_error_mean']:.4f} ± {mle['degree_rel_error_std']:.4f}")
-    print(f"  Path error: {mle['path_rel_error_mean']:.4f} ± {mle['path_rel_error_std']:.4f}")
-    print(f"  Cluster error: {mle['cluster_rel_error_mean']:.4f} ± {mle['cluster_rel_error_std']:.4f}")
+    one = mle['one_step']
+    multi = mle['multi_step']
+    print(f"  One-step edge acc@0.5: {one['edge_accuracy_mean@0.5']:.4f} ± {one['edge_accuracy_std@0.5']:.4f}")
+    print(f"  One-step degree/path/cluster: {one['degree_rel_error_mean']:.4f} / {one['path_rel_error_mean']:.4f} / {one['cluster_rel_error_mean']:.4f}")
+    print(f"  One-step Fro/MSE: {one['fro_error_mean']:.4f} / {one['mse_error_mean']:.6f}")
+    print(f"  Multi-step edge acc@0.5: {multi['edge_accuracy_mean@0.5']:.4f} ± {multi['edge_accuracy_std@0.5']:.4f}")
+    print(f"  Multi-step degree/path/cluster: {multi['degree_rel_error_mean']:.4f} / {multi['path_rel_error_mean']:.4f} / {multi['cluster_rel_error_mean']:.4f}")
+    print(f"  Multi-step Fro/MSE: {multi['fro_error_mean']:.4f} / {multi['mse_error_mean']:.6f}")
 
     print(f"\nAll experiments completed successfully!")
     print(f"Figures saved in: {FIGURES_DIR}")

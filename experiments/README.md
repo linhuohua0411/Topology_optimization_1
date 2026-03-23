@@ -4,8 +4,12 @@
 
 ## 子目录
 
-- **`configs/`**：实验配置（如 attack_runs.csv、perf_runs.csv：run_id、topology_type、attack_type、attack_intensity、start_time、end_time 等）
 - **`metrics/`**：结构指标与性能指标时间序列、单轮汇总表（按 run_id 存放 structure_*.csv、perf_timeseries_*.csv 等）
+- **配置来源说明**：当前版本未单独维护 `configs/` 目录，主要实验参数直接在脚本中固定：
+  - `run_all_experiments.py`
+  - `run_eth_real_experiments.py`
+  - `run_real_dual_network_experiments.py`
+  如需统一配置化管理，可后续新增 `configs/` 并把参数外置。
 
 ## run_id 与拓扑形态
 
