@@ -240,6 +240,75 @@ def run_single_network_experiments(net_name, data_dir, results):
     return A0, A_star, history
 
 
+def run_dot_failure_mode_experiment(dot_dir, results):
+    """A-P1-3: DOT 失败模式分析。网格扫描 k_max / gradient_sample_ratio / alpha_G，
+    记录何时无增益、何时恢复增益。
+    """
+    print(f"\n{'#'*70}")
+    print("# DOT FAILURE MODE EXPERIMENT (A-P1-3)")
+    print(f"{'#'*70}")
+
+    matrices, metas = load_snapshots(dot_dir)
+    if not matrices:
+        print("  No DOT data, skip failure mode experiment.")
+        return
+    A0 = matrices[0]
+    s0 = graph_stats(A0)
+    R0 = s0['R']
+    k_base = min(s0['max_deg'], 50)
+
+    grid = {
+        'k_max': [k_base, min(k_base * 2, 100), min(k_base * 3, 150)],
+        'gradient_sample_ratio': [0.05, 0.10, 0.20],
+        'alpha_G': [0.4, 0.6, 0.8],
+    }
+    failure_mode_results = []
+    for k_max in grid['k_max']:
+        for gsr in grid['gradient_sample_ratio']:
+            for alpha_G in grid['alpha_G']:
+                params = DEFAULT_PARAMS.copy()
+                params.update({
+                    'max_steps': 80, 'min_steps': 20,
+                    'gradient_sample_ratio': gsr, 'k_max': k_max,
+                    'alpha_G': alpha_G,
+                })
+                t0 = time.time()
+                try:
+                    A_star, history = run_optimization(A0, params, verbose=False)
+                except Exception as e:
+                    failure_mode_results.append({
+                        'k_max': k_max, 'gradient_sample_ratio': gsr, 'alpha_G': alpha_G,
+                        'imp_pct': None, 'error': str(e), 'time_s': time.time() - t0,
+                    })
+                    continue
+                t_elapsed = time.time() - t0
+                s_star = graph_stats(A_star)
+                imp = (s_star['R'] - R0) / max(R0, 1e-6) * 100
+                failure_mode_results.append({
+                    'k_max': k_max, 'gradient_sample_ratio': gsr, 'alpha_G': alpha_G,
+                    'imp_pct': float(imp), 'R_before': R0, 'R_after': s_star['R'],
+                    'time_s': t_elapsed, 'steps': len(history) - 1,
+                })
+                gain_str = "GAIN" if imp > 0.01 else "NO_GAIN"
+                print(f"  k_max={k_max} gsr={gsr} α_G={alpha_G}: imp={imp:+.2f}% [{gain_str}]")
+
+    gains = [r for r in failure_mode_results if r.get('imp_pct') is not None and r['imp_pct'] > 0.01]
+    no_gains = [r for r in failure_mode_results if r.get('imp_pct') is not None and r['imp_pct'] <= 0.01]
+    print(f"\n  Summary: {len(gains)} with gain, {len(no_gains)} no gain")
+    if gains:
+        print("  Gain conditions (sample):", gains[:3])
+    if no_gains:
+        print("  No-gain conditions (sample):", no_gains[:3])
+
+    results['dot_failure_mode'] = {
+        'grid': grid,
+        'results': failure_mode_results,
+        'n_with_gain': len(gains),
+        'n_no_gain': len(no_gains),
+    }
+    return failure_mode_results
+
+
 def generate_dual_figures(results, A0_eth, As_eth, h_eth, A0_dot, As_dot, h_dot):
     """生成双网络对比论文图表。"""
     print(f"\n{'='*70}")
@@ -377,6 +446,9 @@ def main():
 
     A0_eth, As_eth, h_eth = run_single_network_experiments('eth', eth_dir, results)
     A0_dot, As_dot, h_dot = run_single_network_experiments('dot', dot_dir, results)
+
+    # A-P1-3: DOT failure mode analysis (when DOT data exists)
+    run_dot_failure_mode_experiment(dot_dir, results)
 
     if all(x is not None for x in [A0_eth, As_eth, h_eth, A0_dot, As_dot, h_dot]):
         generate_dual_figures(results, A0_eth, As_eth, h_eth, A0_dot, As_dot, h_dot)

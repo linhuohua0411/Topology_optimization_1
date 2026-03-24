@@ -65,6 +65,7 @@ def compute_graph_stats(A):
         'diameter': nx.diameter(G) if nx.is_connected(G) else float('inf'),
         'lambda2': float(_laplacian_second_eigenvalue(A)),
         'is_connected': nx.is_connected(G),
+        'global_efficiency': float(nx.global_efficiency(G)),
     }
     comps = compute_R_components(A, WEIGHTS)
     stats.update(comps)
@@ -577,13 +578,128 @@ def experiment_43_comparison(results_collector):
     return comparison_results
 
 
+def _count_edge_changes(A0, A_star, threshold=0.5):
+    """二值化后统计边变更数：(0->1) + (1->0)。"""
+    b0 = (A0 > threshold).astype(int)
+    b1 = (A_star > threshold).astype(int)
+    return int(np.sum(b0 != b1) / 2)
+
+
+def experiment_43_fair_budget(results_collector):
+    """A-P1-1: 公平预算对比（同时间预算）。
+
+    以 Ours 收敛时间为预算上限，所有方法在相同时间预算内运行，输出
+    R_final / R_s,R_c,R_r / 时间 / 改边数 / 收敛步数 对照表。
+    """
+    print("\n" + "="*60)
+    print("Experiment 4.3-Fair: Fair Budget Comparison (Same Time)")
+    print("="*60)
+
+    A0 = generate_topology(N_NODES, model='ba', m=3, seed=42)
+    comps_orig = compute_R_components(A0, WEIGHTS)
+    R0 = comps_orig['R']
+
+    # 先跑 Ours 得到参考时间
+    params = DEFAULT_PARAMS.copy()
+    params['max_steps'] = 200
+    params['min_steps'] = 40
+    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+    t0 = time.time()
+    A_ours, history_ours = run_optimization(A0, params, verbose=False)
+    t_ours = time.time() - t0
+    time_budget = max(t_ours * 1.05, 10.0)  # 略放宽，至少 10s
+
+    ec_ours = _count_edge_changes(A0, A_ours)
+    comps_ours = compute_R_components(A_ours, WEIGHTS)
+    fair_results = {
+        'Ours': {
+            'R_final': comps_ours['R'],
+            'R_s': comps_ours['R_s'], 'R_c': comps_ours['R_c'], 'R_r': comps_ours['R_r'],
+            'time_s': t_ours, 'n_edge_changes': ec_ours,
+            'convergence_steps': len(history_ours) - 1,
+        },
+    }
+    print(f"  Ours: R={comps_ours['R']:.4f}, time={t_ours:.1f}s, edge_changes={ec_ours}, steps={len(history_ours)-1}")
+    print(f"  Time budget for all methods: {time_budget:.1f}s")
+
+    # ResiNet
+    t0 = time.time()
+    A_resi, hist_resi = resinet_optimize(A0, max_rewires=2000, seed=42, weights=WEIGHTS, time_limit=time_budget)
+    t_resi = time.time() - t0
+    ec_resi = _count_edge_changes(A0, A_resi)
+    comps_resi = compute_R_components(A_resi, WEIGHTS)
+    fair_results['ResiNet'] = {
+        'R_final': comps_resi['R'],
+        'R_s': comps_resi['R_s'], 'R_c': comps_resi['R_c'], 'R_r': comps_resi['R_r'],
+        'time_s': t_resi, 'n_edge_changes': ec_resi,
+        'convergence_steps': len(hist_resi) - 1,
+    }
+    print(f"  ResiNet: R={comps_resi['R']:.4f}, time={t_resi:.1f}s, edge_changes={ec_resi}, steps={len(hist_resi)-1}")
+
+    # FPSblo
+    t0 = time.time()
+    A_fps, hist_fps = fpsblo_optimize(A0, n_landmarks=15, max_iters=500, seed=42, weights=WEIGHTS, time_limit=time_budget)
+    t_fps = time.time() - t0
+    ec_fps = _count_edge_changes(A0, A_fps)
+    comps_fps = compute_R_components(A_fps, WEIGHTS)
+    fair_results['FPSblo-EP'] = {
+        'R_final': comps_fps['R'],
+        'R_s': comps_fps['R_s'], 'R_c': comps_fps['R_c'], 'R_r': comps_fps['R_r'],
+        'time_s': t_fps, 'n_edge_changes': ec_fps,
+        'convergence_steps': len(hist_fps) - 1,
+    }
+    print(f"  FPSblo-EP: R={comps_fps['R']:.4f}, time={t_fps:.1f}s, edge_changes={ec_fps}, steps={len(hist_fps)-1}")
+
+    # Static
+    t0 = time.time()
+    A_static, hist_static = static_optimize(A0, max_iters=500, seed=42, weights=WEIGHTS, time_limit=time_budget)
+    t_static = time.time() - t0
+    ec_static = _count_edge_changes(A0, A_static)
+    comps_static = compute_R_components(A_static, WEIGHTS)
+    fair_results['Static'] = {
+        'R_final': comps_static['R'],
+        'R_s': comps_static['R_s'], 'R_c': comps_static['R_c'], 'R_r': comps_static['R_r'],
+        'time_s': t_static, 'n_edge_changes': ec_static,
+        'convergence_steps': len(hist_static) - 1,
+    }
+    print(f"  Static: R={comps_static['R']:.4f}, time={t_static:.1f}s, edge_changes={ec_static}, steps={len(hist_static)-1}")
+
+    # AttackSim
+    t0 = time.time()
+    A_atk, hist_atk = attack_simulation_optimize(
+        A0, n_attacks=30, attack_fraction=0.1, max_rewires=500, seed=42, weights=WEIGHTS, time_limit=time_budget
+    )
+    t_atk = time.time() - t0
+    ec_atk = _count_edge_changes(A0, A_atk)
+    comps_atk = compute_R_components(A_atk, WEIGHTS)
+    fair_results['AttackSim'] = {
+        'R_final': comps_atk['R'],
+        'R_s': comps_atk['R_s'], 'R_c': comps_atk['R_c'], 'R_r': comps_atk['R_r'],
+        'time_s': t_atk, 'n_edge_changes': ec_atk,
+        'convergence_steps': len(hist_atk) - 1,
+    }
+    print(f"  AttackSim: R={comps_atk['R']:.4f}, time={t_atk:.1f}s, edge_changes={ec_atk}, steps={len(hist_atk)-1}")
+
+    fair_results['_meta'] = {'time_budget_s': time_budget, 'R0': R0}
+    results_collector['comparison_fair_budget'] = fair_results
+
+    print("\n--- Fair Budget Table (R_final / R_s,R_c,R_r / time / edge_changes / steps) ---")
+    print(f"{'Method':<12} {'R_final':>8} {'R_s':>6} {'R_c':>6} {'R_r':>6} {'time_s':>8} {'edge_chg':>8} {'steps':>6}")
+    for name in ['Ours', 'ResiNet', 'FPSblo-EP', 'Static', 'AttackSim']:
+        r = fair_results.get(name, {})
+        if r:
+            print(f"{name:<12} {r['R_final']:>8.4f} {r['R_s']:>6.4f} {r['R_c']:>6.4f} {r['R_r']:>6.4f} "
+                  f"{r['time_s']:>8.1f} {r['n_edge_changes']:>8} {r['convergence_steps']:>6}")
+    return fair_results
+
+
 def experiment_scalability(results_collector):
-    """可扩展性实验：不同规模下的运行时间与鲁棒性。"""
+    """可扩展性实验：不同规模下的运行时间与鲁棒性。A-P1-2: 补 N=120/130/140 定位拐点，含耗时拆解。"""
     print("\n" + "="*60)
     print("Experiment: Scalability Analysis")
     print("="*60)
 
-    scales = [50, 100, 150]
+    scales = [50, 100, 120, 130, 140, 150]
     scale_results = []
 
     for n in scales:
@@ -594,22 +710,42 @@ def experiment_scalability(results_collector):
         params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
 
         comps_orig = compute_R_components(A0, WEIGHTS)
+        profile = (n >= 120)  # 对中等以上规模记录耗时拆解
         t0 = time.time()
-        A_star, history = run_optimization(A0, params, verbose=False)
+        if profile:
+            out = run_optimization(A0, params, verbose=False, profile_timing=True)
+            A_star, history, timing = out[0], out[1], out[2]
+        else:
+            A_star, history = run_optimization(A0, params, verbose=False)
+            timing = {}
         t_elapsed = time.time() - t0
         comps_star = compute_R_components(A_star, WEIGHTS)
 
         improvement = (comps_star['R'] - comps_orig['R']) / max(comps_orig['R'], 1e-6) * 100
 
-        scale_results.append({
+        rec = {
             'n_nodes': n,
             'R_before': comps_orig['R'],
             'R_after': comps_star['R'],
             'R_improvement_pct': improvement,
             'time_s': t_elapsed,
             'steps': len(history) - 1,
-        })
-        print(f"  N={n}: R {comps_orig['R']:.4f} -> {comps_star['R']:.4f} ({improvement:+.2f}%), time={t_elapsed:.1f}s")
+        }
+        if timing:
+            rec['timing'] = {
+                'gradient_s': timing.get('gradient_s', 0),
+                'evolution_constraints_s': timing.get('evolution_constraints_s', 0),
+                'robustness_s': timing.get('robustness_s', 0),
+                'n_steps': timing.get('n_steps', 0),
+            }
+        scale_results.append(rec)
+        timing_str = ""
+        if timing:
+            tg = timing.get('gradient_s', 0)
+            te = timing.get('evolution_constraints_s', 0)
+            tr = timing.get('robustness_s', 0)
+            timing_str = f" [grad={tg:.1f}s evo={te:.1f}s rob={tr:.1f}s]"
+        print(f"  N={n}: R {comps_orig['R']:.4f} -> {comps_star['R']:.4f} ({improvement:+.2f}%), time={t_elapsed:.1f}s{timing_str}")
 
     results_collector['scalability'] = scale_results
     return scale_results
@@ -880,6 +1016,9 @@ def main():
     # 4.3 Comparison with baselines
     comparison_results = experiment_43_comparison(results)
 
+    # 4.3-Fair: Fair budget comparison (A-P1-1)
+    fair_budget_results = experiment_43_fair_budget(results)
+
     # Scalability
     scale_results = experiment_scalability(results)
 
@@ -970,11 +1109,22 @@ def main():
               f"{r['R_s']:>8.4f} {r['R_c']:>8.4f} {r['R_r']:>8.4f} {r['time_s']:>10.1f}")
 
     print("\n--- Table 5: Attack Resilience ---")
-    print(f"{'Attack':<20} {'Base LCC':>10} {'Opt LCC':>10} {'Base Path':>10} {'Opt Path':>10}")
+    pre = results.get('attack_pre_state', {})
+    if pre:
+        b = pre.get('baseline', {})
+        o = pre.get('optimized', {})
+        print("  Pre-state baseline:",
+              f"connected={b.get('is_connected')}, lcc={b.get('lcc_ratio', 1.0):.4f},",
+              f"components={b.get('n_components', 1)}, eff={b.get('global_efficiency', 0.0):.4f}")
+        print("  Pre-state optimized:",
+              f"connected={o.get('is_connected')}, lcc={o.get('lcc_ratio', 1.0):.4f},",
+              f"components={o.get('n_components', 1)}, eff={o.get('global_efficiency', 0.0):.4f}")
+    print(f"{'Attack':<20} {'Base LCC':>10} {'Opt LCC':>10} {'BaseCmp':>8} {'OptCmp':>8} {'BaseEff':>9} {'OptEff':>9}")
     for r in attack_results:
         label = f"{r['attack_type']} {r['fraction']*100:.0f}%"
         print(f"{label:<20} {r['baseline_lcc_mean']:>10.4f} {r['optimized_lcc_mean']:>10.4f} "
-              f"{r['baseline_path_mean']:>10.2f} {r['optimized_path_mean']:>10.2f}")
+              f"{r['baseline_components_mean']:>8.2f} {r['optimized_components_mean']:>8.2f} "
+              f"{r.get('baseline_efficiency_mean', 0.0):>9.4f} {r.get('optimized_efficiency_mean', 0.0):>9.4f}")
 
     print("\n--- Table 6: Parameter Stability (Fixed) ---")
     fixed_df = pd.DataFrame(fixed_results)
@@ -1002,6 +1152,21 @@ def main():
     print(f"\nAll experiments completed successfully!")
     print(f"Figures saved in: {FIGURES_DIR}")
     print(f"Results saved in: {RESULTS_DIR}")
+
+    # m-2.1: 产物完整性校验
+    print("\n--- Product Completeness Check ---")
+    expected_figs = [
+        'fig5_robustness_evolution.png', 'fig6_degree_distribution.png',
+        'fig7_attack_results.png', 'fig8_parameter_sensitivity.png',
+        'fig9_comparison.png', 'fig10_scalability.png', 'fig11_radar.png',
+    ]
+    expected_jsons = ['all_results.json']
+    fig_ok = sum(1 for f in expected_figs if os.path.isfile(os.path.join(FIGURES_DIR, f)))
+    json_ok = sum(1 for j in expected_jsons if os.path.isfile(os.path.join(RESULTS_DIR, j)))
+    print(f"  Figures: {fig_ok}/{len(expected_figs)} present")
+    print(f"  JSON results: {json_ok}/{len(expected_jsons)} present")
+    if fig_ok < len(expected_figs) or json_ok < len(expected_jsons):
+        print("  WARNING: Some expected outputs missing.")
 
 
 if __name__ == '__main__':

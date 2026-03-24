@@ -12,10 +12,11 @@ import networkx as nx
 from .robustness import compute_R, compute_R_components
 
 
-def resinet_optimize(A0, max_rewires=500, seed=42, weights=None):
+def resinet_optimize(A0, max_rewires=500, seed=42, weights=None, time_limit=None):
     """ResiNet 简化版: 度保持的贪心边重连。
 
     每次选择一条边 (u,v) 和一条非边 (u,w)，交换使得 R 增大。
+    time_limit: 可选，秒数，超时则提前停止。
     """
     if weights is None:
         weights = (0.3, 0.4, 0.3)
@@ -30,6 +31,8 @@ def resinet_optimize(A0, max_rewires=500, seed=42, weights=None):
     t0 = time.time()
 
     for step in range(1, max_rewires + 1):
+        if time_limit is not None and (time.time() - t0) >= time_limit:
+            break
         edges = []
         non_edges = []
         for i in range(n):
@@ -76,10 +79,11 @@ def resinet_optimize(A0, max_rewires=500, seed=42, weights=None):
     return A_best, history
 
 
-def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None):
+def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None, time_limit=None):
     """FPSblo-EP 简化版: 基于最远点采样的层次覆盖优化。
 
     选择标记节点（landmarks），优化标记节点之间的连接以提升全局鲁棒性。
+    time_limit: 可选，秒数，超时则提前停止。
     """
     if weights is None:
         weights = (0.3, 0.4, 0.3)
@@ -113,6 +117,8 @@ def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None):
     t0 = time.time()
 
     for step in range(1, max_iters + 1):
+        if time_limit is not None and (time.time() - t0) >= time_limit:
+            break
         improved = False
         for i_idx in range(len(landmarks)):
             for j_idx in range(i_idx + 1, len(landmarks)):
@@ -148,11 +154,12 @@ def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None):
     return A_best, history
 
 
-def static_optimize(A0, max_iters=200, seed=42, weights=None):
+def static_optimize(A0, max_iters=200, seed=42, weights=None, time_limit=None):
     """静态优化: 基于度分布与聚类系数的贪心优化。
 
     目标: 降低度分布变异系数、提升聚类系数。
     通过边重连（从高度节点移除边并添加到低度节点间）实现。
+    time_limit: 可选，秒数，超时则提前停止。
     """
     if weights is None:
         weights = (0.3, 0.4, 0.3)
@@ -167,6 +174,8 @@ def static_optimize(A0, max_iters=200, seed=42, weights=None):
     t0 = time.time()
 
     for step in range(1, max_iters + 1):
+        if time_limit is not None and (time.time() - t0) >= time_limit:
+            break
         degrees = np.sum(A > 0, axis=1)
         high_deg_nodes = np.argsort(-degrees)[:n // 5]
         low_deg_nodes = np.argsort(degrees)[:n // 5]
@@ -212,10 +221,11 @@ def static_optimize(A0, max_iters=200, seed=42, weights=None):
 
 
 def attack_simulation_optimize(A0, n_attacks=50, attack_fraction=0.1,
-                                max_rewires=100, seed=42, weights=None):
+                                max_rewires=100, seed=42, weights=None, time_limit=None):
     """攻击仿真方法: 蒙特卡洛攻击仿真 + 贪心边重连。
 
     对每种攻击场景仿真，选择能在攻击后保持最高 LCC 的拓扑。
+    time_limit: 可选，秒数，超时则提前停止。
     """
     if weights is None:
         weights = (0.3, 0.4, 0.3)
@@ -249,6 +259,8 @@ def attack_simulation_optimize(A0, n_attacks=50, attack_fraction=0.1,
         return np.mean(lcc_scores)
 
     for step in range(1, max_rewires + 1):
+        if time_limit is not None and (time.time() - t0) >= time_limit:
+            break
         edges = [(i, j) for i in range(n) for j in range(i+1, n) if A[i, j] > 0]
         non_edges = [(i, j) for i in range(n) for j in range(i+1, n) if A[i, j] == 0]
 

@@ -130,16 +130,19 @@ def _compute_cached_gradient(A, params, rng):
     )
 
 
-def evolve_step(A, params, rng=None):
-    """单步：演化动力学 RK4 -> 自组织动力学 RK4 -> 约束。返回 A_next。"""
+def evolve_step(A, params, rng=None, timing_acc=None):
+    """单步：演化动力学 RK4 -> 自组织动力学 RK4 -> 约束。返回 A_next。
+    timing_acc: 可选，可变 dict，将记录 gradient_s, evolution_constraints_s。
+    """
     if rng is None:
         rng = np.random.RandomState(params.get('seed', 42))
 
     dt = params['dt']
     k_max = params['k_max']
 
-    # 每步只计算一次梯度并共享给演化与自组织阶段，避免重复计算
+    t0 = time.time()
     grad_R = _compute_cached_gradient(A, params, rng)
+    t_grad = time.time() - t0
 
     k1 = _evolution_rhs(A, grad_R, params, rng)
     k2 = _evolution_rhs(_symmetrize_and_clip(A + 0.5 * dt * k1), grad_R, params, rng)
@@ -154,11 +157,16 @@ def evolve_step(A, params, rng=None):
     s4 = _self_org_rhs(_symmetrize_and_clip(A_evo + dt * s3), grad_R, params)
     A_step = A_evo + (dt / 6.0) * (s1 + 2 * s2 + 2 * s3 + s4)
 
+    t_evo_start = time.time()
     A_next = _apply_constraints(A_step, k_max)
+    t_evo = time.time() - t_evo_start
+    if timing_acc is not None:
+        timing_acc['gradient_s'] = timing_acc.get('gradient_s', 0) + t_grad
+        timing_acc['evolution_constraints_s'] = timing_acc.get('evolution_constraints_s', 0) + t_evo
     return A_next
 
 
-def run_optimization(A0, params=None, verbose=True):
+def run_optimization(A0, params=None, verbose=True, profile_timing=False):
     """从 A0 运行优化，返回 (A_star, history)。
 
     history: list of dicts with keys 'step', 'R', 'R_s', 'R_c', 'R_r', 'time'
@@ -195,10 +203,15 @@ def run_optimization(A0, params=None, verbose=True):
 
     t_start = time.time()
     prev_R = comps['R']
+    timing_acc = {} if profile_timing else None
+    t_rob_total = 0.0
 
     for step in range(1, max_steps + 1):
-        A = evolve_step(A, params, rng)
+        A = evolve_step(A, params, rng, timing_acc=timing_acc)
+        t_rob = time.time()
         comps = compute_R_components(A, weights)
+        if profile_timing:
+            t_rob_total += time.time() - t_rob
         elapsed = time.time() - t_start
 
         history.append({
@@ -223,6 +236,12 @@ def run_optimization(A0, params=None, verbose=True):
                 print(f"Converged at step {step} (ΔR={abs(comps['R'] - prev_R):.6f})")
             break
 
+        time_limit = params.get('time_limit')
+        if time_limit is not None and elapsed >= time_limit:
+            if verbose:
+                print(f"Time limit reached at step {step} ({elapsed:.1f}s)")
+            break
+
         prev_R = comps['R']
 
     total_time = time.time() - t_start
@@ -233,6 +252,11 @@ def run_optimization(A0, params=None, verbose=True):
         print(f"  R_s={final_comps['R_s']:.4f}, R_c={final_comps['R_c']:.4f}, "
               f"R_r={final_comps['R_r']:.4f}")
 
+    if profile_timing and timing_acc:
+        n_steps = len(history) - 1
+        timing_acc['robustness_s'] = t_rob_total
+        timing_acc['n_steps'] = n_steps
+        return A_star, history, timing_acc
     return A_star, history
 
 
