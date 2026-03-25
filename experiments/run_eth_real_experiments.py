@@ -40,6 +40,15 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 
 WEIGHTS = (0.3, 0.4, 0.3)
 N_REPEATS = 5
+KMAX_FLOOR = 50
+KMAX_RATIO = 0.8
+KMAX_BUSINESS_CAP = 150
+
+
+def choose_adaptive_kmax(stats):
+    """Choose k_max from topology degree profile and deployment cap."""
+    ratio_target = int(round(KMAX_RATIO * stats['max_degree']))
+    return int(min(KMAX_BUSINESS_CAP, max(KMAX_FLOOR, ratio_target)))
 
 
 def load_real_topology():
@@ -194,10 +203,14 @@ def main():
     print("3. Topology Optimization on Real Ethereum Topology")
     print("="*60)
     params = DEFAULT_PARAMS.copy()
+    # Use MLE-estimated dynamics in optimization to keep estimation and optimization consistent.
+    params.update(estimated)
     params['max_steps'] = 150
     params['min_steps'] = 30
-    params['gradient_sample_ratio'] = 0.10
-    params['k_max'] = int(stats0['max_degree'])
+    params['gradient_sample_ratio'] = 0.05
+    params['gradient_mode'] = 'full'
+    params['k_max'] = choose_adaptive_kmax(stats0)
+    print(f"  Adaptive k_max={params['k_max']} (floor={KMAX_FLOOR}, ratio={KMAX_RATIO}, cap={KMAX_BUSINESS_CAP})")
 
     A_star, history = run_optimization(A0, params, verbose=True)
     stats_star = compute_graph_stats(A_star)

@@ -2,6 +2,10 @@
 演化+自组织串联的全局拓扑优化器，RK4 离散与约束处理，与 TIFS 计划 6.1 一致。
 
 单步流程: 演化动力学 RK4 → 自组织动力学 RK4 → 约束处理
+
+【MLE 与优化关系】问题日志 9.2：
+- MLE 拟合的是无梯度驱动的被动演化，用于「拓扑演化预测」验证。
+- 优化使用梯度驱动的主动演化，采用固定参数，不依赖 MLE 估计。
 """
 
 import numpy as np
@@ -29,6 +33,7 @@ DEFAULT_PARAMS = {
     'convergence_threshold': 0.0005,
     'gradient_sample_ratio': 0.1,
     'gradient_epsilon': 1e-5,
+    'gradient_mode': 'R_s_only',  # 'R_s_only'|'R_s_R_r'|'full' 用于消融
     'seed': 42,
 }
 
@@ -119,7 +124,7 @@ def _self_org_rhs(A, grad_R, params):
 
 
 def _compute_cached_gradient(A, params, rng):
-    """计算梯度并缓存。"""
+    """计算梯度并缓存。gradient_mode 见 robustness.compute_gradient_R。"""
     weights = (params['w1'], params['w2'], params['w3'])
     return compute_gradient_R(
         A,
@@ -127,6 +132,7 @@ def _compute_cached_gradient(A, params, rng):
         sample_ratio=params['gradient_sample_ratio'],
         weights=weights,
         seed=rng.randint(0, 2**31),
+        gradient_mode=params.get('gradient_mode', 'R_s_only'),
     )
 
 

@@ -47,6 +47,15 @@ N_NODES = 100
 WEIGHTS = (0.3, 0.4, 0.3)
 N_REPEATS = 5
 GRADIENT_SAMPLE_RATIO = 0.10
+FULL_GRADIENT_SAMPLE_RATIO = 0.05
+FULL_GRADIENT_MODE = 'full'
+
+
+def _set_ours_full_gradient(params):
+    """统一 Ours 使用 full 梯度配置。"""
+    params['gradient_mode'] = FULL_GRADIENT_MODE
+    params['gradient_sample_ratio'] = FULL_GRADIENT_SAMPLE_RATIO
+    return params
 
 
 def compute_graph_stats(A):
@@ -284,7 +293,7 @@ def experiment_412_optimization(results_collector):
         params = DEFAULT_PARAMS.copy()
         params['max_steps'] = 150
         params['min_steps'] = 30
-        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+        _set_ours_full_gradient(params)
 
         A_star, history = run_optimization(A0, params, verbose=True)
         stats_after = compute_graph_stats(A_star)
@@ -328,7 +337,7 @@ def experiment_42_parameter_sensitivity(results_collector):
         params['seed'] = 42 + run_i
         params['max_steps'] = 100
         params['min_steps'] = 30
-        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+        _set_ours_full_gradient(params)
 
         A_star, history = run_optimization(A0, params, verbose=False)
         comps_star = compute_R_components(A_star, WEIGHTS)
@@ -375,7 +384,7 @@ def experiment_42_parameter_sensitivity(results_collector):
 
         params['max_steps'] = 40
         params['min_steps'] = 8
-        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+        _set_ours_full_gradient(params)
         params['seed'] = 200 + pi
 
         try:
@@ -416,7 +425,7 @@ def experiment_413_attack_scenarios(results_collector):
     params = DEFAULT_PARAMS.copy()
     params['max_steps'] = 80
     params['min_steps'] = 15
-    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+    _set_ours_full_gradient(params)
     A_star, _ = run_optimization(A0, params, verbose=False)
     stats_base = compute_graph_stats(A0)
     stats_opt = compute_graph_stats(A_star)
@@ -497,7 +506,7 @@ def experiment_43_comparison(results_collector):
     params = DEFAULT_PARAMS.copy()
     params['max_steps'] = 200
     params['min_steps'] = 40
-    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+    _set_ours_full_gradient(params)
     t0 = time.time()
     A_ours, history_ours = run_optimization(A0, params, verbose=False)
     t_ours = time.time() - t0
@@ -603,7 +612,7 @@ def experiment_43_fair_budget(results_collector):
     params = DEFAULT_PARAMS.copy()
     params['max_steps'] = 200
     params['min_steps'] = 40
-    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+    _set_ours_full_gradient(params)
     t0 = time.time()
     A_ours, history_ours = run_optimization(A0, params, verbose=False)
     t_ours = time.time() - t0
@@ -693,6 +702,62 @@ def experiment_43_fair_budget(results_collector):
     return fair_results
 
 
+def experiment_gradient_ablation(results_collector):
+    """问题日志 9.1 消融：R_s_only vs R_s_R_r vs full surrogate gradient。"""
+    print("\n" + "="*60)
+    print("Experiment: Gradient Ablation (R_s_only vs R_s_R_r vs full)")
+    print("="*60)
+
+    A0 = generate_topology(N_NODES, model='ba', m=3, seed=42)
+    comps_orig = compute_R_components(A0, WEIGHTS)
+    R0 = comps_orig['R']
+
+    modes = [
+        ('R_s_only', 'R_s_only'),
+        ('R_s_R_r', 'R_s_R_r'),
+        ('full', 'full'),
+    ]
+    ablation_results = []
+    n_runs = 2  # 每个 mode 跑 2 次取均值
+
+    for mode_name, mode_key in modes:
+        params = DEFAULT_PARAMS.copy()
+        params['gradient_mode'] = mode_key
+        params['max_steps'] = 30
+        params['min_steps'] = 10
+        # full 含 R_c 最短路，计算昂贵，降低采样率
+        params['gradient_sample_ratio'] = FULL_GRADIENT_SAMPLE_RATIO if mode_key == 'full' else GRADIENT_SAMPLE_RATIO
+
+        R_vals = []
+        times = []
+        for ri in range(n_runs):
+            params['seed'] = 42 + ri * 10
+            t0 = time.time()
+            A_star, history = run_optimization(A0, params, verbose=False)
+            t_elapsed = time.time() - t0
+            comps = compute_R_components(A_star, WEIGHTS)
+            R_vals.append(comps['R'])
+            times.append(t_elapsed)
+
+        imp_mean = (np.mean(R_vals) - R0) / max(R0, 1e-6) * 100
+        imp_std = np.std(R_vals) / max(R0, 1e-6) * 100
+        t_mean = np.mean(times)
+        ablation_results.append({
+            'gradient_mode': mode_name,
+            'R_final_mean': float(np.mean(R_vals)),
+            'R_final_std': float(np.std(R_vals)),
+            'R_improvement_pct_mean': float(imp_mean),
+            'R_improvement_pct_std': float(imp_std),
+            'time_s_mean': float(t_mean),
+            'n_runs': n_runs,
+        })
+        print(f"  {mode_name}: R={np.mean(R_vals):.4f}±{np.std(R_vals):.4f} "
+              f"(imp={imp_mean:+.2f}%±{imp_std:.2f}%), time={t_mean:.1f}s")
+
+    results_collector['gradient_ablation'] = ablation_results
+    return ablation_results
+
+
 def experiment_scalability(results_collector):
     """可扩展性实验：不同规模下的运行时间与鲁棒性。A-P1-2: 补 N=120/130/140 定位拐点，含耗时拆解。"""
     print("\n" + "="*60)
@@ -707,7 +772,7 @@ def experiment_scalability(results_collector):
         params = DEFAULT_PARAMS.copy()
         params['max_steps'] = 30
         params['min_steps'] = 8
-        params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+        _set_ours_full_gradient(params)
 
         comps_orig = compute_R_components(A0, WEIGHTS)
         profile = (n >= 120)  # 对中等以上规模记录耗时拆解
@@ -1019,6 +1084,9 @@ def main():
     # 4.3-Fair: Fair budget comparison (A-P1-1)
     fair_budget_results = experiment_43_fair_budget(results)
 
+    # Gradient ablation (问题日志 9.1)
+    gradient_ablation_results = experiment_gradient_ablation(results)
+
     # Scalability
     scale_results = experiment_scalability(results)
 
@@ -1039,7 +1107,7 @@ def main():
     params = DEFAULT_PARAMS.copy()
     params['max_steps'] = 80
     params['min_steps'] = 15
-    params['gradient_sample_ratio'] = GRADIENT_SAMPLE_RATIO
+    _set_ours_full_gradient(params)
     A_star_ba, _ = run_optimization(A0_ba, params, verbose=False)
     plot_degree_distribution(
         A0_ba, A_star_ba, 'BA(m=3)',
@@ -1131,6 +1199,13 @@ def main():
     print(f"  R improvement: {fixed_df['R_improvement_pct'].mean():.2f}% ± {fixed_df['R_improvement_pct'].std():.2f}%")
     print(f"  Convergence time: {fixed_df['convergence_time'].mean():.1f}s ± {fixed_df['convergence_time'].std():.1f}s")
     print(f"  Path length: {fixed_df['avg_path_length'].mean():.2f} ± {fixed_df['avg_path_length'].std():.2f}")
+
+    print("\n--- Table 6b: Gradient Ablation (问题日志 9.1) ---")
+    print(f"{'Mode':<12} {'R_final':>10} {'Improvement':>12} {'Time(s)':>10}")
+    for r in gradient_ablation_results:
+        print(f"{r['gradient_mode']:<12} {r['R_final_mean']:>10.4f} "
+              f"{r['R_improvement_pct_mean']:>+10.2f}%±{r['R_improvement_pct_std']:.2f} "
+              f"{r['time_s_mean']:>10.1f}")
 
     print("\n--- Table 7: Scalability ---")
     print(f"{'N':>8} {'R_before':>10} {'R_after':>10} {'Improvement':>12} {'Time(s)':>10}")

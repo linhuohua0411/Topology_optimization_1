@@ -2,10 +2,11 @@
 鲁棒性评估与梯度近似模块（高性能版本）。
 实现 R = w1*R_s + w2*R_c + w3*R_r，以及数值差分梯度。
 
-核心优化：
-- 聚类系数用纯 numpy 矩阵运算替代 NetworkX
-- 梯度计算中利用局部性只重算受影响的部分
-- 最短路径用 scipy sparse 接口
+【梯度近似说明】问题日志 9.1/9.6：
+- 目标 R = w1*R_s + w2*R_c + w3*R_r，但完整梯度计算昂贵（R_c 含全图最短路）。
+- 默认 gradient_mode='R_s_only'：仅对 R_s 做差分，作为 R 的代理梯度，以加速。
+- R_r 通过 R_degree（含于 R_s）与自组织项 F_L 间接优化。
+- gradient_mode='R_s_R_r' 或 'full' 用于消融实验，说明近似带来的取舍。
 """
 
 import numpy as np
@@ -163,19 +164,25 @@ def compute_R_s_only(A, weights=None):
     return r_s
 
 
-def compute_gradient_R(A, epsilon=1e-5, sample_ratio=0.1, weights=None, seed=None):
-    """鲁棒性梯度近似 (仅对 R_s 做差分以加速)。
+def compute_gradient_R(A, epsilon=1e-5, sample_ratio=0.1, weights=None, seed=None,
+                       gradient_mode='R_s_only'):
+    """鲁棒性梯度近似。gradient_mode 控制差分范围，用于消融（问题日志 9.1）。
 
-    对候选边对采样 sample_ratio 比例，减少计算量。
-    返回 N×N 对称梯度矩阵。
+    gradient_mode:
+      'R_s_only' (默认): 仅 R_s，加速；R_c/R_r 通过 F_L 间接优化。
+      'R_s_R_r': R_s + R_r，R_r 仅依赖度、计算便宜。
+      'full': R_s + R_c + R_r，R_c 含最短路、计算昂贵。
+    对候选边对采样 sample_ratio 比例。返回 N×N 对称梯度矩阵。
     """
     if weights is None:
         weights = (0.3, 0.4, 0.3)
-    w1 = weights[0]
+    w1, w2, w3 = weights[0], weights[1], weights[2]
     n = A.shape[0]
     grad = np.zeros((n, n), dtype=np.float64)
 
     r_s_base = compute_R_s_only(A)
+    r_r_base = compute_R_r(A) if gradient_mode in ('R_s_R_r', 'full') else 0.0
+    r_c_base = compute_R_c(A) if gradient_mode == 'full' else 0.0
 
     rng = np.random.RandomState(seed if seed is not None else 0)
     total_pairs = n * (n - 1) // 2
@@ -194,10 +201,20 @@ def compute_gradient_R(A, epsilon=1e-5, sample_ratio=0.1, weights=None, seed=Non
         i, j = sample_i[k], sample_j[k]
         A[i, j] += epsilon
         A[j, i] += epsilon
+
         r_s_pert = compute_R_s_only(A)
+        g = w1 * (r_s_pert - r_s_base) / epsilon
+
+        if gradient_mode in ('R_s_R_r', 'full'):
+            r_r_pert = compute_R_r(A)
+            g += w3 * (r_r_pert - r_r_base) / epsilon
+        if gradient_mode == 'full':
+            r_c_pert = compute_R_c(A)
+            g += w2 * (r_c_pert - r_c_base) / epsilon
+
         A[i, j] -= epsilon
         A[j, i] -= epsilon
-        g = w1 * (r_s_pert - r_s_base) / epsilon
+
         grad[i, j] = g
         grad[j, i] = g
 

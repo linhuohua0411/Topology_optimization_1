@@ -29,6 +29,15 @@ os.makedirs(FIGURES_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
 WEIGHTS = (0.3, 0.4, 0.3)
 N_REPEATS = 5
+KMAX_FLOOR = 50
+KMAX_RATIO = 0.8
+KMAX_BUSINESS_CAP = 150
+
+
+def choose_adaptive_kmax(stats):
+    """Choose k_max from topology degree profile and deployment cap."""
+    ratio_target = int(round(KMAX_RATIO * stats['max_deg']))
+    return int(min(KMAX_BUSINESS_CAP, max(KMAX_FLOOR, ratio_target)))
 
 
 def load_snapshots(data_dir):
@@ -151,7 +160,17 @@ def run_single_network_experiments(net_name, data_dir, results):
     # 3. Optimization
     print(f"\n--- 3. Optimization ---")
     params = DEFAULT_PARAMS.copy()
-    params.update({'max_steps': 150, 'min_steps': 30, 'gradient_sample_ratio': 0.10, 'k_max': min(s0['max_deg'], 50)})
+    # Inject MLE-estimated dynamics before optimization hyper-parameters.
+    params.update(est)
+    k_max_adaptive = choose_adaptive_kmax(s0)
+    params.update({
+        'max_steps': 150,
+        'min_steps': 30,
+        'gradient_sample_ratio': 0.05,
+        'gradient_mode': 'full',
+        'k_max': k_max_adaptive,
+    })
+    print(f"  Adaptive k_max={k_max_adaptive} (floor={KMAX_FLOOR}, ratio={KMAX_RATIO}, cap={KMAX_BUSINESS_CAP})")
     A_star, history = run_optimization(A0, params, verbose=True)
     s_star = graph_stats(A_star)
     imp = (s_star['R'] - s0['R']) / max(s0['R'], 1e-6) * 100
@@ -255,7 +274,7 @@ def run_dot_failure_mode_experiment(dot_dir, results):
     A0 = matrices[0]
     s0 = graph_stats(A0)
     R0 = s0['R']
-    k_base = min(s0['max_deg'], 50)
+    k_base = choose_adaptive_kmax(s0)
 
     grid = {
         'k_max': [k_base, min(k_base * 2, 100), min(k_base * 3, 150)],
@@ -269,7 +288,7 @@ def run_dot_failure_mode_experiment(dot_dir, results):
                 params = DEFAULT_PARAMS.copy()
                 params.update({
                     'max_steps': 80, 'min_steps': 20,
-                    'gradient_sample_ratio': gsr, 'k_max': k_max,
+                    'gradient_sample_ratio': gsr, 'gradient_mode': 'full', 'k_max': k_max,
                     'alpha_G': alpha_G,
                 })
                 t0 = time.time()
