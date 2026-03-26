@@ -12,7 +12,20 @@ import networkx as nx
 from .robustness import compute_R, compute_R_components
 
 
-def resinet_optimize(A0, max_rewires=500, seed=42, weights=None, time_limit=None):
+def _objective_with_disconnect_penalty(A, weights, penalty_scale=0.3):
+    """Objective used by baselines: R minus disconnection penalty."""
+    comps = compute_R_components(A, weights)
+    n_comp = int(comps.get('n_components', 1))
+    n = max(1, A.shape[0])
+    # Soft penalty: allow disconnected intermediate states but discourage them.
+    penalty = penalty_scale * max(0, n_comp - 1) / n
+    return float(comps['R'] - penalty), comps
+
+
+def resinet_optimize(
+    A0, max_rewires=500, seed=42, weights=None, time_limit=None,
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+):
     """ResiNet 简化版: 度保持的贪心边重连。
 
     每次选择一条边 (u,v) 和一条非边 (u,w)，交换使得 R 增大。
@@ -23,7 +36,8 @@ def resinet_optimize(A0, max_rewires=500, seed=42, weights=None, time_limit=None
     rng = np.random.RandomState(seed)
     n = A0.shape[0]
     A = A0.copy()
-    best_R = compute_R(A, weights)
+    best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
+    best_R = float(comps0['R'])
     A_best = A.copy()
     history = [{'step': 0, 'R': best_R}]
 
@@ -59,14 +73,15 @@ def resinet_optimize(A0, max_rewires=500, seed=42, weights=None, time_limit=None
             A_trial[x, y] = 1.0
             A_trial[y, x] = 1.0
 
-            G_trial = nx.from_numpy_array((A_trial > 0).astype(int))
-            if not nx.is_connected(G_trial):
-                continue
-
-            r_trial = compute_R(A_trial, weights)
-            if r_trial > best_R:
+            if not allow_disconnected_intermediate:
+                G_trial = nx.from_numpy_array((A_trial > 0).astype(int))
+                if not nx.is_connected(G_trial):
+                    continue
+            obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
+            if obj_trial > best_obj:
                 A = A_trial
-                best_R = r_trial
+                best_obj = obj_trial
+                best_R = float(comps_trial['R'])
                 A_best = A.copy()
                 improved = True
                 break
@@ -79,7 +94,10 @@ def resinet_optimize(A0, max_rewires=500, seed=42, weights=None, time_limit=None
     return A_best, history
 
 
-def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None, time_limit=None):
+def fpsblo_optimize(
+    A0, n_landmarks=10, max_iters=100, seed=42, weights=None, time_limit=None,
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+):
     """FPSblo-EP 简化版: 基于最远点采样的层次覆盖优化。
 
     选择标记节点（landmarks），优化标记节点之间的连接以提升全局鲁棒性。
@@ -109,7 +127,8 @@ def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None, ti
         if best_node >= 0:
             landmarks.append(best_node)
 
-    best_R = compute_R(A, weights)
+    best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
+    best_R = float(comps0['R'])
     A_best = A.copy()
     history = [{'step': 0, 'R': best_R}]
 
@@ -138,14 +157,17 @@ def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None, ti
                     A_trial[li, lj] = 1.0
                     A_trial[lj, li] = 1.0
 
-                    G_t = nx.from_numpy_array((A_trial > 0).astype(int))
-                    if nx.is_connected(G_t):
-                        r_trial = compute_R(A_trial, weights)
-                        if r_trial > best_R:
-                            A = A_trial
-                            best_R = r_trial
-                            A_best = A.copy()
-                            improved = True
+                    if not allow_disconnected_intermediate:
+                        G_t = nx.from_numpy_array((A_trial > 0).astype(int))
+                        if not nx.is_connected(G_t):
+                            continue
+                    obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
+                    if obj_trial > best_obj:
+                        A = A_trial
+                        best_obj = obj_trial
+                        best_R = float(comps_trial['R'])
+                        A_best = A.copy()
+                        improved = True
 
         history.append({'step': step, 'R': best_R, 'time': time.time() - t0})
         if not improved:
@@ -154,7 +176,10 @@ def fpsblo_optimize(A0, n_landmarks=10, max_iters=100, seed=42, weights=None, ti
     return A_best, history
 
 
-def static_optimize(A0, max_iters=200, seed=42, weights=None, time_limit=None):
+def static_optimize(
+    A0, max_iters=200, seed=42, weights=None, time_limit=None,
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+):
     """静态优化: 基于度分布与聚类系数的贪心优化。
 
     目标: 降低度分布变异系数、提升聚类系数。
@@ -166,7 +191,8 @@ def static_optimize(A0, max_iters=200, seed=42, weights=None, time_limit=None):
     rng = np.random.RandomState(seed)
     n = A0.shape[0]
     A = A0.copy()
-    best_R = compute_R(A, weights)
+    best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
+    best_R = float(comps0['R'])
     A_best = A.copy()
     history = [{'step': 0, 'R': best_R}]
 
@@ -201,14 +227,15 @@ def static_optimize(A0, max_iters=200, seed=42, weights=None, time_limit=None):
             A_trial[lo, add_j] = 1.0
             A_trial[add_j, lo] = 1.0
 
-            G_t = nx.from_numpy_array((A_trial > 0).astype(int))
-            if not nx.is_connected(G_t):
-                continue
-
-            r_trial = compute_R(A_trial, weights)
-            if r_trial > best_R:
+            if not allow_disconnected_intermediate:
+                G_t = nx.from_numpy_array((A_trial > 0).astype(int))
+                if not nx.is_connected(G_t):
+                    continue
+            obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
+            if obj_trial > best_obj:
                 A = A_trial
-                best_R = r_trial
+                best_obj = obj_trial
+                best_R = float(comps_trial['R'])
                 A_best = A.copy()
                 improved = True
                 break
@@ -220,8 +247,10 @@ def static_optimize(A0, max_iters=200, seed=42, weights=None, time_limit=None):
     return A_best, history
 
 
-def attack_simulation_optimize(A0, n_attacks=50, attack_fraction=0.1,
-                                max_rewires=100, seed=42, weights=None, time_limit=None):
+def attack_simulation_optimize(
+    A0, n_attacks=50, attack_fraction=0.1, max_rewires=100, seed=42, weights=None, time_limit=None,
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+):
     """攻击仿真方法: 蒙特卡洛攻击仿真 + 贪心边重连。
 
     对每种攻击场景仿真，选择能在攻击后保持最高 LCC 的拓扑。
@@ -232,7 +261,8 @@ def attack_simulation_optimize(A0, n_attacks=50, attack_fraction=0.1,
     rng = np.random.RandomState(seed)
     n = A0.shape[0]
     A = A0.copy()
-    best_R = compute_R(A, weights)
+    best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
+    best_R = float(comps0['R'])
     A_best = A.copy()
     history = [{'step': 0, 'R': best_R}]
 
@@ -268,6 +298,7 @@ def attack_simulation_optimize(A0, n_attacks=50, attack_fraction=0.1,
             break
 
         best_score = attack_robustness(A)
+        best_combined = best_score + 0.2 * best_obj
         improved = False
 
         for _ in range(min(30, len(edges))):
@@ -280,15 +311,19 @@ def attack_simulation_optimize(A0, n_attacks=50, attack_fraction=0.1,
             A_trial[u, v] = 0; A_trial[v, u] = 0
             A_trial[x, y] = 1.0; A_trial[y, x] = 1.0
 
-            G_t = nx.from_numpy_array((A_trial > 0).astype(int))
-            if not nx.is_connected(G_t):
-                continue
-
             score = attack_robustness(A_trial, n_attacks_eval=5)
-            if score > best_score:
+            if not allow_disconnected_intermediate:
+                G_t = nx.from_numpy_array((A_trial > 0).astype(int))
+                if not nx.is_connected(G_t):
+                    continue
+            obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
+            combined = score + 0.2 * obj_trial
+            if combined > best_combined:
                 A = A_trial
                 best_score = score
-                r_new = compute_R(A, weights)
+                best_obj = obj_trial
+                best_combined = combined
+                r_new = float(comps_trial['R'])
                 if r_new > best_R:
                     best_R = r_new
                     A_best = A.copy()

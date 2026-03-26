@@ -32,6 +32,8 @@ N_REPEATS = 5
 KMAX_FLOOR = 50
 KMAX_RATIO = 0.8
 KMAX_BUSINESS_CAP = 150
+BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE = True
+BASELINE_DISCONNECT_PENALTY = 0.3
 
 
 def choose_adaptive_kmax(stats):
@@ -233,14 +235,64 @@ def run_single_network_experiments(net_name, data_dir, results):
         ('AttackSim', attack_simulation_optimize, {'n_attacks': 30, 'max_rewires': 100}),
     ]:
         t0 = time.time()
-        Am, _ = mfunc(A0, seed=42, weights=WEIGHTS, **mkw)
+        Am, _ = mfunc(
+            A0, seed=42, weights=WEIGHTS,
+            allow_disconnected_intermediate=BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            disconnect_penalty=BASELINE_DISCONNECT_PENALTY,
+            **mkw
+        )
         tm = time.time() - t0
         cm = compute_R_components(Am, WEIGHTS)
         mi = (cm['R'] - R0) / max(R0, 1e-6) * 100
-        comp[mname] = {'R': cm['R'], 'imp': mi, 'time': tm, 'R_s': cm['R_s'], 'R_c': cm['R_c'], 'R_r': cm['R_r']}
+        chg_m = get_edge_changes(A0, Am)
+        comp[mname] = {
+            'R': cm['R'], 'imp': mi, 'time': tm, 'R_s': cm['R_s'], 'R_c': cm['R_c'], 'R_r': cm['R_r'],
+            'n_edge_changes': len(chg_m['edges_to_add']) + len(chg_m['edges_to_remove']) + len(chg_m['edges_to_modify']),
+        }
         print(f"  {mname}: R={cm['R']:.4f} ({mi:+.2f}%) time={tm:.1f}s")
     print(f"  Ours: R={s_star['R']:.4f} ({imp:+.2f}%) time={history[-1]['time']:.1f}s")
     results[f'{net_name}_comparison'] = comp
+
+    # 5b. Fair-time comparison (same wall-clock budget as Ours)
+    fair_time_budget = float(history[-1]['time'])
+    fair_comp = {
+        'Ours': {
+            'R': s_star['R'], 'imp': imp, 'time': fair_time_budget,
+            'R_s': s_star['R_s'], 'R_c': s_star['R_c'], 'R_r': s_star['R_r'],
+            'n_edge_changes': len(get_edge_changes(A0, A_star)['edges_to_add'])
+                              + len(get_edge_changes(A0, A_star)['edges_to_remove'])
+                              + len(get_edge_changes(A0, A_star)['edges_to_modify']),
+        }
+    }
+    for mname, mfunc, mkw in [
+        ('ResiNet', resinet_optimize, {'max_rewires': 5000}),
+        ('FPSblo-EP', fpsblo_optimize, {'n_landmarks': 15, 'max_iters': 5000}),
+        ('Static', static_optimize, {'max_iters': 5000}),
+        ('AttackSim', attack_simulation_optimize, {'n_attacks': 30, 'max_rewires': 5000}),
+    ]:
+        t0 = time.time()
+        Am, _ = mfunc(
+            A0, seed=42, weights=WEIGHTS, time_limit=fair_time_budget,
+            allow_disconnected_intermediate=BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            disconnect_penalty=BASELINE_DISCONNECT_PENALTY,
+            **mkw
+        )
+        tm = time.time() - t0
+        cm = compute_R_components(Am, WEIGHTS)
+        mi = (cm['R'] - R0) / max(R0, 1e-6) * 100
+        chg_m = get_edge_changes(A0, Am)
+        fair_comp[mname] = {
+            'R': cm['R'], 'imp': mi, 'time': tm, 'R_s': cm['R_s'], 'R_c': cm['R_c'], 'R_r': cm['R_r'],
+            'n_edge_changes': len(chg_m['edges_to_add']) + len(chg_m['edges_to_remove']) + len(chg_m['edges_to_modify']),
+        }
+    results[f'{net_name}_comparison_fair_time'] = {
+        'time_budget_s': fair_time_budget,
+        'methods': fair_comp,
+        'baseline_config': {
+            'allow_disconnected_intermediate': BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            'disconnect_penalty': BASELINE_DISCONNECT_PENALTY,
+        }
+    }
 
     # 6. Stability
     print(f"\n--- 6. Parameter Stability (5 runs) ---")

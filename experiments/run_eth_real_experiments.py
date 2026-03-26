@@ -43,6 +43,8 @@ N_REPEATS = 5
 KMAX_FLOOR = 50
 KMAX_RATIO = 0.8
 KMAX_BUSINESS_CAP = 150
+BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE = True
+BASELINE_DISCONNECT_PENALTY = 0.3
 
 
 def choose_adaptive_kmax(stats):
@@ -312,17 +314,73 @@ def main():
         ('AttackSim', attack_simulation_optimize, {'n_attacks': 30, 'max_rewires': 100}),
     ]:
         t0 = time.time()
-        A_m, hist_m = method_func(A0, seed=42, weights=WEIGHTS, **method_kwargs)
+        A_m, hist_m = method_func(
+            A0, seed=42, weights=WEIGHTS,
+            allow_disconnected_intermediate=BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            disconnect_penalty=BASELINE_DISCONNECT_PENALTY,
+            **method_kwargs
+        )
         t_m = time.time() - t0
         comps_m = compute_R_components(A_m, WEIGHTS)
+        chg_m = get_edge_changes(A0, A_m)
         imp = (comps_m['R'] - R0) / max(R0, 1e-6) * 100
         comparison[method_name] = {
             'R_final': comps_m['R'], 'R_improvement_pct': imp, 'time_s': t_m,
             'R_s': comps_m['R_s'], 'R_c': comps_m['R_c'], 'R_r': comps_m['R_r'],
+            'n_edge_changes': len(chg_m['edges_to_add']) + len(chg_m['edges_to_remove']) + len(chg_m['edges_to_modify']),
         }
         print(f"  {method_name}: R={comps_m['R']:.4f} ({imp:+.2f}%), time={t_m:.1f}s")
 
     results['comparison'] = comparison
+
+    # === 5b. Fair-time comparison ===
+    print("\n" + "="*60)
+    print("5b. Fair-Time Baseline Comparison (Real Topology)")
+    print("="*60)
+    fair_time_budget = float(history[-1]['time'])
+    fair_cmp = {
+        'Ours': {
+            'R_final': stats_star['R'],
+            'R_improvement_pct': r_improvement,
+            'time_s': fair_time_budget,
+            'R_s': stats_star['R_s'],
+            'R_c': stats_star['R_c'],
+            'R_r': stats_star['R_r'],
+            'n_edge_changes': len(changes['edges_to_add']) + len(changes['edges_to_remove']) + len(changes['edges_to_modify']),
+        }
+    }
+    print(f"  Time budget for all methods: {fair_time_budget:.1f}s")
+    for method_name, method_func, method_kwargs in [
+        ('ResiNet', resinet_optimize, {'max_rewires': 5000}),
+        ('FPSblo-EP', fpsblo_optimize, {'n_landmarks': 15, 'max_iters': 5000}),
+        ('Static', static_optimize, {'max_iters': 5000}),
+        ('AttackSim', attack_simulation_optimize, {'n_attacks': 30, 'max_rewires': 5000}),
+    ]:
+        t0 = time.time()
+        A_m, hist_m = method_func(
+            A0, seed=42, weights=WEIGHTS, time_limit=fair_time_budget,
+            allow_disconnected_intermediate=BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            disconnect_penalty=BASELINE_DISCONNECT_PENALTY,
+            **method_kwargs
+        )
+        t_m = time.time() - t0
+        comps_m = compute_R_components(A_m, WEIGHTS)
+        chg_m = get_edge_changes(A0, A_m)
+        imp = (comps_m['R'] - R0) / max(R0, 1e-6) * 100
+        fair_cmp[method_name] = {
+            'R_final': comps_m['R'], 'R_improvement_pct': imp, 'time_s': t_m,
+            'R_s': comps_m['R_s'], 'R_c': comps_m['R_c'], 'R_r': comps_m['R_r'],
+            'n_edge_changes': len(chg_m['edges_to_add']) + len(chg_m['edges_to_remove']) + len(chg_m['edges_to_modify']),
+        }
+        print(f"  {method_name}: R={comps_m['R']:.4f} ({imp:+.2f}%), time={t_m:.1f}s, edge_changes={fair_cmp[method_name]['n_edge_changes']}")
+    results['comparison_fair_time'] = {
+        'time_budget_s': fair_time_budget,
+        'methods': fair_cmp,
+        'baseline_config': {
+            'allow_disconnected_intermediate': BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            'disconnect_penalty': BASELINE_DISCONNECT_PENALTY,
+        }
+    }
 
     # === 6. Parameter Stability ===
     print("\n" + "="*60)
