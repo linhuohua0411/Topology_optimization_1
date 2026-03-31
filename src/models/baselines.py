@@ -12,6 +12,14 @@ import networkx as nx
 from .robustness import compute_R, compute_R_components
 
 
+def _edge_change_count(A_ref, A_cur):
+    """Count symmetric edge-state differences between two adjacency matrices."""
+    e_ref = (A_ref > 0.5).astype(np.int8)
+    e_cur = (A_cur > 0.5).astype(np.int8)
+    diff = np.triu(e_ref != e_cur, k=1)
+    return int(np.sum(diff))
+
+
 def _objective_with_disconnect_penalty(A, weights, penalty_scale=0.3):
     """Objective used by baselines: R minus disconnection penalty."""
     comps = compute_R_components(A, weights)
@@ -24,7 +32,7 @@ def _objective_with_disconnect_penalty(A, weights, penalty_scale=0.3):
 
 def resinet_optimize(
     A0, max_rewires=500, seed=42, weights=None, time_limit=None,
-    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3, edge_change_budget=None
 ):
     """ResiNet 简化版: 度保持的贪心边重连。
 
@@ -77,6 +85,8 @@ def resinet_optimize(
                 G_trial = nx.from_numpy_array((A_trial > 0).astype(int))
                 if not nx.is_connected(G_trial):
                     continue
+            if edge_change_budget is not None and _edge_change_count(A0, A_trial) > edge_change_budget:
+                continue
             obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
             if obj_trial > best_obj:
                 A = A_trial
@@ -96,7 +106,7 @@ def resinet_optimize(
 
 def fpsblo_optimize(
     A0, n_landmarks=10, max_iters=100, seed=42, weights=None, time_limit=None,
-    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3, edge_change_budget=None
 ):
     """FPSblo-EP 简化版: 基于最远点采样的层次覆盖优化。
 
@@ -161,6 +171,8 @@ def fpsblo_optimize(
                         G_t = nx.from_numpy_array((A_trial > 0).astype(int))
                         if not nx.is_connected(G_t):
                             continue
+                    if edge_change_budget is not None and _edge_change_count(A0, A_trial) > edge_change_budget:
+                        continue
                     obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
                     if obj_trial > best_obj:
                         A = A_trial
@@ -178,7 +190,7 @@ def fpsblo_optimize(
 
 def static_optimize(
     A0, max_iters=200, seed=42, weights=None, time_limit=None,
-    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3, edge_change_budget=None
 ):
     """静态优化: 基于度分布与聚类系数的贪心优化。
 
@@ -231,6 +243,8 @@ def static_optimize(
                 G_t = nx.from_numpy_array((A_trial > 0).astype(int))
                 if not nx.is_connected(G_t):
                     continue
+            if edge_change_budget is not None and _edge_change_count(A0, A_trial) > edge_change_budget:
+                continue
             obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
             if obj_trial > best_obj:
                 A = A_trial
@@ -249,7 +263,7 @@ def static_optimize(
 
 def attack_simulation_optimize(
     A0, n_attacks=50, attack_fraction=0.1, max_rewires=100, seed=42, weights=None, time_limit=None,
-    allow_disconnected_intermediate=True, disconnect_penalty=0.3
+    allow_disconnected_intermediate=True, disconnect_penalty=0.3, edge_change_budget=None
 ):
     """攻击仿真方法: 蒙特卡洛攻击仿真 + 贪心边重连。
 
@@ -316,6 +330,8 @@ def attack_simulation_optimize(
                 G_t = nx.from_numpy_array((A_trial > 0).astype(int))
                 if not nx.is_connected(G_t):
                     continue
+            if edge_change_budget is not None and _edge_change_count(A0, A_trial) > edge_change_budget:
+                continue
             obj_trial, comps_trial = _objective_with_disconnect_penalty(A_trial, weights, disconnect_penalty)
             combined = score + 0.2 * obj_trial
             if combined > best_combined:

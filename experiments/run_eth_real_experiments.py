@@ -26,6 +26,17 @@ from models.baselines import (
     resinet_optimize, fpsblo_optimize, static_optimize,
     attack_simulation_optimize
 )
+from experiment_protocol import (
+    PROTOCOL_VERSION,
+    WEIGHTS,
+    N_REPEATS,
+    KMAX_FLOOR,
+    KMAX_RATIO,
+    KMAX_BUSINESS_CAP,
+    BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+    BASELINE_DISCONNECT_PENALTY,
+    FAIR_EDGE_BUDGET_FLOOR,
+)
 
 rcParams['font.family'] = 'DejaVu Sans'
 rcParams['figure.dpi'] = 150
@@ -37,15 +48,6 @@ FIGURES_DIR = os.path.join(os.path.dirname(__file__), 'figures')
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'metrics')
 os.makedirs(FIGURES_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
-
-WEIGHTS = (0.3, 0.4, 0.3)
-N_REPEATS = 5
-KMAX_FLOOR = 50
-KMAX_RATIO = 0.8
-KMAX_BUSINESS_CAP = 150
-BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE = True
-BASELINE_DISCONNECT_PENALTY = 0.3
-
 
 def choose_adaptive_kmax(stats):
     """Choose k_max from topology degree profile and deployment cap."""
@@ -171,6 +173,16 @@ def main():
     n = A0.shape[0]
 
     results = {}
+    results['protocol'] = {
+        'version': PROTOCOL_VERSION,
+        'weights': list(WEIGHTS),
+        'fair_edge_budget_floor': FAIR_EDGE_BUDGET_FLOOR,
+        'baseline_allow_disconnected_intermediate': BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+        'baseline_disconnect_penalty': BASELINE_DISCONNECT_PENALTY,
+        'kmax_floor': KMAX_FLOOR,
+        'kmax_ratio': KMAX_RATIO,
+        'kmax_business_cap': KMAX_BUSINESS_CAP,
+    }
     results['data_source'] = {
         'type': source_type,
         'path': DATA_DIR,
@@ -376,6 +388,61 @@ def main():
     results['comparison_fair_time'] = {
         'time_budget_s': fair_time_budget,
         'methods': fair_cmp,
+        'baseline_config': {
+            'allow_disconnected_intermediate': BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            'disconnect_penalty': BASELINE_DISCONNECT_PENALTY,
+        }
+    }
+
+    # === 5c. Fair-edge comparison ===
+    print("\n" + "="*60)
+    print("5c. Fair-Edge Baseline Comparison (Real Topology)")
+    print("="*60)
+    fair_edge_budget = max(
+        FAIR_EDGE_BUDGET_FLOOR,
+        len(changes['edges_to_add']) + len(changes['edges_to_remove']) + len(changes['edges_to_modify'])
+    )
+    fair_edge_cmp = {
+        'Ours': {
+            'R_final': stats_star['R'],
+            'R_improvement_pct': r_improvement,
+            'time_s': history[-1]['time'],
+            'R_s': stats_star['R_s'],
+            'R_c': stats_star['R_c'],
+            'R_r': stats_star['R_r'],
+            'n_edge_changes': fair_edge_budget,
+        }
+    }
+    print(f"  Edge-change budget for all methods: {fair_edge_budget}")
+    for method_name, method_func, method_kwargs in [
+        ('ResiNet', resinet_optimize, {'max_rewires': 5000}),
+        ('FPSblo-EP', fpsblo_optimize, {'n_landmarks': 15, 'max_iters': 5000}),
+        ('Static', static_optimize, {'max_iters': 5000}),
+        ('AttackSim', attack_simulation_optimize, {'n_attacks': 30, 'max_rewires': 5000}),
+    ]:
+        t0 = time.time()
+        A_m, _ = method_func(
+            A0, seed=42, weights=WEIGHTS,
+            allow_disconnected_intermediate=BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
+            disconnect_penalty=BASELINE_DISCONNECT_PENALTY,
+            edge_change_budget=fair_edge_budget,
+            **method_kwargs
+        )
+        t_m = time.time() - t0
+        comps_m = compute_R_components(A_m, WEIGHTS)
+        chg_m = get_edge_changes(A0, A_m)
+        n_chg = len(chg_m['edges_to_add']) + len(chg_m['edges_to_remove']) + len(chg_m['edges_to_modify'])
+        imp = (comps_m['R'] - R0) / max(R0, 1e-6) * 100
+        fair_edge_cmp[method_name] = {
+            'R_final': comps_m['R'], 'R_improvement_pct': imp, 'time_s': t_m,
+            'R_s': comps_m['R_s'], 'R_c': comps_m['R_c'], 'R_r': comps_m['R_r'],
+            'n_edge_changes': n_chg,
+        }
+        print(f"  {method_name}: R={comps_m['R']:.4f} ({imp:+.2f}%), time={t_m:.1f}s, edge_changes={n_chg}")
+    results['comparison_fair_edge'] = {
+        'edge_change_budget': fair_edge_budget,
+        'edge_change_budget_floor': FAIR_EDGE_BUDGET_FLOOR,
+        'methods': fair_edge_cmp,
         'baseline_config': {
             'allow_disconnected_intermediate': BASELINE_ALLOW_DISCONNECTED_INTERMEDIATE,
             'disconnect_penalty': BASELINE_DISCONNECT_PENALTY,
