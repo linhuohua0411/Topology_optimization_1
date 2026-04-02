@@ -1,0 +1,209 @@
+======================================================================
+TIFS Complete Experiments: Ethereum + Polkadot Dual-Network
+======================================================================
+
+######################################################################
+# ETH EXPERIMENTS
+######################################################################
+  Loaded 45 snapshots, 106 nodes
+
+--- 1. Topology Profile ---
+  Nodes=106 Edges=1240 Deg=23.4±4.9
+  Clustering=0.9514 λ₂=0.0000 Path=inf
+  R=0.552787 R_s=0.6034 R_c=0.2254 R_r=0.9387
+
+--- 2. MLE Parameter Estimation ---
+  MLE loss=1347.6842 params={'alpha': 0.09967141530112328, 'beta': 0.06382643011711847, 'alpha_L': 0.11476885381006925, 'alpha_G': 0.20230298564080257, 'lambda_L': 0.0734153374723336, 'lambda_G': 0.07341369569491805}
+
+--- 3. Optimization ---
+  Adaptive k_max=50 (floor=50, ratio=0.8, cap=150)
+Step 0: R=0.552787 (R_s=0.6034, R_c=0.2254, R_r=0.9387)
+Step 10: R=0.755327 (best=0.755327) [25.6s]
+Step 20: R=0.776011 (best=0.776011) [52.4s]
+Step 30: R=0.790998 (best=0.790998) [78.8s]
+Converged at step 36 (ΔR=0.000351)
+
+Optimization complete: best R=0.798101 (total time=94.6s)
+  R_s=0.6309, R_c=0.9193, R_r=0.8037
+  R: 0.5528 → 0.7981 (+44.38%)
+  Path: inf → 1.534
+  Clust: 0.9514 → 0.5208
+
+--- 4. Attack Scenarios ---
+  random 5%: LCC 0.2491→0.9528(+282.6%) Path 1.02→1.53
+  random 10%: LCC 0.2340→0.9057(+287.1%) Path 1.01→1.53
+  random 15%: LCC 0.2245→0.8585(+282.4%) Path 1.01→1.53
+  targeted 3%: LCC 0.2547→0.9717(+281.5%) Path 1.02→1.53
+  targeted 5%: LCC 0.2358→0.9528(+304.0%) Path 1.00→1.53
+  targeted 10%: LCC 0.2358→0.9057(+284.0%) Path 1.00→1.53
+
+--- 5. Baseline Comparison ---
+  ResiNet: R=0.7160 (+29.53%) time=4.2s
+  FPSblo-EP: R=0.6477 (+17.16%) time=1.6s
+  Static: R=0.7219 (+30.60%) time=3.7s
+  AttackSim: R=0.6892 (+24.67%) time=12.1s
+  Ours: R=0.7981 (+44.38%) time=94.6s
+
+--- 5b. Fair-Time Baseline Comparison ---
+  Time budget for all methods: 94.6s
+  ResiNet: R=0.8070 (+45.99%) time=94.6s edge_changes=1716
+  FPSblo-EP: R=0.6477 (+17.16%) time=1.6s edge_changes=18
+  Static: R=0.7474 (+35.20%) time=14.6s edge_changes=964
+  AttackSim: R=0.7228 (+30.75%) time=94.6s edge_changes=1092
+
+--- 5c. Fair-Edge Baseline Comparison ---
+  Edge-change budget for all methods: 1616
+  ResiNet: R=0.8101 (+46.55%) time=118.6s edge_changes=1616
+  FPSblo-EP: R=0.6477 (+17.16%) time=1.6s edge_changes=18
+  Static: R=0.7474 (+35.20%) time=14.7s edge_changes=964
+  AttackSim: R=0.7737 (+39.97%) time=631.0s edge_changes=1616
+
+--- 6. Parameter Stability (5 runs) ---
+  Run 0: R imp=44.38% time=94.1s
+  Run 1: R imp=43.67% time=85.1s
+  Run 2: R imp=42.45% time=99.0s
+  Run 3: R imp=40.90% time=84.2s
+  Run 4: R imp=42.93% time=77.7s
+  Mean: 42.86% ± 1.18%
+
+######################################################################
+# DOT EXPERIMENTS
+######################################################################
+  Loaded 33 snapshots, 100 nodes
+
+--- 1. Topology Profile ---
+  Nodes=100 Edges=4161 Deg=83.2±5.6
+  Clustering=0.8412 λ₂=63.4374 Path=1.159
+  R=0.760739 R_s=0.8563 R_c=0.9138 R_r=0.4612
+
+--- 2. MLE Parameter Estimation ---
+  MLE loss=1614.8421 params={'alpha': 0.09967141530112328, 'beta': 0.06382643011711847, 'alpha_L': 0.11476885381006925, 'alpha_G': 0.20230298564080257, 'lambda_L': 0.0734153374723336, 'lambda_G': 0.07341369569491805}
+
+--- 3. Optimization ---
+  Adaptive k_max=78 (floor=50, ratio=0.8, cap=150)
+Step 0: R=0.760739 (R_s=0.8563, R_c=0.9138, R_r=0.4612)
+Step 10: R=0.748462 (best=0.760739) [25.5s]
+Step 20: R=0.750666 (best=0.760739) [50.9s]
+Step 30: R=0.751999 (best=0.760739) [76.6s]
+Converged at step 30 (ΔR=0.000248)
+
+Optimization complete: best R=0.760739 (total time=76.6s)
+  R_s=0.8563, R_c=0.9138, R_r=0.4612
+  R: 0.7607 → 0.7607 (+0.00%)
+  Path: 1.159 → 1.159
+  Clust: 0.8412 → 0.8412
+
+--- 4. Attack Scenarios ---
+  random 5%: LCC 0.9500→0.9500(+0.0%) Path 1.16→1.16
+  random 10%: LCC 0.9000→0.9000(+0.0%) Path 1.16→1.16
+  random 15%: LCC 0.8500→0.8500(+0.0%) Path 1.16→1.16
+  targeted 3%: LCC 0.9700→0.9700(+0.0%) Path 1.17→1.17
+  targeted 5%: LCC 0.9500→0.9500(+0.0%) Path 1.17→1.17
+  targeted 10%: LCC 0.9000→0.9000(+0.0%) Path 1.18→1.18
+
+--- 5. Baseline Comparison ---
+  ResiNet: R=0.7853 (+3.23%) time=7.3s
+  FPSblo-EP: R=0.7612 (+0.06%) time=1.0s
+  Static: R=0.7819 (+2.78%) time=6.2s
+  AttackSim: R=0.7688 (+1.06%) time=33.7s
+  Ours: R=0.7607 (+0.00%) time=76.6s
+
+--- 5b. Fair-Time Baseline Comparison ---
+  Time budget for all methods: 76.6s
+  ResiNet: R=0.8486 (+11.55%) time=74.1s edge_changes=1106
+  FPSblo-EP: R=0.7612 (+0.06%) time=1.0s edge_changes=12
+  Static: R=0.8146 (+7.08%) time=54.1s edge_changes=962
+  AttackSim: R=0.7795 (+2.47%) time=76.7s edge_changes=424
+
+--- 5c. Fair-Edge Baseline Comparison ---
+  Edge-change budget for all methods: 10
+  ResiNet: R=0.7620 (+0.17%) time=0.6s edge_changes=10
+  FPSblo-EP: R=0.7611 (+0.04%) time=0.3s edge_changes=10
+  Static: R=0.7611 (+0.05%) time=0.2s edge_changes=10
+  AttackSim: R=0.7610 (+0.04%) time=61.1s edge_changes=10
+
+--- 6. Parameter Stability (5 runs) ---
+  Run 0: R imp=0.00% time=76.8s
+  Run 1: R imp=0.00% time=77.9s
+  Run 2: R imp=0.00% time=76.4s
+  Run 3: R imp=0.00% time=77.1s
+  Run 4: R imp=0.00% time=76.5s
+  Mean: 0.00% ± 0.00%
+
+######################################################################
+# DOT FAILURE MODE EXPERIMENT (A-P1-3)
+######################################################################
+  k_max=78 gsr=0.05 α_G=0.4: imp=+0.00% [NO_GAIN]
+  k_max=78 gsr=0.05 α_G=0.6: imp=+0.00% [NO_GAIN]
+  k_max=78 gsr=0.05 α_G=0.8: imp=+1.66% [GAIN]
+  k_max=78 gsr=0.1 α_G=0.4: imp=+0.00% [NO_GAIN]
+  k_max=78 gsr=0.1 α_G=0.6: imp=+0.00% [NO_GAIN]
+  k_max=78 gsr=0.1 α_G=0.8: imp=+2.79% [GAIN]
+  k_max=78 gsr=0.2 α_G=0.4: imp=+0.00% [NO_GAIN]
+  k_max=78 gsr=0.2 α_G=0.6: imp=+0.00% [NO_GAIN]
+  k_max=78 gsr=0.2 α_G=0.8: imp=+2.53% [GAIN]
+  k_max=100 gsr=0.05 α_G=0.4: imp=+4.98% [GAIN]
+  k_max=100 gsr=0.05 α_G=0.6: imp=+4.96% [GAIN]
+  k_max=100 gsr=0.05 α_G=0.8: imp=+4.96% [GAIN]
+  k_max=100 gsr=0.1 α_G=0.4: imp=+4.96% [GAIN]
+  k_max=100 gsr=0.1 α_G=0.6: imp=+4.95% [GAIN]
+  k_max=100 gsr=0.1 α_G=0.8: imp=+4.94% [GAIN]
+  k_max=100 gsr=0.2 α_G=0.4: imp=+4.97% [GAIN]
+  k_max=100 gsr=0.2 α_G=0.6: imp=+4.95% [GAIN]
+  k_max=100 gsr=0.2 α_G=0.8: imp=+4.94% [GAIN]
+  k_max=150 gsr=0.05 α_G=0.4: imp=+4.98% [GAIN]
+  k_max=150 gsr=0.05 α_G=0.6: imp=+4.96% [GAIN]
+  k_max=150 gsr=0.05 α_G=0.8: imp=+4.96% [GAIN]
+  k_max=150 gsr=0.1 α_G=0.4: imp=+4.96% [GAIN]
+  k_max=150 gsr=0.1 α_G=0.6: imp=+4.95% [GAIN]
+  k_max=150 gsr=0.1 α_G=0.8: imp=+4.94% [GAIN]
+  k_max=150 gsr=0.2 α_G=0.4: imp=+4.97% [GAIN]
+  k_max=150 gsr=0.2 α_G=0.6: imp=+4.95% [GAIN]
+  k_max=150 gsr=0.2 α_G=0.8: imp=+4.94% [GAIN]
+
+  Summary: 21 with gain, 6 no gain
+  Gain conditions (sample): [{'k_max': 78, 'gradient_sample_ratio': 0.05, 'alpha_G': 0.8, 'imp_pct': 1.6590539057533618, 'R_before': np.float64(0.7607393498430526), 'R_after': np.float64(0.7733604257392265), 'time_s': 50.68020558357239, 'steps': 20}, {'k_max': 78, 'gradient_sample_ratio': 0.1, 'alpha_G': 0.8, 'imp_pct': 2.7888429172414018, 'R_before': np.float64(0.7607393498430526), 'R_after': np.float64(0.7819551753198188), 'time_s': 101.4920129776001, 'steps': 20}, {'k_max': 78, 'gradient_sample_ratio': 0.2, 'alpha_G': 0.8, 'imp_pct': 2.5266539009741495, 'R_before': np.float64(0.7607393498430526), 'R_after': np.float64(0.7799606003021075), 'time_s': 200.69754815101624, 'steps': 20}]
+  No-gain conditions (sample): [{'k_max': 78, 'gradient_sample_ratio': 0.05, 'alpha_G': 0.4, 'imp_pct': 0.0, 'R_before': np.float64(0.7607393498430526), 'R_after': np.float64(0.7607393498430526), 'time_s': 50.61395311355591, 'steps': 20}, {'k_max': 78, 'gradient_sample_ratio': 0.05, 'alpha_G': 0.6, 'imp_pct': 0.0, 'R_before': np.float64(0.7607393498430526), 'R_after': np.float64(0.7607393498430526), 'time_s': 50.88839602470398, 'steps': 20}, {'k_max': 78, 'gradient_sample_ratio': 0.1, 'alpha_G': 0.4, 'imp_pct': 0.0, 'R_before': np.float64(0.7607393498430526), 'R_after': np.float64(0.7607393498430526), 'time_s': 101.4595456123352, 'steps': 20}]
+
+======================================================================
+Generating Dual-Network Figures
+======================================================================
+  Saved: fig_dual_evolution.png
+  Saved: fig_dual_degree.png
+  Saved: fig_dual_attack.png
+  Saved: fig_dual_comparison.png
+  Saved: fig_dual_radar.png
+  Saved: fig_dual_breakdown.png
+  Saved: fig_dual_temporal.png
+
+======================================================================
+SUMMARY (total time: 5721s / 95.4min)
+======================================================================
+
+--- Ethereum (106 nodes, 1240 edges) ---
+  R: 0.5528 → 0.7981 (+44.38%)
+  Path: inf → 1.534
+  Clust: 0.9514 → 0.5208
+  Comparison:
+    Ours         R=0.7981 (+44.38%) R_c=0.9193 t=94.6s
+    ResiNet      R=0.7160 (+29.53%) R_c=0.6126 t=4.2s
+    FPSblo-EP    R=0.6477 (+17.16%) R_c=0.4592 t=1.6s
+    Static       R=0.7219 (+30.60%) R_c=0.6131 t=3.7s
+    AttackSim    R=0.6892 (+24.67%) R_c=0.5572 t=12.1s
+  Stability: 42.86% ± 1.18%
+
+--- Polkadot (100 nodes, 4161 edges) ---
+  R: 0.7607 → 0.7607 (+0.00%)
+  Path: 1.159 → 1.159
+  Clust: 0.8412 → 0.8412
+  Comparison:
+    Ours         R=0.7607 (+0.00%) R_c=0.9138 t=76.6s
+    ResiNet      R=0.7853 (+3.23%) R_c=0.9525 t=7.3s
+    FPSblo-EP    R=0.7612 (+0.06%) R_c=0.9145 t=1.0s
+    Static       R=0.7819 (+2.78%) R_c=0.9487 t=6.2s
+    AttackSim    R=0.7688 (+1.06%) R_c=0.9259 t=33.7s
+  Stability: 0.00% ± 0.00%
+
+All figures saved to: /home/ly/project/Topology_optimization_1/experiments/figures
+Results saved to: /home/ly/project/Topology_optimization_1/experiments/metrics/dual_network_results.json
+Result file exists: True

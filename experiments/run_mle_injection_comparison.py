@@ -16,6 +16,7 @@ import json
 import time
 import argparse
 import numpy as np
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -54,6 +55,24 @@ def _run_once(A0, params):
         "time_s": elapsed,
     }
 
+def _run_paired_seed(seed, A0, base_params, injected_template):
+    p_non = base_params.copy()
+    p_non["seed"] = seed
+    r_non = _run_once(A0, p_non)
+
+    p_inj = injected_template.copy()
+    p_inj["seed"] = seed
+    r_inj = _run_once(A0, p_inj)
+
+    return {
+        "seed": seed,
+        "non_injected": r_non,
+        "injected": r_inj,
+        "delta_improvement_pct_injected_minus_non": (
+            r_inj["R_improvement_pct"] - r_non["R_improvement_pct"]
+        ),
+    }
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -61,6 +80,7 @@ def main():
     parser.add_argument("--seed-base", type=int, default=42, help="base random seed")
     parser.add_argument("--n-snapshots", type=int, default=30, help="temporal snapshots for MLE")
     parser.add_argument("--change-rate", type=float, default=0.05, help="temporal change rate")
+    parser.add_argument("--jobs", type=int, default=1, help="parallel workers for paired seeds")
     args = parser.parse_args()
 
     A0 = generate_topology(100, model="ba", m=3, seed=42)
@@ -79,29 +99,37 @@ def main():
     injected_template = base_params.copy()
     injected_template.update(mle_params)
 
+    seeds = [args.seed_base + i for i in range(args.n_repeats)]
     paired_runs = []
-    for i in range(args.n_repeats):
-        seed = args.seed_base + i
 
-        p_non = base_params.copy()
-        p_non["seed"] = seed
-        r_non = _run_once(A0, p_non)
-
-        p_inj = injected_template.copy()
-        p_inj["seed"] = seed
-        r_inj = _run_once(A0, p_inj)
-
-        paired_runs.append(
-            {
-                "run": i,
-                "seed": seed,
-                "non_injected": r_non,
-                "injected": r_inj,
-                "delta_improvement_pct_injected_minus_non": (
-                    r_inj["R_improvement_pct"] - r_non["R_improvement_pct"]
-                ),
+    if args.jobs <= 1:
+        for i, seed in enumerate(seeds):
+            row = _run_paired_seed(seed, A0, base_params, injected_template)
+            row["run"] = i
+            paired_runs.append(row)
+            print(
+                f"[{i + 1}/{args.n_repeats}] seed={seed} "
+                f"non={row['non_injected']['R_improvement_pct']:.2f}% "
+                f"inj={row['injected']['R_improvement_pct']:.2f}%"
+            )
+    else:
+        with ProcessPoolExecutor(max_workers=args.jobs) as ex:
+            fut_to_seed = {
+                ex.submit(_run_paired_seed, seed, A0, base_params, injected_template): seed
+                for seed in seeds
             }
-        )
+            for done_i, fut in enumerate(as_completed(fut_to_seed), start=1):
+                row = fut.result()
+                paired_runs.append(row)
+                print(
+                    f"[{done_i}/{args.n_repeats}] seed={row['seed']} "
+                    f"non={row['non_injected']['R_improvement_pct']:.2f}% "
+                    f"inj={row['injected']['R_improvement_pct']:.2f}%"
+                )
+
+        paired_runs.sort(key=lambda r: r["seed"])
+        for i, row in enumerate(paired_runs):
+            row["run"] = i
 
     non_imps = np.array([r["non_injected"]["R_improvement_pct"] for r in paired_runs], dtype=float)
     inj_imps = np.array([r["injected"]["R_improvement_pct"] for r in paired_runs], dtype=float)
