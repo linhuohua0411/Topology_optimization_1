@@ -10,8 +10,6 @@
 
 import numpy as np
 import time
-from scipy import sparse
-from scipy.sparse.csgraph import connected_components
 from .robustness import (
     compute_R, compute_R_components, compute_gradient_R, compute_R_s_only
 )
@@ -25,17 +23,9 @@ DEFAULT_PARAMS = {
     'alpha_G': 0.6,
     'lambda_L': 0.15,
     'lambda_G': 0.08,
-    # Updated default from weight auto-tune pilot (ED-MAIN-BASE).
-    'w1': 0.25,
-    'w2': 0.55,
-    'w3': 0.20,
-    # Online adaptive-weight controller (kept for ablation only; mainline uses fixed weights).
-    'adaptive_weights_enabled': False,
-    'adaptive_update_every': 5,
-    'adaptive_warmup_steps': 10,
-    'adaptive_eta': 0.12,
-    'adaptive_min_weight': 0.10,
-    'adaptive_max_weight': 0.70,
+    'w1': 0.3,
+    'w2': 0.4,
+    'w3': 0.3,
     'k_max': 15,
     'dt': 0.05,
     'max_steps': 200,
@@ -43,27 +33,7 @@ DEFAULT_PARAMS = {
     'convergence_threshold': 0.0005,
     'gradient_sample_ratio': 0.1,
     'gradient_epsilon': 1e-5,
-    # 默认使用 full，使优化目标与 R= w1*R_s + w2*R_c + w3*R_r 的梯度方向一致；
-    # R_s_only / R_s_R_r 保留用于消融与速度-精度权衡分析。
-    'gradient_mode': 'full',  # 'R_s_only'|'R_s_R_r'|'full'
-    # 分级近似：在 full 主目标下，周期性 full + 高频轻量梯度（默认 R_s_R_r）。
-    'gradient_tiered_enabled': True,
-    'gradient_tiered_warmup_steps': 10,
-    'gradient_tiered_full_every': 8,
-    'gradient_tiered_fast_mode': 'R_s_R_r',
-    'gradient_sampling_mode': 'structured',  # 'structured'|'random'
-    'gradient_hub_ratio': 0.2,
-    'gradient_bridge_ratio': 0.4,
-    # 软约束惩罚（训练期）与轻量硬约束（间歇+末段）。
-    'degree_penalty_lambda': 0.03,
-    'disconnect_penalty_lambda': 0.08,
-    'constraint_enforce_every': 5,
-    'final_repair_window': 8,
-    # 两阶段权重调度（更稳定，可复现）。
-    'two_phase_weight_schedule': True,
-    'phase_switch_ratio': 0.4,
-    'phase1_weights': (0.20, 0.60, 0.20),
-    'phase2_weights': (0.35, 0.35, 0.30),
+    'gradient_mode': 'R_s_only',  # 'R_s_only'|'R_s_R_r'|'full' 用于消融
     'seed': 42,
 }
 
@@ -91,49 +61,31 @@ def _apply_degree_constraint(A, k_max):
     return A
 
 
-def _apply_connectivity_constraint(A, weight=0.1, max_repairs=None):
-    """连通性约束：若图不连通则在连通分量之间添加边。
-
-    Returns:
-        (A, repairs_added)
-    """
+def _apply_connectivity_constraint(A, weight=0.1):
+    """连通性约束：若图不连通则在连通分量之间添加边。"""
     import networkx as nx
     binary = (A > 0).astype(int)
     G = nx.from_numpy_array(binary)
     components = list(nx.connected_components(G))
     if len(components) <= 1:
-        return A, 0
-
-    repairs_added = 0
-    if max_repairs is None:
-        max_repairs = len(components) - 1
-    max_repairs = max(0, int(max_repairs))
-    if max_repairs == 0:
-        return A, 0
+        return A
 
     main = components[0]
     for comp in components[1:]:
-        if repairs_added >= max_repairs:
-            break
         i = list(main)[0]
         j = list(comp)[0]
         A[i, j] = weight
         A[j, i] = weight
         main = main.union(comp)
-        repairs_added += 1
-    return A, repairs_added
+    return A
 
 
-def _apply_constraints(A, k_max, repair_weight=0.1, repair_budget_remaining=None):
+def _apply_constraints(A, k_max):
     """依次施加约束：非负 → 对称 → 度约束 → 连通性。"""
     A = _symmetrize_and_clip(A)
     A = _apply_degree_constraint(A, k_max)
-    A, repairs_added = _apply_connectivity_constraint(
-        A,
-        weight=repair_weight,
-        max_repairs=repair_budget_remaining,
-    )
-    return A, int(repairs_added)
+    A = _apply_connectivity_constraint(A)
+    return A
 
 
 def _evolution_rhs(A, grad_R, params, rng):
@@ -171,118 +123,20 @@ def _self_org_rhs(A, grad_R, params):
     return alpha_L * F_L + alpha_G * F_G
 
 
-def _compute_constraint_penalty(A, k_max, degree_lambda=0.0, disconnect_lambda=0.0):
-    """训练期软约束惩罚，避免每步都靠硬修复。"""
-    binary = (A > 0).astype(np.int32)
-    degrees = np.sum(binary, axis=1).astype(np.float64)
-    overflow = np.maximum(0.0, degrees - float(k_max))
-    degree_pen = 0.0
-    if float(k_max) > 0:
-        degree_pen = float(np.mean(overflow / float(k_max)))
-
-    n_comp, _ = connected_components(
-        csgraph=sparse.csr_matrix(binary), directed=False, return_labels=True
-    )
-    disconnect_pen = float(max(0, n_comp - 1)) / float(max(1, A.shape[0]))
-    total_pen = float(degree_lambda) * degree_pen + float(disconnect_lambda) * disconnect_pen
-    return total_pen, degree_pen, disconnect_pen
-
-
-def _compute_cached_gradient(A, params, rng, step=0):
+def _compute_cached_gradient(A, params, rng):
     """计算梯度并缓存。gradient_mode 见 robustness.compute_gradient_R。"""
     weights = (params['w1'], params['w2'], params['w3'])
-    gmode = params.get('gradient_mode', 'full')
-    if (
-        params.get('gradient_tiered_enabled', False)
-        and gmode == 'full'
-    ):
-        warmup = int(params.get('gradient_tiered_warmup_steps', 10))
-        full_every = max(1, int(params.get('gradient_tiered_full_every', 8)))
-        fast_mode = params.get('gradient_tiered_fast_mode', 'R_s_R_r')
-        if step > warmup and (step % full_every != 0):
-            gmode = fast_mode
     return compute_gradient_R(
         A,
         epsilon=params['gradient_epsilon'],
         sample_ratio=params['gradient_sample_ratio'],
         weights=weights,
         seed=rng.randint(0, 2**31),
-        gradient_mode=gmode,
-        sampling_mode=params.get('gradient_sampling_mode', 'structured'),
-        hub_ratio=float(params.get('gradient_hub_ratio', 0.2)),
-        bridge_ratio=float(params.get('gradient_bridge_ratio', 0.4)),
+        gradient_mode=params.get('gradient_mode', 'R_s_only'),
     )
 
 
-def _softmax(vec):
-    arr = np.asarray(vec, dtype=float)
-    arr = arr - np.max(arr)
-    exp = np.exp(arr)
-    denom = float(np.sum(exp))
-    if denom <= 0.0:
-        return np.array([1.0 / len(arr)] * len(arr), dtype=float)
-    return exp / denom
-
-
-def _project_weights_with_bounds(w, w_min=0.10, w_max=0.70):
-    """Project weights to simplex with lower/upper bounds."""
-    w = np.asarray(w, dtype=float)
-    w = np.clip(w, w_min, w_max)
-    s = float(np.sum(w))
-    if s <= 0.0:
-        return np.array([1.0 / 3.0] * 3, dtype=float)
-    w = w / s
-    for _ in range(8):
-        w = np.clip(w, w_min, w_max)
-        s = float(np.sum(w))
-        if s <= 0.0:
-            w = np.array([1.0 / 3.0] * 3, dtype=float)
-            break
-        w = w / s
-        if np.all(w >= w_min - 1e-9) and np.all(w <= w_max + 1e-9):
-            break
-    return w
-
-
-def _adaptive_weight_update(params, prev_comps, curr_comps):
-    """
-    Online adaptive update for (w1,w2,w3):
-    - If a component improves slowly, increase its weight.
-    - If it improves fast, slightly decrease to focus bottlenecks.
-    """
-    eta = float(params.get('adaptive_eta', 0.12))
-    w_min = float(params.get('adaptive_min_weight', 0.10))
-    w_max = float(params.get('adaptive_max_weight', 0.70))
-    eps = 1e-9
-
-    d_rs = float(curr_comps['R_s'] - prev_comps['R_s'])
-    d_rc = float(curr_comps['R_c'] - prev_comps['R_c'])
-    d_rr = float(curr_comps['R_r'] - prev_comps['R_r'])
-    deltas = np.array([d_rs, d_rc, d_rr], dtype=float)
-
-    # Smaller improvement => larger bonus.
-    inv = 1.0 / (np.abs(deltas) + eps)
-    inv = inv / float(np.sum(inv))
-    signs = np.sign(deltas)
-    feedback = inv - 0.15 * signs
-
-    w_vec = np.array([params['w1'], params['w2'], params['w3']], dtype=float)
-    logits = np.log(np.maximum(w_vec, eps)) + eta * feedback
-    w_new = _softmax(logits)
-    w_new = _project_weights_with_bounds(w_new, w_min=w_min, w_max=w_max)
-
-    params['w1'], params['w2'], params['w3'] = float(w_new[0]), float(w_new[1]), float(w_new[2])
-
-
-def evolve_step(
-    A,
-    params,
-    rng=None,
-    timing_acc=None,
-    repair_budget_state=None,
-    step=0,
-    enforce_constraints=True,
-):
+def evolve_step(A, params, rng=None, timing_acc=None):
     """单步：演化动力学 RK4 -> 自组织动力学 RK4 -> 约束。返回 A_next。
     timing_acc: 可选，可变 dict，将记录 gradient_s, evolution_constraints_s。
     """
@@ -293,7 +147,7 @@ def evolve_step(
     k_max = params['k_max']
 
     t0 = time.time()
-    grad_R = _compute_cached_gradient(A, params, rng, step=step)
+    grad_R = _compute_cached_gradient(A, params, rng)
     t_grad = time.time() - t0
 
     k1 = _evolution_rhs(A, grad_R, params, rng)
@@ -310,26 +164,12 @@ def evolve_step(
     A_step = A_evo + (dt / 6.0) * (s1 + 2 * s2 + 2 * s3 + s4)
 
     t_evo_start = time.time()
-    repair_budget_remaining = None
-    if repair_budget_state is not None:
-        repair_budget_remaining = repair_budget_state.get('remaining')
-    if enforce_constraints:
-        A_next, repairs_added = _apply_constraints(
-            A_step,
-            k_max,
-            repair_weight=float(params.get('connectivity_repair_weight', 0.1)),
-            repair_budget_remaining=repair_budget_remaining,
-        )
-    else:
-        A_next = _symmetrize_and_clip(A_step)
-        repairs_added = 0
-    if repair_budget_state is not None and repair_budget_remaining is not None:
-        repair_budget_state['remaining'] = max(0, int(repair_budget_remaining) - int(repairs_added))
+    A_next = _apply_constraints(A_step, k_max)
     t_evo = time.time() - t_evo_start
     if timing_acc is not None:
         timing_acc['gradient_s'] = timing_acc.get('gradient_s', 0) + t_grad
         timing_acc['evolution_constraints_s'] = timing_acc.get('evolution_constraints_s', 0) + t_evo
-    return A_next, int(repairs_added)
+    return A_next
 
 
 def run_optimization(A0, params=None, verbose=True, profile_timing=False):
@@ -360,9 +200,6 @@ def run_optimization(A0, params=None, verbose=True, profile_timing=False):
         'R_s': comps['R_s'],
         'R_c': comps['R_c'],
         'R_r': comps['R_r'],
-        'w1': float(params['w1']),
-        'w2': float(params['w2']),
-        'w3': float(params['w3']),
         'time': 0.0,
     }]
 
@@ -375,57 +212,10 @@ def run_optimization(A0, params=None, verbose=True, profile_timing=False):
     timing_acc = {} if profile_timing else None
     t_rob_total = 0.0
 
-    adaptive_on = bool(params.get('adaptive_weights_enabled', False))
-    adaptive_every = max(1, int(params.get('adaptive_update_every', 5)))
-    adaptive_warmup = max(0, int(params.get('adaptive_warmup_steps', 10)))
-    repair_penalty_lambda = float(params.get('connectivity_repair_penalty_lambda', 0.0))
-    degree_penalty_lambda = float(params.get('degree_penalty_lambda', 0.0))
-    disconnect_penalty_lambda = float(params.get('disconnect_penalty_lambda', 0.0))
-    repair_budget_total = params.get('connectivity_repair_budget')
-    if repair_budget_total is None:
-        ratio = float(params.get('connectivity_repair_budget_ratio', 0.0))
-        if ratio > 0.0:
-            min_budget = int(params.get('connectivity_repair_budget_min', 0))
-            repair_budget_total = max(min_budget, int(round(ratio * A.shape[0])))
-    repair_budget_state = {'remaining': int(repair_budget_total)} if repair_budget_total is not None else {'remaining': None}
-    cumulative_repairs = 0
-    best_adjusted_R = best_R - repair_penalty_lambda * cumulative_repairs
-    two_phase_on = bool(params.get('two_phase_weight_schedule', False))
-    phase_switch_ratio = float(params.get('phase_switch_ratio', 0.4))
-    phase_switch_step = max(1, int(round(phase_switch_ratio * max_steps)))
-    phase1 = tuple(float(x) for x in params.get('phase1_weights', (0.20, 0.60, 0.20)))
-    phase2 = tuple(float(x) for x in params.get('phase2_weights', (0.35, 0.35, 0.30)))
-    enforce_every = max(1, int(params.get('constraint_enforce_every', 5)))
-    final_repair_window = max(1, int(params.get('final_repair_window', 8)))
-
     for step in range(1, max_steps + 1):
-        if two_phase_on:
-            if step <= phase_switch_step:
-                params['w1'], params['w2'], params['w3'] = phase1
-            else:
-                params['w1'], params['w2'], params['w3'] = phase2
-
-        enforce_constraints = (step % enforce_every == 0) or (step > max_steps - final_repair_window)
-        A, repairs_added = evolve_step(
-            A,
-            params,
-            rng,
-            timing_acc=timing_acc,
-            repair_budget_state=repair_budget_state,
-            step=step,
-            enforce_constraints=enforce_constraints,
-        )
-        cumulative_repairs += int(repairs_added)
+        A = evolve_step(A, params, rng, timing_acc=timing_acc)
         t_rob = time.time()
-        weights = (params['w1'], params['w2'], params['w3'])
         comps = compute_R_components(A, weights)
-        c_pen, deg_pen, disc_pen = _compute_constraint_penalty(
-            A,
-            params['k_max'],
-            degree_lambda=degree_penalty_lambda,
-            disconnect_lambda=disconnect_penalty_lambda,
-        )
-        adjusted_R = comps['R'] - repair_penalty_lambda * cumulative_repairs - c_pen
         if profile_timing:
             t_rob_total += time.time() - t_rob
         elapsed = time.time() - t_start
@@ -436,30 +226,20 @@ def run_optimization(A0, params=None, verbose=True, profile_timing=False):
             'R_s': comps['R_s'],
             'R_c': comps['R_c'],
             'R_r': comps['R_r'],
-            'w1': float(params['w1']),
-            'w2': float(params['w2']),
-            'w3': float(params['w3']),
-            'repair_added': int(repairs_added),
-            'repair_cumulative': int(cumulative_repairs),
-            'degree_penalty': float(deg_pen),
-            'disconnect_penalty': float(disc_pen),
-            'constraint_penalty': float(c_pen),
-            'R_adjusted': float(adjusted_R),
             'time': elapsed,
         })
 
-        if adjusted_R > best_adjusted_R:
+        if comps['R'] > best_R:
             best_R = comps['R']
-            best_adjusted_R = adjusted_R
             A_star = A.copy()
 
         if verbose and step % 10 == 0:
             print(f"Step {step}: R={comps['R']:.6f} (best={best_R:.6f}) "
                   f"[{elapsed:.1f}s]")
 
-        if step >= min_steps and abs(adjusted_R - prev_R) < conv_thresh:
+        if step >= min_steps and abs(comps['R'] - prev_R) < conv_thresh:
             if verbose:
-                print(f"Converged at step {step} (ΔR_adj={abs(adjusted_R - prev_R):.6f})")
+                print(f"Converged at step {step} (ΔR={abs(comps['R'] - prev_R):.6f})")
             break
 
         time_limit = params.get('time_limit')
@@ -468,10 +248,7 @@ def run_optimization(A0, params=None, verbose=True, profile_timing=False):
                 print(f"Time limit reached at step {step} ({elapsed:.1f}s)")
             break
 
-        if (not two_phase_on) and adaptive_on and step >= adaptive_warmup and (step % adaptive_every == 0):
-            _adaptive_weight_update(params, history[-2], history[-1])
-
-        prev_R = adjusted_R
+        prev_R = comps['R']
 
     total_time = time.time() - t_start
     if verbose:

@@ -1,0 +1,40 @@
+{
+  "non_injected_improvement_mean_pct": 40.80420229744026,
+  "non_injected_improvement_std_pct": 2.048722232858019,
+  "injected_improvement_mean_pct": 32.22407429954242,
+  "injected_improvement_std_pct": 1.7130922955227315,
+  "delta_mean_pct": -8.580127997897836,
+  "delta_std_pct": 2.143267175813288
+}
+
+Saved: /home/ly/project/Topology_optimization_1/experiments/metrics/mle_injection_comparison.json
+2.84%
+[12/30] seed=53 non=39.08% inj=32.23%
+[13/30] seed=52 non=44.39% inj=33.56%
+[14/30] seed=55 non=38.90% inj=29.02%
+[15/30] seed=56 non=42.15% inj=32.87%
+[16/30] seed=57 non=40.86% inj=32.34%
+[17/30] seed=58 non=41.26% inj=33.12%
+[18/30] seed=61 non=35.17% inj=31.92%
+[19/30] seed=59 non=41.72% inj=34.09%
+[20/30] seed=60 non=41.86% inj=31.63%
+[21/30] seed=63 non=39.29% inj=32.20%
+[22/30] seed=62 non=42.50% inj=34.82%
+[23/30] seed=64 non=40.57% inj=31.16%
+[24/30] seed=66 non=37.59% inj=31.53%
+[25/30] seed=65 non=42.39% inj=30.68%
+[26/30] seed=67 non=41.72% inj=29.58%
+[27/30] seed=68 non=40.89% inj=33.24%
+[28/30] seed=70 non=37.70% inj=28.48%
+[29/30] seed=69 non=38.35% inj=34.52%
+[30/30] seed=71 non=41.34% inj=35.88%
+{
+  "non_injected_improvement_mean_pct": 40.80420229744026,
+  "non_injected_improvement_std_pct": 2.048722232858019,
+  "injected_improvement_mean_pct": 32.22407429954242,
+  "injected_improvement_std_pct": 1.7130922955227315,
+  "delta_mean_pct": -8.580127997897836,
+  "delta_std_pct": 2.143267175813288
+}
+
+Saved: /home/ly/project/Topology_optimization_1/experiments/metrics/mle_injection_comparison.json

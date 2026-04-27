@@ -1,4 +1,0 @@
-experiment_id,metric,baseline,n_raw,mean_raw,p_raw,test_raw,n_trim,mean_trim,p_trim,test_trim
-ED-MAIN-BASE,avg_path_len,M-FPS,20,-0.1298014721127929,8.819870204194453e-05,wilcoxon_signed_rank_delta_vs_0,19,-0.12890171728304797,1.5526961884470163e-30,one_sample_t_delta_vs_0
-ED-MAIN-BASE,lcc_ratio,M-RESI,20,0.007547169811320753,6.334248366623973e-05,wilcoxon_signed_rank_delta_vs_0,19,0.007447864945382322,0.00010751117672950055,wilcoxon_signed_rank_delta_vs_0
-ED-MAIN-NETEM,R,M-STAT,20,-0.060498029038918696,1.1532286667827873e-07,one_sample_t_delta_vs_0,19,-0.05751574279143267,2.0924781415045945e-07,one_sample_t_delta_vs_0

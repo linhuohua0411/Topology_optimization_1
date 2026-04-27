@@ -1,8 +1,0 @@
-# 在 eth_node_cleaner 目录下，运行下面的命令，从而准备好wheels文件
-# docker run --rm -v "$(pwd):/app" -w /app f1d53a66de3c35d8a921558f3b4bdbbd pip wheel -r requirements.txt -w wheels
-aiohttp==3.9.1
-asyncpg==0.30.0
-neo4j==5.14.1
-redis==5.0.1
-psutil==6.0.0
-web3==6.15.1

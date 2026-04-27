@@ -47,7 +47,7 @@ def resinet_optimize(
     best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
     best_R = float(comps0['R'])
     A_best = A.copy()
-    history = [{'step': 0, 'R': best_R, 'time': 0.0}]
+    history = [{'step': 0, 'R': best_R}]
 
     import time
     t0 = time.time()
@@ -140,7 +140,7 @@ def fpsblo_optimize(
     best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
     best_R = float(comps0['R'])
     A_best = A.copy()
-    history = [{'step': 0, 'R': best_R, 'time': 0.0}]
+    history = [{'step': 0, 'R': best_R}]
 
     import time
     t0 = time.time()
@@ -206,7 +206,7 @@ def static_optimize(
     best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
     best_R = float(comps0['R'])
     A_best = A.copy()
-    history = [{'step': 0, 'R': best_R, 'time': 0.0}]
+    history = [{'step': 0, 'R': best_R}]
 
     import time
     t0 = time.time()
@@ -278,7 +278,7 @@ def attack_simulation_optimize(
     best_obj, comps0 = _objective_with_disconnect_penalty(A, weights, disconnect_penalty)
     best_R = float(comps0['R'])
     A_best = A.copy()
-    history = [{'step': 0, 'R': best_R, 'time': 0.0}]
+    history = [{'step': 0, 'R': best_R}]
 
     import time
     t0 = time.time()

@@ -1,14 +1,15 @@
 # 实验配置与产出
 
-本目录存放实验配置与指标产出，当前以 Eth-Docker 本地实验主线为准（采集、后处理、图优化、机制消融）。
+本目录存放实验配置与指标产出，与 TIFS 计划 5.1（以太坊/波卡分工）及 4.4（攻击与性能数据）对应。
 
 ## 子目录
 
 - **`metrics/`**：结构指标与性能指标时间序列、单轮汇总表（按 run_id 存放 structure_*.csv、perf_timeseries_*.csv 等）
-- **机制消融脚本**：
-  - `run_component_ablation_ed.py`（组件消融：`full` vs `wo_evolution` / `wo_self_organization` / `wo_Rc` / `wo_Rr`）
-  - `run_mle_injection_comparison.py`（MLE 注入 vs 非注入 paired 对照）
-- **配置来源说明**：当前版本未单独维护 `configs/` 目录，主要实验参数直接在脚本中固定；如需统一配置化管理，可后续新增 `configs/` 并把参数外置。
+- **配置来源说明**：当前版本未单独维护 `configs/` 目录，主要实验参数直接在脚本中固定：
+  - `run_all_experiments.py`
+  - `run_eth_real_experiments.py`
+  - `run_real_dual_network_experiments.py`
+  如需统一配置化管理，可后续新增 `configs/` 并把参数外置。
 
 ## run_id 与拓扑形态
 

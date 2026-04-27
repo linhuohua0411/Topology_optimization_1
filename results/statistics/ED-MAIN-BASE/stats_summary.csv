@@ -1,2 +1,0 @@
-comparison_id,stat_key,budget_variant,experiment_id,test_name,n,mean,std,ci95_low,ci95_high,p_value,p_value_holm,effect_size,effect_size_name
-CMP-ED-MAIN-BASE-RUN-MEAN-R-DESCRIPTIVE,R.run_mean_across_samples,raw,ED-MAIN-BASE,descriptive_ci_across_runs,20,0.6508259539892702,0.009074423751376142,0.6465789929436672,0.6550729150348733,,,,

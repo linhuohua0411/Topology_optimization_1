@@ -1,0 +1,14 @@
+{
+  "network": "eth",
+  "total_snapshots": 1,
+  "interval_seconds": 1,
+  "n_nodes": 106,
+  "edge_counts": [
+    1313
+  ],
+  "start_time": "2026-03-19T07:56:59.776988+00:00",
+  "end_time": "2026-03-19T07:56:59.776988+00:00",
+  "edge_changes": [
+    0
+  ]
+}
