@@ -1,0 +1,304 @@
+{
+  "input_root": "results/raw/eth_docker",
+  "processed_root": "/home/ly/project/Topology_optimization_1/results/processed/eth_docker",
+  "n_runs": 10,
+  "budget_variant": "raw",
+  "scenarios": {
+    "ED-MAIN-BASE": {
+      "run-000": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-000/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-000/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-000/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-000/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-001": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-001/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-001/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-001/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-001/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-002": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-002/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-002/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-002/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-002/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-003": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-003/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-003/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-003/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-003/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-004": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-004/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-004/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-004/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-004/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-005": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-005/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-005/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-005/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-005/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-006": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-006/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-006/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-006/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-006/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-007": {
+        "status": "ok",
+        "n_rows": 15,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-BASE/run-007/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-007/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-BASE/run-007/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-007/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-008": {
+        "status": "missing_run_dir"
+      },
+      "run-009": {
+        "status": "missing_run_dir"
+      }
+    },
+    "ED-MAIN-LINK": {
+      "run-000": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-LINK/run-000/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-LINK/run-000/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-LINK/run-000/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-LINK/run-000/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-001": {
+        "status": "missing_run_dir"
+      },
+      "run-002": {
+        "status": "missing_run_dir"
+      },
+      "run-003": {
+        "status": "missing_run_dir"
+      },
+      "run-004": {
+        "status": "missing_run_dir"
+      },
+      "run-005": {
+        "status": "missing_run_dir"
+      },
+      "run-006": {
+        "status": "missing_run_dir"
+      },
+      "run-007": {
+        "status": "missing_run_dir"
+      },
+      "run-008": {
+        "status": "missing_run_dir"
+      },
+      "run-009": {
+        "status": "missing_run_dir"
+      }
+    },
+    "ED-MAIN-NETEM": {
+      "run-000": {
+        "status": "ok",
+        "n_rows": 19,
+        "field_status": {
+          "timestamp_utc": "present",
+          "experiment_id": "present",
+          "run_id": "present",
+          "phase": "present",
+          "attack_label": "present",
+          "attack_params": "present",
+          "R": "present",
+          "lcc_ratio": "present",
+          "avg_path_len": "present",
+          "peer_count_el": "present",
+          "budget_variant": "present"
+        },
+        "outputs": [
+          "results/raw/eth_docker/ED-MAIN-NETEM/run-000/results_rows_fast.json",
+          "results/raw/eth_docker/ED-MAIN-NETEM/run-000/metrics_timeseries_fast.csv",
+          "results/raw/eth_docker/ED-MAIN-NETEM/run-000/topology_metrics_timeseries.csv",
+          "/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-NETEM/run-000/topology_metrics_timeseries.csv"
+        ]
+      },
+      "run-001": {
+        "status": "missing_run_dir"
+      },
+      "run-002": {
+        "status": "missing_run_dir"
+      },
+      "run-003": {
+        "status": "missing_run_dir"
+      },
+      "run-004": {
+        "status": "missing_run_dir"
+      },
+      "run-005": {
+        "status": "missing_run_dir"
+      },
+      "run-006": {
+        "status": "missing_run_dir"
+      },
+      "run-007": {
+        "status": "missing_run_dir"
+      },
+      "run-008": {
+        "status": "missing_run_dir"
+      },
+      "run-009": {
+        "status": "missing_run_dir"
+      }
+    }
+  }
+}

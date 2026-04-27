@@ -161,7 +161,9 @@ def save_snapshot(snapshot, output_dir, idx=0):
 def collect_multiple_snapshots(n_snapshots=30, interval_seconds=300, output_dir=None):
     """采集多个时序拓扑快照。"""
     if output_dir is None:
-        output_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'private_eth')
+        output_dir = os.path.join(
+            os.path.dirname(__file__), "..", "results", "derived", "eth_snapshots"
+        )
 
     print("Discovering containers...")
     containers = discover_containers()

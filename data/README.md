@@ -6,9 +6,11 @@
 
 | 目录 | 用途 |
 |------|------|
-| `private_eth/` | 以太坊 100 节点私有链：拓扑快照、时序 `{A(t_k)}`、性能与攻击实验指标 |
+| `private_eth/` | **已废弃**（本仓库 TIFS Eth-Docker 主线使用 **`results/raw/eth_docker`**；历史脚本若仍存在，勿再依赖此路径） |
 | `private_dot/` | 波卡 100 节点私有链：拓扑快照、时序、结构指标与鲁棒性 R 相关数据 |
 | `sepolia/` | Sepolia 测试网爬虫数据：节点、边列表、多时刻拓扑 |
+
+**Eth 相关导出（推荐）**：`results/raw/eth_docker/`（**主线**：观测采集 `sample_*.json` → **`run_eth_docker_experiments.py` 默认输入**）；`results/derived/eth_snapshots/`（**仅迁移/回放**：`run_eth_docker_experiments.py --from-snapshots` 用 `snapshot_*.json`）；`results/derived/eth_cloud_snapshots/`（远程/全量采集脚本默认输出）。口径与 **`protocol/04` §二**、**`claim_traceability.md` C007** 一致。
 
 ## 文件命名约定
 

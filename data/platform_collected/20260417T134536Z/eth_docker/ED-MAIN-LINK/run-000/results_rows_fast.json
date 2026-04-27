@@ -1,0 +1,401 @@
+[
+  {
+    "timestamp_utc": "2026-04-17T12:38:55.842631+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "pre_attack",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7242647442464989,
+    "Rs": 0.5738530072795706,
+    "Rc": 0.6580097495377375,
+    "Rr": 0.9630164741584424,
+    "lcc_ratio": 0.9905660377358491,
+    "avg_path_len": 1.6804029304029304,
+    "components": 2,
+    "peer_count_el": 33.58490566037736
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:39:54.121937+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "pre_attack",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7242647442464989,
+    "Rs": 0.5738530072795706,
+    "Rc": 0.6580097495377375,
+    "Rr": 0.9630164741584424,
+    "lcc_ratio": 0.9905660377358491,
+    "avg_path_len": 1.6804029304029304,
+    "components": 2,
+    "peer_count_el": 33.58490566037736
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:40:51.980595+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "pre_attack",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6263945340874907,
+    "Rs": 0.6234610834084081,
+    "Rc": 0.668851907883678,
+    "Rr": 0.5727181530383235,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6833782569631626,
+    "components": 1,
+    "peer_count_el": 33.9622641509434
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:42:26.987144+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "attack_ramp",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6260352676009966,
+    "Rs": 0.6232938129150277,
+    "Rc": 0.6685997646663305,
+    "Rr": 0.5720240595331866,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6842767295597485,
+    "components": 1,
+    "peer_count_el": 33.62264150943396
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:43:33.163381+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "attack_ramp",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7226774125037685,
+    "Rs": 0.5735018487300821,
+    "Rc": 0.6544797444948731,
+    "Rr": 0.9627832002893153,
+    "lcc_ratio": 0.9905660377358491,
+    "avg_path_len": 1.6836996336996337,
+    "components": 2,
+    "peer_count_el": 33.35849056603774
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:44:39.784224+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "attack_ramp",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.715526948062968,
+    "Rs": 0.5695324162722568,
+    "Rc": 0.6438897293662801,
+    "Rr": 0.957037771449263,
+    "lcc_ratio": 0.9811320754716981,
+    "avg_path_len": 1.6807318894697536,
+    "components": 3,
+    "peer_count_el": 32.9811320754717
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:45:46.114725+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "attack_ramp",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.715508830489139,
+    "Rs": 0.5694640443250031,
+    "Rc": 0.6438897293662801,
+    "Rr": 0.9570457514837534,
+    "lcc_ratio": 0.9811320754716981,
+    "avg_path_len": 1.6805451829723674,
+    "components": 3,
+    "peer_count_el": 33.0
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:46:51.741293+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "attack_ramp",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.715508830489139,
+    "Rs": 0.5694640443250031,
+    "Rc": 0.6438897293662801,
+    "Rr": 0.9570457514837534,
+    "lcc_ratio": 0.9811320754716981,
+    "avg_path_len": 1.6805451829723674,
+    "components": 3,
+    "peer_count_el": 33.0
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:47:50.248410+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "under_attack",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7199346469667591,
+    "Rs": 0.570031111435461,
+    "Rc": 0.6520423600605144,
+    "Rr": 0.9603612317063831,
+    "lcc_ratio": 0.9905660377358491,
+    "avg_path_len": 1.697069597069597,
+    "components": 2,
+    "peer_count_el": 33.028301886792455
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:48:48.825095+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "under_attack",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6251183208650424,
+    "Rs": 0.6219093839526861,
+    "Rc": 0.668851907883678,
+    "Rr": 0.5700158084192181,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6855345911949686,
+    "components": 1,
+    "peer_count_el": 33.783018867924525
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:49:46.989186+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "under_attack",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6251183208650424,
+    "Rs": 0.6219093839526861,
+    "Rc": 0.668851907883678,
+    "Rr": 0.5700158084192181,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6855345911949686,
+    "components": 1,
+    "peer_count_el": 33.783018867924525
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:50:45.169017+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6251183208650424,
+    "Rs": 0.6219093839526861,
+    "Rc": 0.668851907883678,
+    "Rr": 0.5700158084192181,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6855345911949686,
+    "components": 1,
+    "peer_count_el": 33.783018867924525
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:51:43.584634+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7231416868430603,
+    "Rs": 0.5722746721958405,
+    "Rc": 0.6565809379727685,
+    "Rr": 0.9627563666506692,
+    "lcc_ratio": 0.9905660377358491,
+    "avg_path_len": 1.6826007326007326,
+    "components": 2,
+    "peer_count_el": 33.443396226415096
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:52:41.730848+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7037240015484081,
+    "Rs": 0.582256405534696,
+    "Rc": 0.6660783324928559,
+    "Rr": 0.8753858229695234,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6981132075471699,
+    "components": 1,
+    "peer_count_el": 33.471698113207545
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:53:39.846283+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6251912747377816,
+    "Rs": 0.6211166123705861,
+    "Rc": 0.6696923852748361,
+    "Rr": 0.569931123055571,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6851752021563342,
+    "components": 1,
+    "peer_count_el": 33.820754716981135
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:54:37.673208+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6251912747377816,
+    "Rs": 0.6211166123705861,
+    "Rc": 0.6696923852748361,
+    "Rr": 0.569931123055571,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6851752021563342,
+    "components": 1,
+    "peer_count_el": 33.820754716981135
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:55:35.364611+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "post_recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6251912747377816,
+    "Rs": 0.6211166123705861,
+    "Rc": 0.6696923852748361,
+    "Rr": 0.569931123055571,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6851752021563342,
+    "components": 1,
+    "peer_count_el": 33.820754716981135
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:56:33.587270+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "post_recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.7251206192393906,
+    "Rs": 0.5718590766408523,
+    "Rc": 0.661875945537065,
+    "Rr": 0.9627083934410299,
+    "lcc_ratio": 0.9905660377358491,
+    "avg_path_len": 1.6822344322344323,
+    "components": 2,
+    "peer_count_el": 33.443396226415096
+  },
+  {
+    "timestamp_utc": "2026-04-17T12:57:31.754346+00:00",
+    "platform": "eth_docker",
+    "experiment_id": "ED-MAIN-LINK",
+    "run_id": "run-000",
+    "phase": "post_recovery",
+    "attack_label": "link_down",
+    "attack_params": {
+      "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+      "duration_seconds": 255
+    },
+    "budget_variant": "raw",
+    "R": 0.6292577378196257,
+    "Rs": 0.6184658279448844,
+    "Rc": 0.6693561943183728,
+    "Rr": 0.5865850390293712,
+    "lcc_ratio": 1.0,
+    "avg_path_len": 1.6873315363881403,
+    "components": 1,
+    "peer_count_el": 33.74528301886792
+  }
+]

@@ -1,0 +1,1514 @@
+[
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.07677808583266077
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1445158614969937
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.007898541500307665
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1445158614969937
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.011937688635380583
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.15902964959568733
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.03777198806147353
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14689681387794606
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.08373793273260055
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1448752505356279
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.014858388400247446
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1448752505356279
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.004977841735440802
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.15938903863432152
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.030812141161533746
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14725620291658026
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.06460056998494879
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14146105466860193
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": 0.0042789743474043185
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14146105466860193
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.024115204483092567
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.15597484276729556
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.04994950390918551
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-000",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1438420070495543
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.12682738556414286
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12242725827631507
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.09922789639193907
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13548966756513936
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.007875862048773108
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12902066486972164
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.07181800328464683
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13387241689128482
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.1296433033362553
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12350542539221787
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.1020438141640515
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13656783468104217
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.005059944276660677
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13009883198562444
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.0690020855125344
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13495058400718762
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.09198933159592293
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12009122952519191
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.06438984242371915
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1331536388140162
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.042713916016993037
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12668463611859848
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.10665605725286675
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-001",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13153638814016166
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.1162647011267558
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13908355795148242
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.08698812429096614
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1326145552560647
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.011485860494055866
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12722371967654977
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.07479543478599882
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13045822102425864
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.11700294630417685
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14106019766397115
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.08772636946838719
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13459119496855343
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.010747615316634818
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1292003593890385
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.07405718960857777
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13243486073674737
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.07173959969150445
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1383647798742138
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.042463022855714794
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13189577717879608
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.05601096192930721
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12650494159928116
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.11932053622125016
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-002",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12973944294699002
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.1336997011401002
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.11971456216739251
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.07335279683290863
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1274034141958671
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": -0.006932005842566702
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12722371967655
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.06621750299040619
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12991913746630734
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.1346930476928092
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12223028543783276
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.07434614338561762
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12991913746630734
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": -0.007925352395275698
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12973944294699025
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.06522415643769719
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1324348607367476
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.08496825626726534
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.11773792245490378
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.024621351960073756
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12542677448337836
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.04179943903026817
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12524707996406126
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.11494894786324106
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-003",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1279424977538186
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.13709411615472777
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12239615730181774
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.06951541882507761
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13009883198562444
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.007748471746892305
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1290206648697214
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.07625803677834153
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13189577717879608
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.14533836260639577
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12383371345635497
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.0777596652767456
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13153638814016166
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": -0.0004957747047756866
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.13045822102425864
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.06801379032667354
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.1333333333333333
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.09384908368821732
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.11916165595410888
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.026270386358567155
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12686433063791558
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.05099350421340276
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12578616352201255
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.11950306924485199
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-004",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12866127583108722
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.09675419088185166
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12303545511092695
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.06984620401590669
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12303545511092695
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": -0.016310095739471953
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14123989218328847
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.009060639345604526
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "full_default",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12596585804132987
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.09229885045887432
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12393392770751266
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.06539086359292934
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12393392770751266
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": -0.011854755316494603
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14213836477987418
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.013515979768581876
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "stability_first",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12686433063791558
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "R.paired_delta",
+    "delta": -0.060557467304434454
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-RESI",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12267606607229253
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "R.paired_delta",
+    "delta": -0.033649480438489476
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-STAT",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12267606607229253
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "R.paired_delta",
+    "delta": 0.01988662783794526
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.0
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-ASIM",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.14088050314465406
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "R.paired_delta",
+    "delta": 0.04525736292302174
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "lcc_ratio.paired_delta",
+    "delta": 0.009433962264150941
+  },
+  {
+    "profile_id": "connectivity_bias",
+    "run_id": "run-005",
+    "method_id": "M-FPS",
+    "stat_key": "avg_path_len.paired_delta",
+    "delta": -0.12560646900269545
+  }
+]

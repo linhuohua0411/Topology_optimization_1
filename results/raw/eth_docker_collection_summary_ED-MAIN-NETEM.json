@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-04-23T07:35:27.705686+00:00",
+  "platform": "eth_docker",
+  "collector": "experiments/eth_docker_collect/ed_main_netem/collect.py",
+  "n_runs_per_scenario": 10,
+  "interval_seconds": 3,
+  "attack_tier": "high",
+  "scenarios": [
+    "ED-MAIN-NETEM"
+  ],
+  "effective_scenarios": [
+    "ED-MAIN-NETEM-high"
+  ],
+  "output_dir": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker",
+  "continue_on_error": true,
+  "errors": [],
+  "legacy_flat_exp_id": false
+}

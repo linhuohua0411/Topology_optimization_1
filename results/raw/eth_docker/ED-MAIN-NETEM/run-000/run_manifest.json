@@ -1,0 +1,39 @@
+{
+  "generated_at_utc": "2026-04-17T13:42:01.871476+00:00",
+  "experiment_id": "ED-MAIN-NETEM",
+  "run_id": "run-000",
+  "attack_label": "tc_netem",
+  "attack_params": {
+    "container_name": "as102brd-router0-10.102.0.254",
+    "interface": "ix52",
+    "bandwidth_mbit": 20,
+    "delay_ms": 180,
+    "jitter_ms": 30,
+    "loss_pct": 3.0,
+    "duration_seconds": 255
+  },
+  "interval_seconds": 30,
+  "phase_plan": [
+    [
+      "pre_attack",
+      3
+    ],
+    [
+      "attack_ramp",
+      5
+    ],
+    [
+      "under_attack",
+      3
+    ],
+    [
+      "recovery",
+      5
+    ],
+    [
+      "post_recovery",
+      3
+    ]
+  ],
+  "n_samples": 19
+}

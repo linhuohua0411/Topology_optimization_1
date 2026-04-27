@@ -1,0 +1,61 @@
+--- restart 2026-04-18T15:04:15+08:00 n_runs=10 ---
+[collect] ED-MAIN-BASE none tier=none run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-000/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-001/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=2
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-002/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=3
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-003/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=4
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-004/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=5
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-005/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=6
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-006/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=7
+[collect] ED-MAIN-BASE none tier=none run=8
+[collect] ED-MAIN-BASE none tier=none run=9
+[collect] ED-MAIN-LINK link_down tier=mid run=0
+[error] ED-MAIN-LINK run-000: inject link_down failed for as101h-Ethereum-POS-5-10.101.1.72: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=1
+[error] ED-MAIN-LINK run-001: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=2
+[error] ED-MAIN-LINK run-002: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=3
+[error] ED-MAIN-LINK run-003: inject link_down failed for as101h-Ethereum-POS-4-10.101.1.71: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=4
+[error] ED-MAIN-LINK run-004: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=5
+[error] ED-MAIN-LINK run-005: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=6
+[error] ED-MAIN-LINK run-006: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'already_down', 'container_name': 'as101h-Ethereum-POS-3-10.101.0.73'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=7
+[error] ED-MAIN-LINK run-007: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=8
+[error] ED-MAIN-LINK run-008: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'already_down', 'container_name': 'as101h-Ethereum-POS-3-10.101.0.73'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=9
+[error] ED-MAIN-LINK run-009: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=0
+[error] ED-MAIN-NETEM run-000: no available wan target for tc_netem
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=1
+[error] ED-MAIN-NETEM run-001: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=2
+[error] ED-MAIN-NETEM run-002: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=3
+[error] ED-MAIN-NETEM run-003: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=4

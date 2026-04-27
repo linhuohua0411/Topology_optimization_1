@@ -1,0 +1,553 @@
+services:
+    39e016aa9e819f203ebc1809245a5818:
+        build:
+            context: .
+            dockerfile: dummies/39e016aa9e819f203ebc1809245a5818
+        image: 39e016aa9e819f203ebc1809245a5818
+
+    f1d53a66de3c35d8a921558f3b4bdbbd:
+        build:
+            context: .
+            dockerfile: dummies/f1d53a66de3c35d8a921558f3b4bdbbd
+        image: f1d53a66de3c35d8a921558f3b4bdbbd
+
+    # === 数据库服务 ===
+    postgresql:
+        image: postgres:15-alpine
+        container_name: eth_postgresql
+        ports:
+            - "5433:5432"
+        environment:
+            - POSTGRES_DB=ethereum_monitor
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+        volumes:
+            - postgresql_data:/var/lib/postgresql/data
+            - ./postgresql/init:/docker-entrypoint-initdb.d
+        networks:
+            - net_151_net0
+            - net_152_net0
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres -d ethereum_monitor"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    redis:
+        image: redis:7-alpine
+        container_name: eth_redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - net_151_net0
+            - net_152_net0
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    # === 现有服务 ===
+    brdnode_2_r100:
+        build: ./brdnode_2_r100
+        container_name: as2brd-r100-10.100.0.2
+        depends_on:
+            - 39e016aa9e819f203ebc1809245a5818
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_ix_ix100:
+                ipv4_address: 10.100.0.2
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "2"
+            org.seedsecuritylabs.seedemu.meta.nodename: "r100"
+            org.seedsecuritylabs.seedemu.meta.role: "BorderRouter"
+            org.seedsecuritylabs.seedemu.meta.loopback_addr: "10.0.0.1"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "ix100"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.100.0.2/24"
+
+        environment:
+            - CONTAINER_NAME=as2brd-r100-10.100.0.2
+            
+    brdnode_21_r100:
+        build: ./brdnode_21_r100
+        container_name: as21brd-r100-10.100.0.21
+        depends_on:
+            - 39e016aa9e819f203ebc1809245a5818
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_ix_ix100:
+                ipv4_address: 10.100.0.21
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "21"
+            org.seedsecuritylabs.seedemu.meta.nodename: "r100"
+            org.seedsecuritylabs.seedemu.meta.role: "BorderRouter"
+            org.seedsecuritylabs.seedemu.meta.loopback_addr: "10.0.0.2"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "ix100"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.100.0.21/24"
+
+        environment:
+            - CONTAINER_NAME=as21brd-r100-10.100.0.21
+            
+    hnode_151_host0:
+        build: ./hnode_151_host0
+        container_name: as151h-Ethereum-BeaconSetup-10.151.0.71
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_151_net0:
+                ipv4_address: 10.151.0.71
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "151"
+            org.seedsecuritylabs.seedemu.meta.nodename: "host0"
+            org.seedsecuritylabs.seedemu.meta.role: "Host"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Ethereum-BeaconSetup"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.151.0.71/24"
+
+        environment:
+            - CONTAINER_NAME=as151h-Ethereum-BeaconSetup-10.151.0.71
+            
+    hnode_151_host1:
+        build: ./hnode_151_host1
+        container_name: as151h-Ethereum-BootNode-10.151.0.72
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+        cap_add:
+            - ALL
+        ports:
+            - 127.0.0.1:8545:8545/tcp
+            - 127.0.0.1:8000:8000/tcp
+        privileged: true
+        networks:
+            net_151_net0:
+                ipv4_address: 10.151.0.72
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "151"
+            org.seedsecuritylabs.seedemu.meta.nodename: "host1"
+            org.seedsecuritylabs.seedemu.meta.role: "Host"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Ethereum-BootNode"
+            org.seedsecuritylabs.seedemu.meta.class: "[\"EthereumService\"]"
+            org.seedsecuritylabs.seedemu.meta.ethereum.node_id: "2"
+            org.seedsecuritylabs.seedemu.meta.ethereum.consensus: "POS"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_name: "posRefinedNet"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_id: "1337"
+            org.seedsecuritylabs.seedemu.meta.ethereum.role: "[\"bootnode\"]"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.151.0.72/24"
+
+        environment:
+            - CONTAINER_NAME=as151h-Ethereum-BootNode-10.151.0.72
+            
+    hnode_151_host2:
+        build: ./hnode_151_host2
+        container_name: as151h-Ethereum-POS-3-10.151.0.73
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_151_net0:
+                ipv4_address: 10.151.0.73
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "151"
+            org.seedsecuritylabs.seedemu.meta.nodename: "host2"
+            org.seedsecuritylabs.seedemu.meta.role: "Host"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Ethereum-POS-3"
+            org.seedsecuritylabs.seedemu.meta.class: "[\"EthereumService\"]"
+            org.seedsecuritylabs.seedemu.meta.ethereum.node_id: "3"
+            org.seedsecuritylabs.seedemu.meta.ethereum.consensus: "POS"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_name: "posRefinedNet"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_id: "1337"
+            org.seedsecuritylabs.seedemu.meta.ethereum.role: "[\"validator_at_genesis\", \"miner\"]"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.151.0.73/24"
+
+        environment:
+            - CONTAINER_NAME=as151h-Ethereum-POS-3-10.151.0.73
+            
+    brdnode_151_router0:
+        build: ./brdnode_151_router0
+        container_name: as151brd-router0-10.151.0.254
+        depends_on:
+            - 39e016aa9e819f203ebc1809245a5818
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_151_net0:
+                ipv4_address: 10.151.0.254
+
+            net_ix_ix100:
+                ipv4_address: 10.100.0.151
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "151"
+            org.seedsecuritylabs.seedemu.meta.nodename: "router0"
+            org.seedsecuritylabs.seedemu.meta.role: "BorderRouter"
+            org.seedsecuritylabs.seedemu.meta.loopback_addr: "10.0.0.3"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.151.0.254/24"
+            org.seedsecuritylabs.seedemu.meta.net.1.name: "ix100"
+            org.seedsecuritylabs.seedemu.meta.net.1.address: "10.100.0.151/24"
+
+        environment:
+            - CONTAINER_NAME=as151brd-router0-10.151.0.254
+            
+    hnode_152_host0:
+        build: ./hnode_152_host0
+        container_name: as152h-Ethereum-POS-4-10.152.0.71
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_152_net0:
+                ipv4_address: 10.152.0.71
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "152"
+            org.seedsecuritylabs.seedemu.meta.nodename: "host0"
+            org.seedsecuritylabs.seedemu.meta.role: "Host"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Ethereum-POS-4"
+            org.seedsecuritylabs.seedemu.meta.class: "[\"EthereumService\"]"
+            org.seedsecuritylabs.seedemu.meta.ethereum.node_id: "4"
+            org.seedsecuritylabs.seedemu.meta.ethereum.consensus: "POS"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_name: "posRefinedNet"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_id: "1337"
+            org.seedsecuritylabs.seedemu.meta.ethereum.role: "[\"validator_at_genesis\", \"miner\"]"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.152.0.71/24"
+
+        environment:
+            - CONTAINER_NAME=as152h-Ethereum-POS-4-10.152.0.71
+            
+    hnode_152_host1:
+        build: ./hnode_152_host1
+        container_name: as152h-Ethereum-POS-5-10.152.0.72
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_152_net0:
+                ipv4_address: 10.152.0.72
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "152"
+            org.seedsecuritylabs.seedemu.meta.nodename: "host1"
+            org.seedsecuritylabs.seedemu.meta.role: "Host"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Ethereum-POS-5"
+            org.seedsecuritylabs.seedemu.meta.class: "[\"EthereumService\"]"
+            org.seedsecuritylabs.seedemu.meta.ethereum.node_id: "5"
+            org.seedsecuritylabs.seedemu.meta.ethereum.consensus: "POS"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_name: "posRefinedNet"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_id: "1337"
+            org.seedsecuritylabs.seedemu.meta.ethereum.role: "[\"validator_at_genesis\", \"miner\"]"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.152.0.72/24"
+
+        environment:
+            - CONTAINER_NAME=as152h-Ethereum-POS-5-10.152.0.72
+            
+    hnode_152_host2:
+        build: ./hnode_152_host2
+        container_name: as152h-Ethereum-POS-6-10.152.0.73
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_152_net0:
+                ipv4_address: 10.152.0.73
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "152"
+            org.seedsecuritylabs.seedemu.meta.nodename: "host2"
+            org.seedsecuritylabs.seedemu.meta.role: "Host"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Ethereum-POS-6"
+            org.seedsecuritylabs.seedemu.meta.class: "[\"EthereumService\"]"
+            org.seedsecuritylabs.seedemu.meta.ethereum.node_id: "6"
+            org.seedsecuritylabs.seedemu.meta.ethereum.consensus: "POS"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_name: "posRefinedNet"
+            org.seedsecuritylabs.seedemu.meta.ethereum.chain_id: "1337"
+            org.seedsecuritylabs.seedemu.meta.ethereum.role: "[\"validator_at_genesis\", \"miner\"]"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.152.0.73/24"
+
+        environment:
+            - CONTAINER_NAME=as152h-Ethereum-POS-6-10.152.0.73
+            
+    brdnode_152_router0:
+        build: ./brdnode_152_router0
+        container_name: as152brd-router0-10.152.0.254
+        depends_on:
+            - 39e016aa9e819f203ebc1809245a5818
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_152_net0:
+                ipv4_address: 10.152.0.254
+
+            net_ix_ix100:
+                ipv4_address: 10.100.0.152
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "152"
+            org.seedsecuritylabs.seedemu.meta.nodename: "router0"
+            org.seedsecuritylabs.seedemu.meta.role: "BorderRouter"
+            org.seedsecuritylabs.seedemu.meta.loopback_addr: "10.0.0.4"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.152.0.254/24"
+            org.seedsecuritylabs.seedemu.meta.net.1.name: "ix100"
+            org.seedsecuritylabs.seedemu.meta.net.1.address: "10.100.0.152/24"
+
+        environment:
+            - CONTAINER_NAME=as152brd-router0-10.152.0.254
+            
+    rs_ix_ix100:
+        build: ./rs_ix_ix100
+        container_name: as100brd-ix100-10.100.0.100
+        depends_on:
+            - 39e016aa9e819f203ebc1809245a5818
+        cap_add:
+            - ALL
+
+        privileged: true
+        networks:
+            net_ix_ix100:
+                ipv4_address: 10.100.0.100
+
+
+        labels:
+            org.seedsecuritylabs.seedemu.meta.asn: "100"
+            org.seedsecuritylabs.seedemu.meta.nodename: "ix100"
+            org.seedsecuritylabs.seedemu.meta.role: "Route Server"
+            org.seedsecuritylabs.seedemu.meta.net.0.name: "ix100"
+            org.seedsecuritylabs.seedemu.meta.net.0.address: "10.100.0.100/24"
+
+        environment:
+            - CONTAINER_NAME=as100brd-ix100-10.100.0.100
+            
+    seedemu-internet-client:
+        image: handsonsecurity/seedemu-multiarch-map:buildx-latest
+        container_name: seedemu_internet_map
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - 8080:8080/tcp
+
+    neo4j:
+        image: neo4j:latest
+        container_name: eth_neo4j
+        ports:
+            - "7475:7474"  # HTTP
+            - "7688:7687"  # Bolt
+        environment:
+            - NEO4J_AUTH=neo4j/1qaz@WSX
+            - NEO4J_dbms_memory_pagecache_size=1G
+            - NEO4J_dbms_memory_heap_initial__size=1G
+            - NEO4J_dbms_memory_heap_max__size=1G
+            - NEO4J_dbms_connector_http_listen__address=0.0.0.0:7474
+            - NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687
+            - NEO4J_dbms_security_auth__enabled=true
+        # volumes:
+        #     - ./neo4j/data:/data
+        #     - ./neo4j/logs:/logs
+        #     - ./neo4j/import:/import
+        #     - ./neo4j/plugins:/plugins
+        networks:
+            - net_151_net0
+            - net_152_net0
+
+    eth_node_cleaner:
+        build: ./eth_node_cleaner  # 或你自定义的python基础镜像
+        container_name: eth_node_cleaner
+        depends_on:
+            - f1d53a66de3c35d8a921558f3b4bdbbd
+            - redis
+            - neo4j
+        ports:
+            - "8888:8888"  # 暴露中央数据收集器端口
+        networks:
+            - net_151_net0
+            - net_152_net0
+        environment:
+            - NEO4J_URI=bolt://eth_neo4j:7687
+            - NEO4J_USERNAME=neo4j
+            - NEO4J_PASSWORD=1qaz@WSX
+            - REDIS_HOST=eth_redis
+            - REDIS_PORT=6379
+            - POSTGRES_DSN=postgresql://postgres:password@eth_postgresql:5432/ethereum_monitor
+
+    eth_simulation:
+        build: ./eth_simulation
+        container_name: eth_simulation
+        depends_on:
+            postgresql:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        ports:
+            - "127.0.0.1:8890:8890"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock  # 混沌代理需要 Docker socket
+        networks:
+            - net_151_net0
+            - net_152_net0
+        environment:
+            # 以太坊配置（连接 POS-3 的 Geth RPC）
+            - ETH_RPC_URL=http://10.151.0.73:8545
+            - ETH_CHAIN_ID=1337
+            # 中央收集器
+            # 数据库
+            - POSTGRESQL_DSN=postgresql://postgres:password@eth_postgresql:5432/ethereum_monitor
+            # 交易配置
+            - TX_MIN_INTERVAL=15
+            - TX_MAX_INTERVAL=45
+            # 混沌代理配置
+            - CHAOS_DOWN_MIN=60
+            - CHAOS_DOWN_MAX=120
+            - CHAOS_UP_MIN=180
+            - CHAOS_UP_MAX=480
+            - CHAOS_INTERFACE=net0
+            - CHAOS_TARGET_PATTERNS=as151h-Ethereum-POS-,as152h-Ethereum-POS-
+            - CHAOS_RESTORE_RETRY_SECONDS=30
+            # 合约部署者
+            - CONTRACT_DEPLOYER=0x8c400205fDb103431F6aC7409655ad3cf8f6d007
+            - UNLOCKED_ACCOUNTS=0x8c400205fDb103431F6aC7409655ad3cf8f6d007
+            - CONTRACT_DEPLOY_MIN_INTERVAL=180
+            - CONTRACT_DEPLOY_MAX_INTERVAL=420
+            - CONTROL_PORT=8890
+            - WAN_EVENT_MIN_INTERVAL=90
+            - WAN_EVENT_MAX_INTERVAL=240
+            - WAN_DURATION_MIN=120
+            - WAN_DURATION_MAX=300
+            - WAN_TARGET_PATTERNS=brd-
+            - LOG_LEVEL=INFO
+        restart: unless-stopped
+
+    eth_node_monitoring:
+        build: ./eth_node_monitoring
+        container_name: eth_node_monitoring
+        depends_on:
+            - redis
+            - neo4j
+            - postgresql
+        ports:
+            - "9999:9999"
+        networks:
+            - net_151_net0
+            - net_152_net0
+        environment:
+            - NEO4J_URI=bolt://eth_neo4j:7687
+            - NEO4J_USERNAME=neo4j
+            - NEO4J_PASSWORD=1qaz@WSX
+            - REDIS_HOST=eth_redis
+            - REDIS_PORT=6379
+            - POSTGRESQL_DSN=postgresql://postgres:password@eth_postgresql:5432/ethereum_monitor
+            - MONITORING_PORT=9999
+            - LOG_LEVEL=INFO
+            - TOPOLOGY_POLL_INTERVAL=10
+            - MAX_RECENT_EVENTS=200
+        restart: unless-stopped
+
+    seedemu-ether-client:
+        image: 19867214137/seedemu-multiarch-etherview:buildx-latest
+        container_name: seedemu_ether_view
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - 5000:5000/tcp
+        networks:
+            - net_151_net0
+            - net_152_net0
+
+# === 存储卷 ===
+volumes:
+    postgresql_data:
+        driver: local
+    redis_data:
+        driver: local
+
+networks:
+    net_151_net0:
+        driver_opts:
+            com.docker.network.driver.mtu: 1500
+        ipam:
+            config:
+                - subnet: 10.151.0.0/24
+        labels:
+            org.seedsecuritylabs.seedemu.meta.type: "local"
+            org.seedsecuritylabs.seedemu.meta.scope: "151"
+            org.seedsecuritylabs.seedemu.meta.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.prefix: "10.151.0.0/24"
+
+    net_152_net0:
+        driver_opts:
+            com.docker.network.driver.mtu: 1500
+        ipam:
+            config:
+                - subnet: 10.152.0.0/24
+        labels:
+            org.seedsecuritylabs.seedemu.meta.type: "local"
+            org.seedsecuritylabs.seedemu.meta.scope: "152"
+            org.seedsecuritylabs.seedemu.meta.name: "net0"
+            org.seedsecuritylabs.seedemu.meta.prefix: "10.152.0.0/24"
+
+    net_ix_ix100:
+        driver_opts:
+            com.docker.network.driver.mtu: 1500
+        ipam:
+            config:
+                - subnet: 10.100.0.0/24
+        labels:
+            org.seedsecuritylabs.seedemu.meta.type: "global"
+            org.seedsecuritylabs.seedemu.meta.scope: "ix"
+            org.seedsecuritylabs.seedemu.meta.name: "ix100"
+            org.seedsecuritylabs.seedemu.meta.prefix: "10.100.0.0/24"
+            org.seedsecuritylabs.seedemu.meta.displayname: "Core-IXP-100"
+
+
+
+

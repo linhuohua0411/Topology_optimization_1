@@ -1,0 +1,47 @@
+{
+  "generated_at_utc": "2026-04-27T02:33:32.504689+00:00",
+  "protocol_version": "tifs-freeze-v3",
+  "experiment_id": "ED-MAIN-LINK-mid",
+  "run_id": "run-006",
+  "attack_label": "link_down",
+  "attack_params": {
+    "strength": "mid",
+    "target_selection_rule": "deterministic_first_k_up_nodes_from_sim_ordered",
+    "container_names": [
+      "as101h-Ethereum-POS-3-10.101.0.73",
+      "as101h-Ethereum-POS-4-10.101.1.71",
+      "as101h-Ethereum-POS-5-10.101.1.72",
+      "as101h-Ethereum-POS-6-10.101.1.73",
+      "as101h-Ethereum-POS-7-10.101.2.71"
+    ],
+    "container_name": "as101h-Ethereum-POS-3-10.101.0.73",
+    "duration_seconds": 39,
+    "n_nodes_down": 5
+  },
+  "attack_tier_applied": "mid",
+  "target_selection_rule": "deterministic_first_k_up_nodes_from_sim_ordered",
+  "interval_seconds": 3,
+  "phase_plan": [
+    [
+      "pre_attack",
+      3
+    ],
+    [
+      "attack_ramp",
+      5
+    ],
+    [
+      "under_attack",
+      3
+    ],
+    [
+      "recovery",
+      5
+    ],
+    [
+      "post_recovery",
+      3
+    ]
+  ],
+  "n_samples": 19
+}

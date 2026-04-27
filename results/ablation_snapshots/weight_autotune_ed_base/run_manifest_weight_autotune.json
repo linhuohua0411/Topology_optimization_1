@@ -1,0 +1,13 @@
+{
+  "generated_at_utc": "2026-04-21T09:48:21.246569+00:00",
+  "protocol_variant": "exploratory_weight_autotune",
+  "experiment_id": "ED-MAIN-BASE",
+  "n_runs_requested": 6,
+  "n_random": 4,
+  "search_seed": 20260421,
+  "max_steps": 60,
+  "min_steps": 12,
+  "sigma": 0.03,
+  "beta": 0.08,
+  "frozen_baseline_rows": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-BASE/results_rows_graph_optimizer.json"
+}

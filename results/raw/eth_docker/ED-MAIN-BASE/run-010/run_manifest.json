@@ -1,0 +1,37 @@
+{
+  "generated_at_utc": "2026-04-18T12:34:53.309320+00:00",
+  "protocol_version": "tifs-freeze-v2",
+  "experiment_id": "ED-MAIN-BASE",
+  "run_id": "run-010",
+  "attack_label": "none",
+  "attack_params": {
+    "strength": "none",
+    "injection_semantics": "unified_phase_timeline_no_chaos_injection"
+  },
+  "attack_tier_applied": "none",
+  "target_selection_rule": "unified_timeline_no_injection",
+  "interval_seconds": 30,
+  "phase_plan": [
+    [
+      "pre_attack",
+      3
+    ],
+    [
+      "attack_ramp",
+      5
+    ],
+    [
+      "under_attack",
+      3
+    ],
+    [
+      "recovery",
+      5
+    ],
+    [
+      "post_recovery",
+      3
+    ]
+  ],
+  "n_samples": 19
+}

@@ -1,0 +1,13 @@
+{
+  "generated_at_utc": "2026-04-17T13:42:01.874140+00:00",
+  "platform": "eth_docker",
+  "collector": "collect_eth_docker_scenarios.py",
+  "n_runs_per_scenario": 1,
+  "interval_seconds": 30,
+  "scenarios": [
+    "ED-MAIN-BASE",
+    "ED-MAIN-LINK",
+    "ED-MAIN-NETEM"
+  ],
+  "output_dir": "/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker"
+}

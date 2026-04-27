@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-04-27T02:44:05.048797+00:00",
+  "platform": "eth_docker",
+  "collector": "experiments/eth_docker_collect/ed_main_link/collect.py",
+  "n_runs_per_scenario": 10,
+  "interval_seconds": 3,
+  "attack_tier": "mid",
+  "scenarios": [
+    "ED-MAIN-LINK"
+  ],
+  "effective_scenarios": [
+    "ED-MAIN-LINK-mid"
+  ],
+  "output_dir": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker",
+  "continue_on_error": true,
+  "errors": [],
+  "legacy_flat_exp_id": false
+}

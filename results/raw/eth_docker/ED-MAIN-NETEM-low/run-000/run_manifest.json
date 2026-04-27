@@ -1,0 +1,44 @@
+{
+  "generated_at_utc": "2026-04-23T05:53:57.593564+00:00",
+  "protocol_version": "tifs-freeze-v3",
+  "experiment_id": "ED-MAIN-NETEM-low",
+  "run_id": "run-000",
+  "attack_label": "tc_netem",
+  "attack_params": {
+    "strength": "low",
+    "target_selection_rule": "first_available_wan_target_sim_api_sorted",
+    "container_name": "as101brd-router0-10.101.0.254",
+    "interface": "ix51",
+    "delay_ms": 50,
+    "jitter_ms": 10,
+    "loss_pct": 1.0,
+    "bandwidth_mbit": 50,
+    "duration_seconds": 33
+  },
+  "attack_tier_applied": "low",
+  "target_selection_rule": "first_available_wan_target_sim_api_sorted",
+  "interval_seconds": 3,
+  "phase_plan": [
+    [
+      "pre_attack",
+      3
+    ],
+    [
+      "attack_ramp",
+      5
+    ],
+    [
+      "under_attack",
+      3
+    ],
+    [
+      "recovery",
+      5
+    ],
+    [
+      "post_recovery",
+      3
+    ]
+  ],
+  "n_samples": 19
+}

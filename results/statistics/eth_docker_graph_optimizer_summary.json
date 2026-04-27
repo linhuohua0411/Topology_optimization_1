@@ -1,0 +1,16 @@
+{
+  "generated_at_utc": "20260427T033518Z",
+  "platform": "eth_docker",
+  "protocol_version": "tifs-freeze-v3",
+  "experiments": [
+    "ED-MAIN-BASE",
+    "ED-MAIN-LINK-low",
+    "ED-MAIN-NETEM-low"
+  ],
+  "n_rows": 300,
+  "n_runs": 10,
+  "gradient_mode": "full",
+  "attack_tier": "low",
+  "data_source": "collected_samples:/home/ly/project/Topology_optimization_1/results/raw/eth_docker",
+  "input_mode": "collected_samples"
+}

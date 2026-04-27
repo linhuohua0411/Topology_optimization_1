@@ -1,0 +1,185 @@
+{
+  "generated_at_utc": "20260427T033518Z",
+  "experiment_id": "ED-MAIN-LINK-low",
+  "protocol_version": "tifs-freeze-v3",
+  "input_mode": "collected_samples",
+  "raw_root": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker",
+  "sample_pick": "first_pre_attack",
+  "snapshot_dir": null,
+  "n_runs_requested": 10,
+  "parallel_runs": 1,
+  "gradient_mode": "full",
+  "attack_tier": "low",
+  "weights": [
+    0.22,
+    0.6,
+    0.18
+  ],
+  "statistics_artifacts": [
+    "stats_summary_graph_optimizer.csv",
+    "stats_summary_graph_optimizer.json"
+  ],
+  "results_rows_artifact": "results_rows_graph_optimizer.json",
+  "runs": [
+    {
+      "run_id": "run-000",
+      "seed": 42,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 48.05960559844971,
+      "fair_edge_budget": 4842,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-000/sample_0000.json"
+    },
+    {
+      "run_id": "run-001",
+      "seed": 43,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.94138741493225,
+      "fair_edge_budget": 5181,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-001/sample_0000.json"
+    },
+    {
+      "run_id": "run-002",
+      "seed": 44,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.19340181350708,
+      "fair_edge_budget": 3795,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-002/sample_0000.json"
+    },
+    {
+      "run_id": "run-003",
+      "seed": 45,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 46.070369720458984,
+      "fair_edge_budget": 5078,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-003/sample_0000.json"
+    },
+    {
+      "run_id": "run-004",
+      "seed": 46,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.17757320404053,
+      "fair_edge_budget": 3571,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-004/sample_0000.json"
+    },
+    {
+      "run_id": "run-005",
+      "seed": 47,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.014283180236816,
+      "fair_edge_budget": 5024,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-005/sample_0000.json"
+    },
+    {
+      "run_id": "run-006",
+      "seed": 48,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 46.03201079368591,
+      "fair_edge_budget": 5166,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-006/sample_0000.json"
+    },
+    {
+      "run_id": "run-007",
+      "seed": 49,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.30634880065918,
+      "fair_edge_budget": 4819,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-007/sample_0000.json"
+    },
+    {
+      "run_id": "run-008",
+      "seed": 50,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.88210368156433,
+      "fair_edge_budget": 4774,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-008/sample_0000.json"
+    },
+    {
+      "run_id": "run-009",
+      "seed": 51,
+      "attack_tier": "low",
+      "gradient_mode": "full",
+      "protocol_version": "tifs-freeze-v3",
+      "weights": [
+        0.22,
+        0.6,
+        0.18
+      ],
+      "ours_time_budget_s": 45.82845211029053,
+      "fair_edge_budget": 5183,
+      "n_nodes": 106,
+      "graph_initial_path": "/home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK-low/run-009/sample_0000.json"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+[collect] ED-MAIN-BASE none tier=none run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-000/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-001/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-000/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=1
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-NETEM/run-000/run_manifest.json
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=1
+[error] ED-MAIN-NETEM run-001: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+Traceback (most recent call last):
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 626, in <module>
+    main()
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 591, in main
+    run_scenario(exp_id, attack_label, run_idx, args.interval, containers, tier)
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 453, in run_scenario
+    raise RuntimeError(f"inject tc_netem failed and cannot free wan slot: {resp}")
+RuntimeError: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+===== resume 2026-04-18T17:57:30+08:00 =====
+[collect] ED-MAIN-BASE none tier=none run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-000/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-001/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-000/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-001/run_manifest.json
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-NETEM/run-000/run_manifest.json
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=1
+[error] ED-MAIN-NETEM run-001: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+Traceback (most recent call last):
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 637, in <module>
+    main()
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 602, in main
+    run_scenario(exp_id, attack_label, run_idx, args.interval, containers, tier)
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 464, in run_scenario
+    raise RuntimeError(f"inject tc_netem failed and cannot free wan slot: {resp}")
+RuntimeError: inject tc_netem failed and cannot free wan slot: {'ok': False, 'error': 'max_concurrent_links_reached'}
+[collect] ED-MAIN-BASE none tier=none run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-000/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-001/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-000/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-001/run_manifest.json
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-NETEM/run-000/run_manifest.json
+[collect] ED-MAIN-NETEM tc_netem tier=mid run=1
+[error] ED-MAIN-NETEM run-001: inject tc_netem: wan slots stayed busy after retries: {'ok': False, 'error': 'max_concurrent_links_reached'}
+Traceback (most recent call last):
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 651, in <module>
+    main()
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 616, in main
+    run_scenario(exp_id, attack_label, run_idx, args.interval, containers, tier)
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 490, in run_scenario
+    raise RuntimeError(
+RuntimeError: inject tc_netem: wan slots stayed busy after retries: {'ok': False, 'error': 'max_concurrent_links_reached'}

@@ -1,0 +1,50 @@
+[
+  {
+    "comparison_id": "CMP-ED-MAIN-NETEM-UNDER-minus-PRE",
+    "stat_key": "R.paired_delta_runs",
+    "budget_variant": "raw",
+    "experiment_id": "ED-MAIN-NETEM",
+    "test_name": "one_sample_t_delta_vs_0",
+    "n": 20,
+    "mean": 0.007691041450839697,
+    "std": 0.028472163736032938,
+    "ci95_low": -0.005634341359570521,
+    "ci95_high": 0.021016424261249916,
+    "p_value": 0.24185563301634497,
+    "p_value_holm": 0.48371126603268993,
+    "effect_size": 0.27012493754053196,
+    "effect_size_name": "cohens_dz_paired"
+  },
+  {
+    "comparison_id": "CMP-ED-MAIN-NETEM-UNDER-minus-PRE",
+    "stat_key": "lcc_ratio.paired_delta_runs",
+    "budget_variant": "raw",
+    "experiment_id": "ED-MAIN-NETEM",
+    "test_name": "wilcoxon_signed_rank_delta_vs_0",
+    "n": 20,
+    "mean": -0.0007861635220126007,
+    "std": 0.0028630989559758927,
+    "ci95_low": -0.0021261350804151497,
+    "ci95_high": 0.0005538080363899485,
+    "p_value": 0.10118743267851761,
+    "p_value_holm": 0.30356229803555285,
+    "effect_size": -0.2745848236826433,
+    "effect_size_name": "cohens_dz_descriptive_under_non_normal"
+  },
+  {
+    "comparison_id": "CMP-ED-MAIN-NETEM-UNDER-minus-PRE",
+    "stat_key": "avg_path_len.paired_delta_runs",
+    "budget_variant": "raw",
+    "experiment_id": "ED-MAIN-NETEM",
+    "test_name": "wilcoxon_signed_rank_delta_vs_0",
+    "n": 20,
+    "mean": 0.00045787545787551176,
+    "std": 0.003908878413257726,
+    "ci95_low": -0.0013715359524729403,
+    "ci95_high": 0.0022872868682239636,
+    "p_value": 0.6215133666992188,
+    "p_value_holm": 0.6215133666992188,
+    "effect_size": 0.11713729859760733,
+    "effect_size_name": "cohens_dz_descriptive_under_non_normal"
+  }
+]

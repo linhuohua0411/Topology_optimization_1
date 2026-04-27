@@ -1,0 +1,19 @@
+{
+  "generated_at_utc": "2026-04-21T13:37:16.165544+00:00",
+  "protocol_variant": "exploratory_adaptive_vs_fixed",
+  "scenarios": [
+    "ED-MAIN-BASE",
+    "ED-MAIN-LINK",
+    "ED-MAIN-NETEM"
+  ],
+  "n_runs_requested": 20,
+  "max_steps": 20,
+  "min_steps": 6,
+  "adaptive_settings": {
+    "adaptive_update_every": 5,
+    "adaptive_warmup_steps": 10,
+    "adaptive_eta": 0.12,
+    "adaptive_min_weight": 0.1,
+    "adaptive_max_weight": 0.7
+  }
+}

@@ -1,0 +1,92 @@
+[collect] ED-MAIN-BASE none tier=none run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-000/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-001/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=2
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-002/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=3
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-003/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=4
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-004/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=5
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-005/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=6
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-006/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=7
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-007/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=8
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-008/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=9
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-BASE/run-009/run_manifest.json
+[collect] ED-MAIN-BASE none tier=none run=10
+[collect] ED-MAIN-BASE none tier=none run=11
+[collect] ED-MAIN-BASE none tier=none run=12
+[collect] ED-MAIN-BASE none tier=none run=13
+[collect] ED-MAIN-BASE none tier=none run=14
+[collect] ED-MAIN-BASE none tier=none run=15
+[collect] ED-MAIN-BASE none tier=none run=16
+[collect] ED-MAIN-BASE none tier=none run=17
+[collect] ED-MAIN-BASE none tier=none run=18
+[collect] ED-MAIN-BASE none tier=none run=19
+[collect] ED-MAIN-LINK link_down tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-000/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-001/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=2
+[collect] ED-MAIN-LINK link_down tier=mid run=3
+[collect] ED-MAIN-LINK link_down tier=mid run=4
+[collect] ED-MAIN-LINK link_down tier=mid run=5
+[error] ED-MAIN-LINK run-005: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'already_down', 'container_name': 'as101h-Ethereum-POS-3-10.101.0.73'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=6
+[error] ED-MAIN-LINK run-006: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'already_down', 'container_name': 'as101h-Ethereum-POS-3-10.101.0.73'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=7
+[error] ED-MAIN-LINK run-007: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'already_down', 'container_name': 'as101h-Ethereum-POS-3-10.101.0.73'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=8
+[error] ED-MAIN-LINK run-008: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=9
+[error] ED-MAIN-LINK run-009: inject link_down failed for as101h-Ethereum-POS-3-10.101.0.73: {'ok': False, 'error': 'command_failed'}
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=10
+[error] ED-MAIN-LINK run-010: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-010'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=11
+[error] ED-MAIN-LINK run-011: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-011'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=12
+[error] ED-MAIN-LINK run-012: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-012'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=13
+[error] ED-MAIN-LINK run-013: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-013'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=14
+[error] ED-MAIN-LINK run-014: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-014'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=15
+[error] ED-MAIN-LINK run-015: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-015'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=16
+[error] ED-MAIN-LINK run-016: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-016'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=17
+[error] ED-MAIN-LINK run-017: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-017'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=18
+[error] ED-MAIN-LINK run-018: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-018'
+[error] continuing (default: continue-on-error)
+[collect] ED-MAIN-LINK link_down tier=mid run=19
+[error] ED-MAIN-LINK run-019: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/experiments/../results/raw/eth_docker/ED-MAIN-LINK/run-019'
+[error] continuing (default: continue-on-error)
+[preflight] docker restart eth_simulation
+eth_simulation
+Traceback (most recent call last):
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 673, in <module>
+    main()
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 610, in main
+    restart_sim_container_and_wait()
+  File "/home/ly/project/Topology_optimization_1/experiments/collect_eth_docker_scenarios.py", line 107, in restart_sim_container_and_wait
+    raise RuntimeError(f"eth_simulation unhealthy after restart: {health}")
+RuntimeError: eth_simulation unhealthy after restart: {'ok': False, 'error': 'command_failed'}

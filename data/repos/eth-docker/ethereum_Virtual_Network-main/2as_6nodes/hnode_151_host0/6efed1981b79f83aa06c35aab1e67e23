@@ -1,0 +1,10 @@
+#!/bin/bash
+let i=0
+while read -r ethId; do {
+    let i++
+    mv /local-testnet/node_$i /local-testnet/eth-$ethId
+    tar -czvf /local-testnet/eth-$ethId.tar.gz /local-testnet/eth-$ethId
+}; done < /tmp/validator-ids
+tar -czvf /local-testnet/testnet.tar.gz /local-testnet/testnet
+tar -czvf /local-testnet/bootnode.tar.gz /local-testnet/bootnode
+

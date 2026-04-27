@@ -1,0 +1,162 @@
+[2026-04-20T21:40:52+08:00] start R_s_only
+
+=== ED-MAIN-BASE (none) ===
+  parallel-runs=4 (process pool)
+/home/ly/project/Topology_optimization_1/.venv/lib/python3.12/site-packages/scipy/stats/_axis_nan_policy.py:592: UserWarning: scipy.stats.shapiro: Input data has range zero. The results may not be accurate.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/ly/project/Topology_optimization_1/.venv/lib/python3.12/site-packages/scipy/stats/_axis_nan_policy.py:592: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+  run 1/20 seed=42 ok
+  run 2/20 seed=43 ok
+  run 3/20 seed=44 ok
+  run 4/20 seed=45 ok
+  run 5/20 seed=46 ok
+  run 6/20 seed=47 ok
+  run 7/20 seed=48 ok
+  run 8/20 seed=49 ok
+  run 9/20 seed=50 ok
+  run 10/20 seed=51 ok
+  run 11/20 seed=52 ok
+  run 12/20 seed=53 ok
+  run 13/20 seed=54 ok
+  run 14/20 seed=55 ok
+  run 15/20 seed=56 ok
+  run 16/20 seed=57 ok
+  run 17/20 seed=58 ok
+  run 18/20 seed=59 ok
+  run 19/20 seed=60 ok
+  run 20/20 seed=61 ok
+  wrote /home/ly/project/Topology_optimization_1/experiments/../results/statistics/ED-MAIN-BASE/stats_summary_graph_optimizer.csv
+
+=== ED-MAIN-LINK (link_down) ===
+  parallel-runs=4 (process pool)
+  run 1/20 seed=42 ok
+  run 2/20 seed=43 ok
+  run 3/20 seed=44 ok
+  run 4/20 seed=45 ok
+  run 5/20 seed=46 ok
+  run 6/20 seed=47 ok
+  run 7/20 seed=48 ok
+  run 8/20 seed=49 ok
+  run 9/20 seed=50 ok
+  run 10/20 seed=51 ok
+  run 11/20 seed=52 ok
+  run 12/20 seed=53 ok
+  run 13/20 seed=54 ok
+  run 14/20 seed=55 ok
+  run 15/20 seed=56 ok
+  run 16/20 seed=57 ok
+  run 17/20 seed=58 ok
+  run 18/20 seed=59 ok
+  run 19/20 seed=60 ok
+  run 20/20 seed=61 ok
+  wrote /home/ly/project/Topology_optimization_1/experiments/../results/statistics/ED-MAIN-LINK/stats_summary_graph_optimizer.csv
+
+=== ED-MAIN-NETEM (tc_netem) ===
+  parallel-runs=4 (process pool)
+  run 1/20 seed=42 ok
+  run 2/20 seed=43 ok
+  run 3/20 seed=44 ok
+  run 4/20 seed=45 ok
+  run 5/20 seed=46 ok
+  run 6/20 seed=47 ok
+  run 7/20 seed=48 ok
+  run 8/20 seed=49 ok
+  run 9/20 seed=50 ok
+  run 10/20 seed=51 ok
+  run 11/20 seed=52 ok
+  run 12/20 seed=53 ok
+  run 13/20 seed=54 ok
+  run 14/20 seed=55 ok
+  run 15/20 seed=56 ok
+  run 16/20 seed=57 ok
+  run 17/20 seed=58 ok
+  run 18/20 seed=59 ok
+  run 19/20 seed=60 ok
+  run 20/20 seed=61 ok
+  wrote /home/ly/project/Topology_optimization_1/experiments/../results/statistics/ED-MAIN-NETEM/stats_summary_graph_optimizer.csv
+
+Done. Summary: /home/ly/project/Topology_optimization_1/experiments/../results/statistics/eth_docker_graph_optimizer_summary.json
+[2026-04-21T00:24:59+08:00] archive R_s_only
+[2026-04-21T00:24:59+08:00] start R_s_R_r
+
+=== ED-MAIN-BASE (none) ===
+  parallel-runs=4 (process pool)
+/home/ly/project/Topology_optimization_1/.venv/lib/python3.12/site-packages/scipy/stats/_axis_nan_policy.py:592: UserWarning: scipy.stats.shapiro: Input data has range zero. The results may not be accurate.
+  res = hypotest_fun_out(*samples, **kwds)
+/home/ly/project/Topology_optimization_1/.venv/lib/python3.12/site-packages/scipy/stats/_axis_nan_policy.py:592: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+  res = hypotest_fun_out(*samples, **kwds)
+  run 1/20 seed=42 ok
+  run 2/20 seed=43 ok
+  run 3/20 seed=44 ok
+  run 4/20 seed=45 ok
+  run 5/20 seed=46 ok
+  run 6/20 seed=47 ok
+  run 7/20 seed=48 ok
+  run 8/20 seed=49 ok
+  run 9/20 seed=50 ok
+  run 10/20 seed=51 ok
+  run 11/20 seed=52 ok
+  run 12/20 seed=53 ok
+  run 13/20 seed=54 ok
+  run 14/20 seed=55 ok
+  run 15/20 seed=56 ok
+  run 16/20 seed=57 ok
+  run 17/20 seed=58 ok
+  run 18/20 seed=59 ok
+  run 19/20 seed=60 ok
+  run 20/20 seed=61 ok
+  wrote /home/ly/project/Topology_optimization_1/experiments/../results/statistics/ED-MAIN-BASE/stats_summary_graph_optimizer.csv
+
+=== ED-MAIN-LINK (link_down) ===
+  parallel-runs=4 (process pool)
+  run 1/20 seed=42 ok
+  run 2/20 seed=43 ok
+  run 3/20 seed=44 ok
+  run 4/20 seed=45 ok
+  run 5/20 seed=46 ok
+  run 6/20 seed=47 ok
+  run 7/20 seed=48 ok
+  run 8/20 seed=49 ok
+  run 9/20 seed=50 ok
+  run 10/20 seed=51 ok
+  run 11/20 seed=52 ok
+  run 12/20 seed=53 ok
+  run 13/20 seed=54 ok
+  run 14/20 seed=55 ok
+  run 15/20 seed=56 ok
+  run 16/20 seed=57 ok
+  run 17/20 seed=58 ok
+  run 18/20 seed=59 ok
+  run 19/20 seed=60 ok
+  run 20/20 seed=61 ok
+  wrote /home/ly/project/Topology_optimization_1/experiments/../results/statistics/ED-MAIN-LINK/stats_summary_graph_optimizer.csv
+
+=== ED-MAIN-NETEM (tc_netem) ===
+  parallel-runs=4 (process pool)
+  run 1/20 seed=42 ok
+  run 2/20 seed=43 ok
+  run 3/20 seed=44 ok
+  run 4/20 seed=45 ok
+  run 5/20 seed=46 ok
+  run 6/20 seed=47 ok
+  run 7/20 seed=48 ok
+  run 8/20 seed=49 ok
+  run 9/20 seed=50 ok
+  run 10/20 seed=51 ok
+  run 11/20 seed=52 ok
+  run 12/20 seed=53 ok
+  run 13/20 seed=54 ok
+  run 14/20 seed=55 ok
+  run 15/20 seed=56 ok
+  run 16/20 seed=57 ok
+  run 17/20 seed=58 ok
+  run 18/20 seed=59 ok
+  run 19/20 seed=60 ok
+  run 20/20 seed=61 ok
+  wrote /home/ly/project/Topology_optimization_1/experiments/../results/statistics/ED-MAIN-NETEM/stats_summary_graph_optimizer.csv
+
+Done. Summary: /home/ly/project/Topology_optimization_1/experiments/../results/statistics/eth_docker_graph_optimizer_summary.json
+[2026-04-21T03:01:29+08:00] archive R_s_R_r
+[2026-04-21T03:01:30+08:00] restore full baseline artifacts
+[2026-04-21T03:01:30+08:00] done

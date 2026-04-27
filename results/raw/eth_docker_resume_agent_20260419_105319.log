@@ -1,0 +1,57 @@
+[resume] 2026-04-19T10:53:19+08:00 df /
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         1.1T  977G   66G  94% /
+[resume] 2026-04-19T10:53:19+08:00 docker system prune -f
+Deleted Containers:
+7c6b9909a0400529a887204c88c0b492b6b9f6172b812750b8b2d24247fd16f3
+1e76b36a79cefa349ac5383d30e1ab5044993c3c159f067352b4b39e178e2b0c
+
+Deleted Networks:
+12as_100nodes_default
+
+Deleted Images:
+deleted: sha256:b154fd0d3cb1f4ebab061ae1eaf81b107e6dcd98a2bf2fe0095838cd435235c2
+
+Deleted build cache objects:
+2jj0y16lkh0f40uscdkzumrem
+yatsrv592zy4h7em1m2cwdqal
+lsau6xs7bfq2gp85ivmotwn3o
+salsjr96rynk91gkx7ne9wxoh
+ch4kjxs64hqlt2v3mqaefnu2z
+3d9pwy0vfbvejyba1r11sdp69
+kiejmvfd4fxpgv726oxg1y0rj
+xhamzmpcukybie56crpz2z3hs
+txm9k7z5t0llrebiflz6xa9k1
+qmkx0m5c96o3vvfrj3jir4qi5
+aghqwopqpmafji5pp04nlkw70
+4ve0vjm0zvfj0q4trml2ds3q6
+
+Total reclaimed space: 13.39MB
+[resume] 2026-04-19T10:53:25+08:00 ED-MAIN-LINK (split collector)
+[collect] ED-MAIN-LINK link_down tier=mid run=0
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK/run-000/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=1
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK/run-001/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=2
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK/run-002/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=3
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK/run-003/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=4
+[skip] existing run manifest: /home/ly/project/Topology_optimization_1/results/raw/eth_docker/ED-MAIN-LINK/run-004/run_manifest.json
+[collect] ED-MAIN-LINK link_down tier=mid run=5
+[collect] ED-MAIN-LINK link_down tier=mid run=6
+[collect] ED-MAIN-LINK link_down tier=mid run=7
+[collect] ED-MAIN-LINK link_down tier=mid run=8
+[collect] ED-MAIN-LINK link_down tier=mid run=9
+[collect] ED-MAIN-LINK link_down tier=mid run=10
+[collect] ED-MAIN-LINK link_down tier=mid run=11
+[collect] ED-MAIN-LINK link_down tier=mid run=12
+[collect] ED-MAIN-LINK link_down tier=mid run=13
+[collect] ED-MAIN-LINK link_down tier=mid run=14
+[collect] ED-MAIN-LINK link_down tier=mid run=15
+[collect] ED-MAIN-LINK link_down tier=mid run=16
+[collect] ED-MAIN-LINK link_down tier=mid run=17
+[collect] ED-MAIN-LINK link_down tier=mid run=18
+[collect] ED-MAIN-LINK link_down tier=mid run=19
+collection done
+experiments/resume_ed_docker_collection_mid.sh: line 20: syntax error near unexpected token `)'

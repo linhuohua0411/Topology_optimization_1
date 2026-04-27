@@ -1,0 +1,13 @@
+[wait-post] 2026-04-18T20:59:58+08:00 waiting for collect_eth_docker_scenarios.py to exit...
+[wait-post] 2026-04-19T03:29:35+08:00 warn: collector exited but 'collection done' not found in /home/ly/project/Topology_optimization_1/results/raw/eth_docker_collection_rerun_mid30.log (continuing anyway)
+[wait-post] 2026-04-19T03:29:35+08:00 compute_eth_docker_metrics_fast.py
+Traceback (most recent call last):
+  File "/home/ly/project/Topology_optimization_1/experiments/compute_eth_docker_metrics_fast.py", line 415, in <module>
+    main()
+  File "/home/ly/project/Topology_optimization_1/experiments/compute_eth_docker_metrics_fast.py", line 385, in main
+    rows, fa = process_run(
+               ^^^^^^^^^^^^
+  File "/home/ly/project/Topology_optimization_1/experiments/compute_eth_docker_metrics_fast.py", line 316, in process_run
+    os.makedirs(processed_run_dir, exist_ok=True)
+  File "<frozen os>", line 225, in makedirs
+OSError: [Errno 28] No space left on device: '/home/ly/project/Topology_optimization_1/results/processed/eth_docker/ED-MAIN-BASE/run-010'
