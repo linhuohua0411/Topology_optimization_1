@@ -125,12 +125,13 @@
 src/
 ├── models/                 # global_optimizer、robustness、baselines
 experiments/
-├── run_eth_docker_experiments.py
-├── collect_eth_docker_scenarios.py
-├── compute_eth_docker_metrics_fast.py
-├── aggregate_eth_docker_collected_stats.py
-├── run_component_ablation_ed.py
-├── run_mle_injection_comparison.py
+├── scripts/
+│   ├── run_eth_docker_experiments.py
+│   ├── collect_eth_docker_scenarios.py
+│   ├── compute_eth_docker_metrics_fast.py
+│   ├── aggregate_eth_docker_collected_stats.py
+│   ├── run_component_ablation_ed.py
+│   └── run_mle_injection_comparison.py
 └── tifs_stats.py
 results/
 ├── raw/
