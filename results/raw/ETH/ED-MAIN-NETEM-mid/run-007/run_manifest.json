@@ -1,0 +1,19 @@
+{
+  "platform": "eth_docker",
+  "experiment_id": "ED-MAIN-NETEM-mid",
+  "run_id": "run-007",
+  "collector": "collect_eth_docker_scenarios.py",
+  "attack_label": "tc_netem",
+  "attack_tier": "mid",
+  "phases": [
+    "pre_attack",
+    "attack_ramp",
+    "under_attack",
+    "recovery",
+    "post_recovery"
+  ],
+  "phase_wait_sec": 1,
+  "collected_at_utc": "2026-04-28T13:55:11.209151Z",
+  "n_nodes": 106,
+  "n_samples": 5
+}

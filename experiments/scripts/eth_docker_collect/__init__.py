@@ -1,0 +1,2 @@
+"""ETH docker collector package."""
+

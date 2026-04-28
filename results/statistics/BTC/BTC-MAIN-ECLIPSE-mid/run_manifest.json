@@ -1,0 +1,20 @@
+{
+  "generated_at_utc": "2026-04-28T11:15:22.608539+00:00",
+  "experiment_id": "BTC-MAIN-ECLIPSE-mid",
+  "protocol_variant": "unified_full_protocol",
+  "budget_variant": "fair",
+  "n_runs_found": 10,
+  "run_ids": [
+    "run-001",
+    "run-002",
+    "run-003",
+    "run-004",
+    "run-005",
+    "run-006",
+    "run-007",
+    "run-008",
+    "run-009",
+    "run-010"
+  ],
+  "source_raw_dir": "/home/ly/project/Topology_optimization_1/results/raw/BTC/BTC-MAIN-ECLIPSE-mid"
+}

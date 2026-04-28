@@ -1,0 +1,6 @@
+comparison_id,stat_key,budget_variant,experiment_id,test_name,n,mean,std,ci95_low,ci95_high,p_value,p_value_holm,effect_size,effect_size_name
+CMP-BTC-MAIN-ECLIPSE-low-UNDER-minus-PRE,reachable_ratio.paired_delta_runs,fair,BTC-MAIN-ECLIPSE-low,constant_delta,10,0.0,0.0,0.0,0.0,,,,
+CMP-BTC-MAIN-ECLIPSE-low-UNDER-minus-PRE,peer_count_btc_avg.paired_delta_runs,fair,BTC-MAIN-ECLIPSE-low,descriptive_only_no_scipy,10,0.0018518518518519044,0.005856069741052721,-0.0017777777777778282,0.005481481481481637,,,0.3162277660168379,cohens_dz
+CMP-BTC-MAIN-ECLIPSE-low-UNDER-minus-PRE,block_height_spread.paired_delta_runs,fair,BTC-MAIN-ECLIPSE-low,constant_delta,10,0.0,0.0,0.0,0.0,,,,
+CMP-BTC-MAIN-ECLIPSE-low-UNDER-minus-PRE,topology_edges_directed.paired_delta_runs,fair,BTC-MAIN-ECLIPSE-low,descriptive_only_no_scipy,10,0.2,0.6324555320336759,-0.19199999999999995,0.592,,,0.31622776601683794,cohens_dz
+CMP-BTC-MAIN-ECLIPSE-low-UNDER-minus-PRE,fork_events_total_seen.paired_delta_runs,fair,BTC-MAIN-ECLIPSE-low,constant_delta,10,0.0,0.0,0.0,0.0,,,,

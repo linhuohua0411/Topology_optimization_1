@@ -5,7 +5,7 @@ Eth-Docker graph optimizer vs baselines (M-OUR vs M-RESI/M-STAT/M-ASIM/M-FPS).
 **Protocol**：与观测链并列的 **必做** 步骤（见 ``protocol/04`` §二、``protocol/03`` §0.1/§6.4、``claim_traceability.md`` C007）。
 
 **Default**: reads `collect_eth_docker_scenarios.py` outputs —
-`results/raw/eth_docker/<experiment_id>/run-*/sample_*.json` (topology under `topology`).
+`results/raw/ETH/<experiment_id>/run-*/sample_*.json` (topology under `topology`).
 
 **Legacy**: `--from-snapshots` + `--snapshot-dir` uses flat `snapshot_*.json` with top-level `edges`
 (one A0 for all runs; backward compatible).
@@ -69,7 +69,7 @@ from models.global_optimizer import DEFAULT_PARAMS, get_edge_changes, run_optimi
 from models.robustness import compute_R_components
 from tifs_stats import build_method_comparison_rows, write_stats_summary_csv
 
-DEFAULT_RAW_ROOT = os.path.join(ROOT, "results", "raw", "eth_docker")
+DEFAULT_RAW_ROOT = os.path.join(ROOT, "results", "raw", "ETH")
 DEFAULT_SNAPSHOT_DIR = os.path.join(ROOT, "results", "derived", "eth_snapshots")
 RESULTS_BASE = os.path.join(ROOT, "results")
 
@@ -167,6 +167,16 @@ def pick_collected_sample(paths, pick: str):
         return json.load(f), paths[0]
 
 
+def pick_phase_sample(paths, phase: str):
+    """Return (sample_dict, path) for a specific phase, or (None, None)."""
+    for p in paths:
+        with open(p, "r", encoding="utf-8") as f:
+            s = json.load(f)
+        if s.get("phase") == phase:
+            return s, p
+    return None, None
+
+
 def run_ours(A0, seed, weights, time_budget=None, gradient_mode="full"):
     stats0 = compute_graph_stats(A0, weights)
     params = DEFAULT_PARAMS.copy()
@@ -241,6 +251,41 @@ def phase_attack_eval(A_before, A_after, attack_type, frac, n_repeats, run_seed)
     }
 
 
+def phase_attack_eval_realized(A_before, A_after, A_under_real, weights):
+    """
+    Evaluate attack impact using realized under-attack topology from collected samples.
+    The realized edge-loss mask from A_before -> A_under_real is applied to A_after.
+    """
+    if (
+        A_before is None
+        or A_after is None
+        or A_under_real is None
+        or A_before.shape != A_after.shape
+        or A_before.shape != A_under_real.shape
+    ):
+        return None
+
+    base_attacked = np.asarray(A_under_real, dtype=np.float64).copy()
+
+    # Realized mask: edges present before attack but absent under attack.
+    dropped_mask = (A_before > 0.0) & (A_under_real <= 0.0)
+    opt_attacked = np.asarray(A_after, dtype=np.float64).copy()
+    opt_attacked[dropped_mask] = 0.0
+    np.fill_diagonal(opt_attacked, 0.0)
+
+    stats_base = compute_graph_stats(base_attacked, weights)
+    stats_opt = compute_graph_stats(opt_attacked, weights)
+    return {
+        "baseline_lcc": float(stats_base["lcc_ratio"]),
+        "optimized_lcc": float(stats_opt["lcc_ratio"]),
+        "baseline_path": float(stats_base["avg_path_length"]),
+        "optimized_path": float(stats_opt["avg_path_length"]),
+        "baseline_components": float(stats_base["n_components"]),
+        "optimized_components": float(stats_opt["n_components"]),
+        "attack_eval_mode": "realized_from_samples",
+    }
+
+
 def run_graph_optimizer_single_job(job):
     """
     One (experiment, run_idx) graph-optimizer job for ProcessPoolExecutor.
@@ -262,6 +307,9 @@ def run_graph_optimizer_single_job(job):
 
     run_id = f"run-{run_idx:03d}"
     sample_path = None
+    sample_under_path = None
+    realized_attack_eval = False
+    A_under_real = None
 
     if from_snapshots:
         A0 = np.asarray(job["legacy_A0"], dtype=np.float64).copy()
@@ -286,6 +334,14 @@ def run_graph_optimizer_single_job(job):
                 "rows": [],
                 "manifest": None,
             }
+        if attack_label != "none":
+            sample_under, sample_under_path = pick_phase_sample(paths, "under_attack")
+            if sample_under is not None:
+                A_under_real, _, _ordered_under = build_dense_adj_from_sample(sample_under)
+                if A_under_real.shape == A0.shape:
+                    realized_attack_eval = True
+                else:
+                    A_under_real = None
 
     n_nodes = int(A0.shape[0])
 
@@ -352,13 +408,19 @@ def run_graph_optimizer_single_job(job):
                 "graph_initial_path": sample_path,
             }
             if attack_cfg is not None:
-                atk = phase_attack_eval(A0, A_m, attack_cfg[0], attack_cfg[1], attack_repeats, seed)
+                atk = None
+                if realized_attack_eval and A_under_real is not None:
+                    atk = phase_attack_eval_realized(A0, A_m, A_under_real, weights)
+                if atk is None:
+                    atk = phase_attack_eval(A0, A_m, attack_cfg[0], attack_cfg[1], attack_repeats, seed)
+                    atk["attack_eval_mode"] = "simulated_fallback"
                 row.update(
                     {
                         "under_attack_baseline_lcc": atk["baseline_lcc"],
                         "under_attack_method_lcc": atk["optimized_lcc"],
                         "under_attack_baseline_path": atk["baseline_path"],
                         "under_attack_method_path": atk["optimized_path"],
+                        "attack_eval_mode": atk.get("attack_eval_mode", "unknown"),
                     }
                 )
             exp_rows.append(row)
@@ -374,6 +436,8 @@ def run_graph_optimizer_single_job(job):
         "fair_edge_budget": int(fair_edge_budget),
         "n_nodes": n_nodes,
         "graph_initial_path": sample_path,
+        "graph_under_attack_path": sample_under_path,
+        "attack_eval_mode": "realized_from_samples" if realized_attack_eval else "simulated_fallback",
     }
     return {"run_idx": run_idx, "skipped": False, "skip_reason": None, "rows": exp_rows, "manifest": manifest}
 
@@ -422,7 +486,7 @@ def main():
     parser.add_argument(
         "--raw-root",
         default=DEFAULT_RAW_ROOT,
-        help="Eth-Docker collection root (default: results/raw/eth_docker)",
+        help="Eth-Docker collection root (default: results/raw/ETH)",
     )
     parser.add_argument(
         "--sample-pick",
@@ -465,9 +529,9 @@ def main():
     parallel_runs = min(parallel_runs, max(1, int(args.n_runs)))
 
     now = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    raw_dir = os.path.join(RESULTS_BASE, "raw", "eth_docker")
-    proc_dir = os.path.join(RESULTS_BASE, "processed", "eth_docker")
-    stat_dir = os.path.join(RESULTS_BASE, "statistics")
+    raw_dir = os.path.join(RESULTS_BASE, "raw", "ETH")
+    proc_dir = os.path.join(RESULTS_BASE, "processed", "ETH")
+    stat_dir = os.path.join(RESULTS_BASE, "statistics", "ETH")
     os.makedirs(raw_dir, exist_ok=True)
     os.makedirs(proc_dir, exist_ok=True)
     os.makedirs(stat_dir, exist_ok=True)
@@ -613,7 +677,7 @@ def main():
         if args.from_snapshots
         else f"collected_samples:{os.path.abspath(args.raw_root)}"
     )
-    summary_path = os.path.join(RESULTS_BASE, "statistics", "eth_docker_graph_optimizer_summary.json")
+    summary_path = os.path.join(RESULTS_BASE, "statistics", "ETH", "eth_docker_graph_optimizer_summary.json")
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(
             {

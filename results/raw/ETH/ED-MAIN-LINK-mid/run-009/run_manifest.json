@@ -1,0 +1,19 @@
+{
+  "platform": "eth_docker",
+  "experiment_id": "ED-MAIN-LINK-mid",
+  "run_id": "run-009",
+  "collector": "collect_eth_docker_scenarios.py",
+  "attack_label": "link_down",
+  "attack_tier": "mid",
+  "phases": [
+    "pre_attack",
+    "attack_ramp",
+    "under_attack",
+    "recovery",
+    "post_recovery"
+  ],
+  "phase_wait_sec": 1,
+  "collected_at_utc": "2026-04-28T13:47:02.059555Z",
+  "n_nodes": 106,
+  "n_samples": 5
+}

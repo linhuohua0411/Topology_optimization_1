@@ -1,0 +1,24 @@
+{
+  "platform": "eth_docker",
+  "experiment_id": "ED-MAIN-BASE",
+  "run_id": "run-000",
+  "collector": "collect_eth_docker_scenarios.py",
+  "attack_label": "none",
+  "attack_tier": "none",
+  "phases": [
+    "pre_attack",
+    "attack_ramp",
+    "under_attack",
+    "recovery",
+    "post_recovery"
+  ],
+  "phase_wait_sec": 30,
+  "attack_execution": {
+    "ok": true,
+    "attack_label": "none",
+    "triggered": false
+  },
+  "collected_at_utc": "2026-04-28T14:22:29.994359Z",
+  "n_nodes": 106,
+  "n_samples": 5
+}

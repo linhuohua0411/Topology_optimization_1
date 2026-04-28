@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Aggregate Eth-Docker *collected* runs (results/raw/eth_docker) into TIFS-style statistics.
+Aggregate Eth-Docker *collected* runs (results/raw/ETH) into TIFS-style statistics.
 
 - Phase contrast (attack scenarios): mean metric in under_attack minus pre_attack, paired across runs.
 - One-sample test on deltas vs 0: Shapiro-Wilk (n≥3) → t or Wilcoxon (`tifs_stats.test_one_sample_deltas_with_normality_gate`), §6.1 aligned.
 - Holm correction across metrics in the same experiment block.
-- Writes results/statistics/<experiment_id>/stats_summary.csv + run_manifest.json
+- Writes results/statistics/ETH/<experiment_id>/stats_summary.csv + run_manifest.json
 
 Run after: collect_eth_docker_scenarios.py && compute_eth_docker_metrics_fast.py
 
@@ -42,8 +42,8 @@ from tifs_stats import (
 
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-RAW_ETH_DOCKER = os.path.join(ROOT, "results", "raw", "eth_docker")
-STAT_ROOT = os.path.join(ROOT, "results", "statistics")
+RAW_ETH_DOCKER = os.path.join(ROOT, "results", "raw", "ETH")
+STAT_ROOT = os.path.join(ROOT, "results", "statistics", "ETH")
 
 
 def now_utc():

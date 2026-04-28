@@ -14,8 +14,12 @@ from eth_docker_collect.collector_core import run_collection
 
 ALL_SCENARIOS = [
     ("ED-MAIN-BASE", "none"),
-    ("ED-MAIN-LINK", "link_down"),
-    ("ED-MAIN-NETEM", "tc_netem"),
+    ("ED-MAIN-LINK-low", "link_down"),
+    ("ED-MAIN-LINK-mid", "link_down"),
+    ("ED-MAIN-LINK-high", "link_down"),
+    ("ED-MAIN-NETEM-low", "tc_netem"),
+    ("ED-MAIN-NETEM-mid", "tc_netem"),
+    ("ED-MAIN-NETEM-high", "tc_netem"),
 ]
 
 

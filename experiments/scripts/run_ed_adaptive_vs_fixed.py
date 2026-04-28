@@ -109,7 +109,7 @@ def run_ours_variant(A0: np.ndarray, seed: int, mode: str, max_steps: int, min_s
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--raw-root", default="results/raw/eth_docker")
+    parser.add_argument("--raw-root", default="results/raw/ETH")
     parser.add_argument("--n-runs", type=int, default=6)
     parser.add_argument("--seed-base", type=int, default=42)
     parser.add_argument("--max-steps", type=int, default=60)

@@ -1,0 +1,11 @@
+run_id,reachable_ratio,block_height_spread,fork_events_total_seen
+run-001,1.0,1990,6
+run-002,1.0,1992,6
+run-003,1.0,1992,6
+run-004,1.0,1993,6
+run-005,1.0,1995,6
+run-006,1.0,1996,6
+run-007,1.0,1999,6
+run-008,1.0,1997,6
+run-009,1.0,1996,6
+run-010,1.0,1998,6

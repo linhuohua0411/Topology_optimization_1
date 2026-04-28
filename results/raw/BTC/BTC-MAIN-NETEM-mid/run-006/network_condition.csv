@@ -1,0 +1,3 @@
+timestamp_utc,phase,attack_label,action,target_count,params
+2026-04-27T13:30:08.108019Z,attack_ramp,tc_netem_delay_loss,netem_apply,12,"{""delay_ms"": 80, ""loss_pct"": 2.0}"
+2026-04-27T13:30:15.513145Z,recovery,tc_netem_delay_loss,netem_clear,12,

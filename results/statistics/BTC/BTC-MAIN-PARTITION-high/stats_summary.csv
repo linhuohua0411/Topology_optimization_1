@@ -1,0 +1,6 @@
+comparison_id,stat_key,budget_variant,experiment_id,test_name,n,mean,std,ci95_low,ci95_high,p_value,p_value_holm,effect_size,effect_size_name
+CMP-BTC-MAIN-PARTITION-high-UNDER-minus-PRE,reachable_ratio.paired_delta_runs,fair,BTC-MAIN-PARTITION-high,constant_delta,10,0.0,0.0,0.0,0.0,,,,
+CMP-BTC-MAIN-PARTITION-high-UNDER-minus-PRE,peer_count_btc_avg.paired_delta_runs,fair,BTC-MAIN-PARTITION-high,descriptive_only_no_scipy,10,-0.43518518518518495,0.9669118147753714,-1.0344833369037214,0.16411296653335145,,,-0.4500774305734233,cohens_dz
+CMP-BTC-MAIN-PARTITION-high-UNDER-minus-PRE,block_height_spread.paired_delta_runs,fair,BTC-MAIN-PARTITION-high,descriptive_only_no_scipy,10,0.3,0.8232726023485646,-0.21026964549256805,0.810269645492568,,,0.3643993485805122,cohens_dz
+CMP-BTC-MAIN-PARTITION-high-UNDER-minus-PRE,topology_edges_directed.paired_delta_runs,fair,BTC-MAIN-PARTITION-high,descriptive_only_no_scipy,10,-47.0,104.42647599574012,-111.72420038560195,17.724200385601947,,,-0.45007743057342353,cohens_dz
+CMP-BTC-MAIN-PARTITION-high-UNDER-minus-PRE,fork_events_total_seen.paired_delta_runs,fair,BTC-MAIN-PARTITION-high,constant_delta,10,0.0,0.0,0.0,0.0,,,,

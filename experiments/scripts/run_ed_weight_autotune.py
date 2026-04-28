@@ -141,13 +141,13 @@ def make_candidates(n_random: int, seed: int) -> List[Dict]:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment-id", default="ED-MAIN-BASE")
-    parser.add_argument("--raw-root", default="results/raw/eth_docker")
+    parser.add_argument("--raw-root", default="results/raw/ETH")
     parser.add_argument("--n-runs", type=int, default=6)
     parser.add_argument("--seed-base", type=int, default=42)
     parser.add_argument("--sample-pick", choices=("first_pre_attack", "first_sample"), default="first_pre_attack")
     parser.add_argument(
         "--frozen-baseline-rows",
-        default="results/raw/eth_docker/ED-MAIN-BASE/results_rows_graph_optimizer.json",
+        default="results/raw/ETH/ED-MAIN-BASE/results_rows_graph_optimizer.json",
     )
     parser.add_argument("--n-random", type=int, default=6)
     parser.add_argument("--search-seed", type=int, default=20260421)

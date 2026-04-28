@@ -1,0 +1,78 @@
+{
+  "experiment_id": "BTC-MAIN-PARTITION-mid",
+  "run_id": "run-001",
+  "phases": [
+    "pre_attack",
+    "attack_ramp",
+    "under_attack",
+    "recovery",
+    "post_recovery"
+  ],
+  "samples": [
+    {
+      "sample_index": 0,
+      "timestamp_utc": "2026-04-27T13:20:59.318569Z",
+      "node_count_total": 108,
+      "node_count_reachable": 108,
+      "reachable_ratio": 1.0,
+      "peer_count_btc_avg": 16.037037037037038,
+      "block_height_min": 657,
+      "block_height_max": 673,
+      "block_height_spread": 16,
+      "topology_edges_directed": 1732,
+      "fork_events_total_seen": 0
+    },
+    {
+      "sample_index": 1,
+      "timestamp_utc": "2026-04-27T13:21:07.283452Z",
+      "node_count_total": 108,
+      "node_count_reachable": 108,
+      "reachable_ratio": 1.0,
+      "peer_count_btc_avg": 16.037037037037038,
+      "block_height_min": 657,
+      "block_height_max": 674,
+      "block_height_spread": 17,
+      "topology_edges_directed": 1732,
+      "fork_events_total_seen": 0
+    },
+    {
+      "sample_index": 2,
+      "timestamp_utc": "2026-04-27T13:21:10.156559Z",
+      "node_count_total": 108,
+      "node_count_reachable": 108,
+      "reachable_ratio": 1.0,
+      "peer_count_btc_avg": 10.703703703703704,
+      "block_height_min": 657,
+      "block_height_max": 674,
+      "block_height_spread": 17,
+      "topology_edges_directed": 1156,
+      "fork_events_total_seen": 0
+    },
+    {
+      "sample_index": 3,
+      "timestamp_utc": "2026-04-27T13:21:17.956566Z",
+      "node_count_total": 108,
+      "node_count_reachable": 108,
+      "reachable_ratio": 1.0,
+      "peer_count_btc_avg": 10.703703703703704,
+      "block_height_min": 657,
+      "block_height_max": 674,
+      "block_height_spread": 17,
+      "topology_edges_directed": 1156,
+      "fork_events_total_seen": 0
+    },
+    {
+      "sample_index": 4,
+      "timestamp_utc": "2026-04-27T13:21:20.887337Z",
+      "node_count_total": 108,
+      "node_count_reachable": 108,
+      "reachable_ratio": 1.0,
+      "peer_count_btc_avg": 10.703703703703704,
+      "block_height_min": 657,
+      "block_height_max": 676,
+      "block_height_spread": 19,
+      "topology_edges_directed": 1156,
+      "fork_events_total_seen": 0
+    }
+  ]
+}

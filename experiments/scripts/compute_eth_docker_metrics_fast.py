@@ -335,11 +335,11 @@ def discover_ed_experiment_dirs(input_root: str) -> List[str]:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input-root", default=None, help="eth_docker root (raw or platform_collected)")
+    parser.add_argument("--input-root", default=None, help="ETH root (raw or platform_collected)")
     parser.add_argument(
         "--processed-root",
         default=None,
-        help="default: <repo>/results/processed/eth_docker (mirrors matrix paths)",
+        help="default: <repo>/results/processed/ETH (mirrors matrix paths)",
     )
     parser.add_argument("--no-mirror-processed", action="store_true")
     parser.add_argument("--n-runs", type=int, default=N_RUNS_DEFAULT)
@@ -349,15 +349,18 @@ def main():
     if args.input_root:
         input_root = args.input_root
     else:
-        raw_guess = os.path.join(ROOT, "results", "raw", "eth_docker")
-        if os.path.isdir(raw_guess):
-            input_root = raw_guess
+        raw_guess_eth = os.path.join(ROOT, "results", "raw", "ETH")
+        raw_guess_legacy = os.path.join(ROOT, "results", "raw", "eth_docker")
+        if os.path.isdir(raw_guess_eth):
+            input_root = raw_guess_eth
+        elif os.path.isdir(raw_guess_legacy):
+            input_root = raw_guess_legacy
         else:
             input_root = latest_platform_collected_root()
 
     processed_root = args.processed_root
     if processed_root is None:
-        processed_root = os.path.join(ROOT, "results", "processed", "eth_docker")
+        processed_root = os.path.join(ROOT, "results", "processed", "ETH")
     mirror_proc = not args.no_mirror_processed
 
     scenarios = discover_ed_experiment_dirs(input_root)

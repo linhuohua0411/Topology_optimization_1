@@ -1,0 +1,171 @@
+{
+  "platform": "BTC-Docker",
+  "experiment_id": "BTC-MAIN-ECLIPSE-low",
+  "attack_label": "eclipse",
+  "attack_intensity": "low",
+  "budget_variant": "fair",
+  "n_runs": 10,
+  "collected_at_utc": "2026-04-28T02:31:47.739908Z",
+  "runs": [
+    {
+      "run_id": "run-001",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-001",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 16.037037037037038,
+        "block_height_min": 661,
+        "block_height_max": 3670,
+        "block_height_spread": 3009,
+        "topology_edges_directed": 1732,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-002",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-002",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.61111111111111,
+        "block_height_min": 661,
+        "block_height_max": 3671,
+        "block_height_spread": 3010,
+        "topology_edges_directed": 1685,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-003",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-003",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.574074074074074,
+        "block_height_min": 661,
+        "block_height_max": 3674,
+        "block_height_spread": 3013,
+        "topology_edges_directed": 1686,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-004",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-004",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.574074074074074,
+        "block_height_min": 661,
+        "block_height_max": 3675,
+        "block_height_spread": 3014,
+        "topology_edges_directed": 1682,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-005",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-005",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.574074074074074,
+        "block_height_min": 661,
+        "block_height_max": 3678,
+        "block_height_spread": 3017,
+        "topology_edges_directed": 1682,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-006",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-006",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 16.037037037037038,
+        "block_height_min": 661,
+        "block_height_max": 3679,
+        "block_height_spread": 3018,
+        "topology_edges_directed": 1732,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-007",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-007",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.574074074074074,
+        "block_height_min": 661,
+        "block_height_max": 3681,
+        "block_height_spread": 3020,
+        "topology_edges_directed": 1682,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-008",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-008",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.86111111111111,
+        "block_height_min": 661,
+        "block_height_max": 3683,
+        "block_height_spread": 3022,
+        "topology_edges_directed": 1713,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-009",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-009",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.574074074074074,
+        "block_height_min": 661,
+        "block_height_max": 3685,
+        "block_height_spread": 3024,
+        "topology_edges_directed": 1682,
+        "fork_events_total_seen": 4
+      }
+    },
+    {
+      "run_id": "run-010",
+      "run_path": "/home/ly/project/Topology_optimization_1/results/raw/BTC-MAIN-ECLIPSE-low/run-010",
+      "samples": 5,
+      "summary_last_sample": {
+        "node_count_total": 108,
+        "node_count_reachable": 108,
+        "reachable_ratio": 1.0,
+        "peer_count_btc_avg": 15.592592592592593,
+        "block_height_min": 661,
+        "block_height_max": 3686,
+        "block_height_spread": 3025,
+        "topology_edges_directed": 1684,
+        "fork_events_total_seen": 4
+      }
+    }
+  ]
+}

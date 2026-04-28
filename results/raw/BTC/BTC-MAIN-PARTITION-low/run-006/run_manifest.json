@@ -1,0 +1,30 @@
+{
+  "platform": "BTC-Docker",
+  "experiment_id": "BTC-MAIN-PARTITION-low",
+  "run_id": "run-006",
+  "attack_label": "partition",
+  "attack_intensity": "low",
+  "budget_variant": "fair",
+  "protocol_variant": "unified_full_protocol",
+  "phases": [
+    "pre_attack",
+    "attack_ramp",
+    "under_attack",
+    "recovery",
+    "post_recovery"
+  ],
+  "phase_wait_sec": 1,
+  "collected_at_utc": "2026-04-28T02:44:15.165725Z",
+  "source": "btc_monitor_api + docker_exec_attack_controls",
+  "summary_last_sample": {
+    "node_count_total": 108,
+    "node_count_reachable": 108,
+    "reachable_ratio": 1.0,
+    "peer_count_btc_avg": 14.148148148148149,
+    "block_height_min": 1727,
+    "block_height_max": 3711,
+    "block_height_spread": 1984,
+    "topology_edges_directed": 1528,
+    "fork_events_total_seen": 6
+  }
+}

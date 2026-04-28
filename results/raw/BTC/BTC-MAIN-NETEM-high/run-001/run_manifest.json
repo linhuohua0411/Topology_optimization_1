@@ -1,0 +1,30 @@
+{
+  "platform": "BTC-Docker",
+  "experiment_id": "BTC-MAIN-NETEM-high",
+  "run_id": "run-001",
+  "attack_label": "tc_netem_delay_loss",
+  "attack_intensity": "high",
+  "budget_variant": "fair",
+  "protocol_variant": "unified_full_protocol",
+  "phases": [
+    "pre_attack",
+    "attack_ramp",
+    "under_attack",
+    "recovery",
+    "post_recovery"
+  ],
+  "phase_wait_sec": 1,
+  "collected_at_utc": "2026-04-28T02:57:10.973691Z",
+  "source": "btc_monitor_api + docker_exec_attack_controls",
+  "summary_last_sample": {
+    "node_count_total": 108,
+    "node_count_reachable": 108,
+    "reachable_ratio": 1.0,
+    "peer_count_btc_avg": 16.037037037037038,
+    "block_height_min": 1737,
+    "block_height_max": 3750,
+    "block_height_spread": 2013,
+    "topology_edges_directed": 1732,
+    "fork_events_total_seen": 6
+  }
+}

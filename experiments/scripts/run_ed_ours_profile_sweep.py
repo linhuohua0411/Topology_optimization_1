@@ -4,7 +4,7 @@ ED-MAIN-BASE exploratory profile sweep (M-OUR only, paired against frozen baseli
 
 Purpose:
 - Re-run M-OUR under multiple parameter profiles on the same per-run A0.
-- Reuse existing baseline rows from results/raw/eth_docker/ED-MAIN-BASE/results_rows_graph_optimizer.json
+- Reuse existing baseline rows from results/raw/ETH/ED-MAIN-BASE/results_rows_graph_optimizer.json
   for paired deltas on identical run_id (budget_variant=fair).
 - Write outputs to ablation_snapshots to avoid polluting main-text statistics.
 """
@@ -145,13 +145,13 @@ def build_stats_rows(rows: List[Dict], experiment_id: str) -> List[Dict]:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment-id", default="ED-MAIN-BASE")
-    parser.add_argument("--raw-root", default="results/raw/eth_docker")
+    parser.add_argument("--raw-root", default="results/raw/ETH")
     parser.add_argument("--n-runs", type=int, default=20)
     parser.add_argument("--seed-base", type=int, default=42)
     parser.add_argument("--sample-pick", choices=("first_pre_attack", "first_sample"), default="first_pre_attack")
     parser.add_argument(
         "--frozen-baseline-rows",
-        default="results/raw/eth_docker/ED-MAIN-BASE/results_rows_graph_optimizer.json",
+        default="results/raw/ETH/ED-MAIN-BASE/results_rows_graph_optimizer.json",
     )
     parser.add_argument(
         "--out-dir",

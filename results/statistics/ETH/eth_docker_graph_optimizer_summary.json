@@ -1,0 +1,16 @@
+{
+  "generated_at_utc": "20260428T140057Z",
+  "platform": "eth_docker",
+  "protocol_version": "tifs-freeze-v1",
+  "experiments": [
+    "ED-MAIN-BASE",
+    "ED-MAIN-LINK-mid",
+    "ED-MAIN-NETEM-mid"
+  ],
+  "n_rows": 300,
+  "n_runs": 10,
+  "gradient_mode": "full",
+  "attack_tier": "mid",
+  "data_source": "collected_samples:/home/ly/project/Topology_optimization_1/results/raw/ETH",
+  "input_mode": "collected_samples"
+}
